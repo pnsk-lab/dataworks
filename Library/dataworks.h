@@ -42,19 +42,27 @@ extern "C" {
 
 /**
  * @~english
- * @brief Version of DataWorks
- * @note Use dataworks_get_version.
- *
- */
-#define DATAWORKS_VERSION "0.0.0"
-
-/**
- * @~english
  * @brief Get the version of DataWorks
  * @return Version of DataWorks
  *
  */
 const char* dataworks_get_version(void);
+
+/**
+ * @~english
+ * @brief Get the compilation date of DataWorks
+ * @return Compilation date of DataWorks
+ *
+ */
+const char* dataworks_get_compile_date(void);
+
+/**
+ * @~english
+ * @brief Get the compilation platform of DataWorks
+ * @return Compilation platform of DataWorks
+ *
+ */
+const char* dataworks_get_platform(void);
 
 #ifdef __cplusplus
 }

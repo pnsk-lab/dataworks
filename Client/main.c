@@ -28,6 +28,79 @@
 
 #include <dataworks.h>
 
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main(int argc, char** argv) { printf("DataWorks %s\n", dataworks_get_version()); }
+#ifdef __MINGW32__
+#include <windows.h>
+HANDLE winstdout;
+#endif
+
+int main(int argc, char** argv) {
+	int i;
+	bool noclear = false;
+	for(i = 1; i < argc; i++) {
+		if(argv[i][0] == '-') {
+			if(strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-V") == 0) {
+				printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+				return 0;
+			} else if(strcmp(argv[i], "--noclear") == 0) {
+				noclear = true;
+			} else {
+				fprintf(stderr, "%s: %s: invalid option\n", argv[i]);
+				return 1;
+			}
+		}
+	}
+#ifdef __MINGW32__
+	winstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD mode = 0;
+	GetConsoleMode(winstdout, &mode);
+	const DWORD origmode = mode;
+	mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+	SetConsoleMode(winstdout, mode);
+#endif
+	if(!noclear) {
+		printf("\x1b[2J\x1b[1;1H");
+		fflush(stdout);
+	}
+	printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+	printf("\n");
+	printf("Copyright (c) Nishi 2024\n");
+	printf("All rights reserved.\n");
+	printf("\n");
+	printf("Type a command (.help) for the help\n");
+	printf("\n");
+	int len = 0;
+	char* buf = malloc(1);
+	buf[0] = 0;
+	char ch;
+	char prompt = '.';
+	printf("%c ", prompt);
+	fflush(stdout);
+	while(1) {
+		if(fread(&ch, 1, 1, stdin) <= 0) break;
+		if(ch == '\n') {
+			printf("%c ", prompt);
+			fflush(stdout);
+			free(buf);
+			buf = malloc(1);
+			buf[0] = 0;
+			len = 0;
+		} else if(ch != '\r') {
+			char* newbuf = malloc(len + 2);
+			for(i = 0; i < len; i++) {
+				newbuf[i] = buf[i];
+			}
+			newbuf[i] = ch;
+			newbuf[i + 1] = 0;
+			free(buf);
+			buf = newbuf;
+			len++;
+		}
+	}
+	free(buf);
+	printf("\n");
+}

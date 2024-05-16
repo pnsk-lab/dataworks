@@ -28,6 +28,19 @@
 
 #include "dataworks.h"
 
-const char* dataworks_version = DATAWORKS_VERSION;
+const char* dataworks_version = "0.0.0";
+const char* dataworks_compile_date = __DATE__;
+
+#if defined(__MINGW32__)
+const char* dataworks_platform = "Windows";
+#elif defined(__NetBSD__)
+const char* dataworks_platform = "NetBSD";
+#elif defined(__linux__)
+const char* dataworks_platform = "Linux";
+#else
+const char* dataworks_platform = "Unknown";
+#endif
 
 const char* dataworks_get_version(void) { return dataworks_version; }
+const char* dataworks_get_compile_date(void) { return dataworks_compile_date; }
+const char* dataworks_get_platform(void) { return dataworks_platform; }
