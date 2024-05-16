@@ -7,9 +7,9 @@ LIB_PREFIX = lib
 LIB_SUFFIX = .so
 EXEC_SUFFIX =
 
-.if "$(PLATFORM)" != ""
-.include Platforms/$(PLATFORM).mk
-.endif
+ifneq ("$(PLATFORM)", "")
+include Platforms/$(PLATFORM).mk
+endif
 
 COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)"
 
