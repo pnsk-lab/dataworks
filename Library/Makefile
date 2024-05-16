@@ -3,7 +3,7 @@
 .PHONY: all clean
 .SUFFIXES: .c .o
 
-OBJS = parser.o dataworks.o
+OBJS = parser.o util.o dataworks.o
 
 all: $(LIB_PREFIX)dataworks$(LIB_SUFFIX)
 

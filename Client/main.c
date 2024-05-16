@@ -27,6 +27,7 @@
 /* --- END LICENSE --- */
 
 #include <dataworks.h>
+#include <dw_util.h>
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -37,6 +38,15 @@
 #include <windows.h>
 HANDLE winstdout;
 #endif
+
+void padleft(int leftpad, const char* str) {
+	int i;
+	char* spaces = malloc(leftpad - strlen(str) + 1);
+	memset(spaces, ' ', leftpad - strlen(str));
+	spaces[leftpad - strlen(str)] = 0;
+	printf("%s%s", str, spaces);
+	free(spaces);
+}
 
 int main(int argc, char** argv) {
 	int i;
@@ -83,6 +93,23 @@ int main(int argc, char** argv) {
 	while(1) {
 		if(fread(&ch, 1, 1, stdin) <= 0) break;
 		if(ch == '\n') {
+			if(buf[0] == '.') {
+				if(__dw_strcaseequ(buf, ".bye") || __dw_strcaseequ(buf, ".quit")) {
+					printf("Bye.\n");
+					break;
+				} else if(__dw_strcaseequ(buf, ".version")) {
+					printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+				} else if(__dw_strcaseequ(buf, ".help")) {
+					padleft(16, ".help");
+					printf("Shows this help.\n");
+					padleft(16, ".bye .quit");
+					printf("Quits from the CLI.\n");
+					padleft(16, ".version");
+					printf("Shows the version of DataWorks.\n");
+				} else {
+					printf("Unknown dot-command.\n");
+				}
+			}
 			printf("%c ", prompt);
 			fflush(stdout);
 			free(buf);
