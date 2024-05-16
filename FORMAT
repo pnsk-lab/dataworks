@@ -1,0 +1,6 @@
+DataWorks Database Format
+============================
+Extension should be .dwf
+First 3 bytes should be 7F 44 57 (\x7F DW)
+============================
+$Id$
