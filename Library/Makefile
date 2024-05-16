@@ -11,7 +11,7 @@ $(LIB_PREFIX)dataworks$(LIB_SUFFIX): $(OBJS)
 	$(CC) -shared $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 .c.o:
-	$(CC) $(CFLAGS) -fPIC -c -o $@ $<
+	$(CC) $(CFLAGS) -DPLATFORM_M=\"$(PLATFORM_M)\" -DPLATFORM_P=\"$(PLATFORM_P)\" -fPIC -c -o $@ $<
 
 clean:
 	rm -f *.o *.so *.dll

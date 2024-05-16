@@ -32,14 +32,15 @@ const char* dataworks_version = "0.0.0";
 const char* dataworks_compile_date = __DATE__;
 
 #if defined(__MINGW32__)
-const char* dataworks_platform = "Windows";
+const char* dataworks_platform = "Windows/"
 #elif defined(__NetBSD__)
-const char* dataworks_platform = "NetBSD";
+const char* dataworks_platform = "NetBSD/"
 #elif defined(__linux__)
-const char* dataworks_platform = "Linux";
+const char* dataworks_platform = "Linux/"
 #else
-const char* dataworks_platform = "Unknown";
+const char* dataworks_platform = "Unknown/"
 #endif
+PLATFORM_M " (" PLATFORM_P ")";
 
 const char* dataworks_get_version(void) { return dataworks_version; }
 const char* dataworks_get_compile_date(void) { return dataworks_compile_date; }

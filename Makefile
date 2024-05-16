@@ -6,12 +6,14 @@ LIBS =
 LIB_PREFIX = lib
 LIB_SUFFIX = .so
 EXEC_SUFFIX =
+PLATFORM_M = `uname -m`
+PLATFORM_P = `uname -p`
 
 .if "$(PLATFORM)" != ""
 .include Platforms/$(PLATFORM).mk
 .endif
 
-COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)"
+COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)" PLATFORM_M="$(PLATFORM_M)" PLATFORM_P="$(PLATFORM_P)"
 
 .PHONY: all no-doc replace format clean ./Library ./Client ./Document
 
