@@ -1,23 +1,32 @@
 # $Id$
 CC = cc
 CFLAGS = -std=c99
-LDFLAGS =
+LDFLAGS = -L`pwd`/Library
 LIBS =
 LIB_PREFIX = lib
 LIB_SUFFIX = .so
+EXEC_SUFFIX =
 
 .if "$(PLATFORM)" != ""
 .include "Platforms/$(PLATFORM).mk"
 .endif
 
-COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)"
+COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)"
 
-.PHONY: all replace format clean ./Library
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document
 
-all: ./Library
+all: ./Library ./Client ./Document
+
+no-doc: ./Library ./Client
 
 ./Library::
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
+
+./Client:: ./Library
+	$(MAKE) -C $@ $(COMPILE_FLAGS)
+
+./Document::
+	$(MAKE) -C ./Document $(COMPILE_FLAGS)
 
 FILES = `find . -name "*.c" -or -name "*.h"`
 
@@ -34,3 +43,5 @@ format:
 
 clean:
 	$(MAKE) -C ./Library clean $(COMPILE_FLAGS)
+	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
+	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)

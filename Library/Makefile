@@ -3,7 +3,7 @@
 .PHONY: all clean
 .SUFFIXES: .c .o
 
-OBJS = parser.o
+OBJS = parser.o dataworks.o
 
 all: $(LIB_PREFIX)dataworks$(LIB_SUFFIX)
 
@@ -14,4 +14,4 @@ $(LIB_PREFIX)dataworks$(LIB_SUFFIX): $(OBJS)
 	$(CC) $(CFLAGS) -fPIC -c -o $@ $<
 
 clean:
-	rm -f *.o $(LIB_PREFIX)dataworks$(LIB_SUFFIX)
+	rm -f *.o *.so *.dll
