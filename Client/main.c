@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
 				} else if(__dw_strcaseequ(buf, ".help")) {
 					padleft(16, ".help");
 					printf("Shows this help.\n");
-					padleft(16, ".bye .quit");
+					padleft(16, ".bye  .quit");
 					printf("Quits from the CLI.\n");
 					padleft(16, ".version");
 					printf("Shows the version of DataWorks.\n");
