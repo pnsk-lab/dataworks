@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 			} else if(strcmp(argv[i], "--noclear") == 0) {
 				noclear = true;
 			} else {
-				fprintf(stderr, "%s: %s: invalid option\n", argv[i]);
+				fprintf(stderr, "%s: %s: invalid option\n", argv[0], argv[i]);
 				return 1;
 			}
 		}
