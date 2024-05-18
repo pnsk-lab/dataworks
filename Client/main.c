@@ -112,9 +112,16 @@ int main(int argc, char** argv) {
 		}
 	}
 	printf("\n");
+	printf("Opening the database: %s\n", fname);
+	struct dataworks_db* db = dataworks_database_open(fname);
+	if(db == NULL) {
+		printf("Bad database file or non-existent.\n");
+		return 1;
+	}
+	printf("Opened the database.\n");
+	printf("\n");
 	printf("Type a command (.help) for the help\n");
 	printf("\n");
-	__dw_big_endian(123, double, );
 	int len = 0;
 	char* buf = malloc(1);
 	buf[0] = 0;
