@@ -46,6 +46,6 @@ const char* dataworks_get_version(void) { return dataworks_version; }
 const char* dataworks_get_compile_date(void) { return dataworks_compile_date; }
 const char* dataworks_get_platform(void) { return dataworks_platform; }
 char dataworks_get_endian(void) {
-	unsigned short n = 1;
+	volatile unsigned short n = 1;
 	return *(char*)&n == 1 ? 'L' : 'B';
 }
