@@ -1,7 +1,7 @@
 # $Id$
 
 CC = cc
-CFLAGS = -std=c99
+CFLAGS = -std=c99 -D_DEFAULT_SOURCE
 LDFLAGS = -L`pwd`/Library
 LIBS =
 LIB_PREFIX = lib

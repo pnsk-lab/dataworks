@@ -51,7 +51,8 @@ bool __dw_lockfile(FILE* fp){
 	OVERLAPPED overlap = {0};
 	LockFileEx(fp, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlap);
 #else
-	lockf(fp, F_LOCK);
+	fseek(fp, SEEK_SET, 0);
+	lockf(fileno(fp), F_LOCK, 0);
 #endif
 	return false;
 }
@@ -61,7 +62,8 @@ bool __dw_unlockfile(FILE* fp){
 	OVERLAPPED overlap = {0};
 	UnlockFileEx(fp, 0, MAXDWORD, MAXDWORD, &overlap);
 #else
-	lockf(fp, F_ULOCK);
+	fseek(fp, SEEK_SET, 0);
+	lockf(fileno(fp), F_ULOCK, 0);
 #endif
 	return false;
 }
