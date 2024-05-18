@@ -2,7 +2,7 @@
 
 COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)" PLATFORM_M="$(PLATFORM_M)" PLATFORM_P="$(PLATFORM_P)"
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document archive
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document archive archive-prepare archive-cleanup archive-targz archive-zip
 
 all: ./Library ./Client ./Document
 
@@ -36,7 +36,7 @@ clean:
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
 
-archive: no-doc
+archive-prepare: no-doc
 	rm -f *.zip *.tar.gz
 	rm -rf dataworks-dist
 	mkdir -p dataworks-dist
@@ -45,6 +45,22 @@ archive: no-doc
 	cp Library/*$(LIB_SUFFIX) dataworks-dist/Library/
 	cp Library/*.h dataworks-dist/Library/
 	cp Client/dataworks$(EXEC_SUFFIX) dataworks-dist/Client/
-	zip -rv dataworks.zip dataworks-dist
-	tar czvf dataworks.tar.gz dataworks-dist
+
+archive-cleanup:
 	rm -rf dataworks-dist
+
+archive-targz:
+	if [ "$(PREP)" = "" ]; then $(MAKE) archive-prepare ; fi
+	tar czvf dataworks.tar.gz dataworks-dist
+	if [ "$(PREP)" = "" ]; then $(MAKE) archive-cleanup ; fi
+
+archive-zip:
+	if [ "$(PREP)" = "" ]; then $(MAKE) archive-prepare ; fi
+	zip -rv dataworks.zip dataworks-dist
+	if [ "$(PREP)" = "" ]; then $(MAKE) archive-cleanup ; fi
+
+archive:
+	$(MAKE) archive-prepare
+	$(MAKE) archive-targz PREP=NO
+	$(MAKE) archive-zip PREP=NO
+	$(MAKE) archive-cleanup
