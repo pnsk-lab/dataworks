@@ -27,6 +27,7 @@
 /* --- END LICENSE --- */
 
 #include <dataworks.h>
+#include <dw_database.h>
 #include <dw_util.h>
 
 #include <stdbool.h>
@@ -51,18 +52,32 @@ void padleft(int leftpad, const char* str) {
 int main(int argc, char** argv) {
 	int i;
 	bool noclear = false;
+	bool create = false;
+	const char* fname = NULL;
 	for(i = 1; i < argc; i++) {
 		if(argv[i][0] == '-') {
 			if(strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-V") == 0) {
 				printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 				return 0;
+			} else if(strcmp(argv[i], "--create") == 0 || strcmp(argv[i], "-C") == 0) {
+				create = true;
 			} else if(strcmp(argv[i], "--noclear") == 0) {
 				noclear = true;
 			} else {
 				fprintf(stderr, "%s: %s: invalid option\n", argv[0], argv[i]);
 				return 1;
 			}
+		} else {
+			if(fname != NULL) {
+				fprintf(stderr, "%s: %s: cannot use more than 1 database at same time.\n", argv[0], argv[i]);
+				return 1;
+			}
+			fname = argv[i];
 		}
+	}
+	if(fname == NULL) {
+		fprintf(stderr, "%s: filename needed\n", argv[0]);
+		return 1;
 	}
 #ifdef __MINGW32__
 	winstdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -85,6 +100,17 @@ int main(int argc, char** argv) {
 	printf("\n");
 	printf("Copyright (c) Nishi 2024\n");
 	printf("All rights reserved.\n");
+	if(create) {
+		printf("\n");
+		printf("Creating the database: %s\n", fname);
+		int n = dataworks_database_create(fname);
+		if(n != 0) {
+			printf("Failed to create.\n");
+			return 1;
+		} else {
+			printf("Created successfully.\n");
+		}
+	}
 	printf("\n");
 	printf("Type a command (.help) for the help\n");
 	printf("\n");

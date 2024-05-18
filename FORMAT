@@ -1,6 +1,6 @@
 DataWorks Database Format 1.0
 ==============================================
-Extension should be .dwf
+Extension SHOULD be .dwf
 
 All numbers MUST use big-endiam
 
@@ -29,7 +29,7 @@ Used       : 0b10000000          Flag this if you are using the entry.
 Index entry (`indexentry`) MUST be in this format:
 flag       : 1            byte   uint8_t
 count      : 8            bytes  uint64_t
-dbname_len : 8            bytes  uint8_t
+dbname_len : 1            byte   uint8_t
 dbname     : 256          bytes  ASCII
 fields     : 4096         bytes  ASCII (Separate field names using NUL. Put NUL twice on the last field name.)
 
