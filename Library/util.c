@@ -31,6 +31,11 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
+#ifdef __MINGW32__
+#include <fileapi.h>
+#else
+#include <unistd.h>
+#endif
 
 bool __dw_strcaseequ(const char* a, const char* b) {
 	if(strlen(a) != strlen(b)) return false;
@@ -39,4 +44,22 @@ bool __dw_strcaseequ(const char* a, const char* b) {
 		if(tolower(a[i]) != tolower(b[i])) return false;
 	}
 	return true;
+}
+
+bool __dw_lockfile(FILE* fp){
+#ifdef __MINGW32__
+	OVERLAPPED overlap = {0};
+	LockFileEx(fp, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlap);
+#else
+	lockf(fp, F_LOCK);
+#endif
+	return false;
+}
+
+bool __dw_unlockfile(FILE* fp){
+#ifdef __MINGW32__
+#else
+	lockf(fp, F_ULOCK);
+#endif
+	return false;
 }

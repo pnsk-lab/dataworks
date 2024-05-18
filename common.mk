@@ -36,15 +36,17 @@ clean:
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
 
-archive-prepare: no-doc
+archive-prepare: all
 	rm -f *.zip *.tar.gz
 	rm -rf dataworks-dist
 	mkdir -p dataworks-dist
 	mkdir -p dataworks-dist/Client
 	mkdir -p dataworks-dist/Library
+	mkdir -p dataworks-dist/Document
 	cp Library/*$(LIB_SUFFIX) dataworks-dist/Library/
 	cp Library/*.h dataworks-dist/Library/
 	cp Client/dataworks$(EXEC_SUFFIX) dataworks-dist/Client/
+	cp -rf Document/doc/html dataworks-dist/Document/html
 
 archive-cleanup:
 	rm -rf dataworks-dist

@@ -41,10 +41,13 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "dataworks.h"
 
 bool __dw_strcaseequ(const char* a, const char* b);
+bool __dw_lockfile(FILE* fp);
+bool __dw_unlockfile(FILE* fp);
 
 #define __dw_xstr(x) #x
 #define __dw_str(x) __dw_xstr(x)
