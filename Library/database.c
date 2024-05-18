@@ -62,6 +62,12 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 	if(fp == NULL) {
 		return NULL;
 	}
+	char readsig[sizeof(sig)];
+	fread(readsig, 1, sizeof(sig), fp);
+	if(memcmp(readsig, sig, sizeof(sig)) != 0){
+		fclose(fp);
+		return NULL;
+	}
 	struct dataworks_db* db = malloc(sizeof(*db));
 	db->fp = fp;
 	return db;
