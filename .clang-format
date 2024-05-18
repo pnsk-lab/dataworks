@@ -10,3 +10,5 @@ AllowShortIfStatementsOnASingleLine: Always
 AllowShortBlocksOnASingleLine: Never
 AllowShortLoopsOnASingleLine: true
 SpaceBeforeParens: Never
+StatementMacros:
+ - __dw_big_endian
