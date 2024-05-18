@@ -42,7 +42,17 @@ extern "C" {
 
 #include <stdio.h>
 
+/**
+ * @~english
+ * @brief Database struct
+ *
+ */
 struct dataworks_db {
+	/**
+	 * @~english
+	 * @brief File pointer to the database file.
+	 *
+	 */
 	FILE* fp;
 };
 
