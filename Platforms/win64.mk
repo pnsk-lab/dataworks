@@ -2,3 +2,5 @@ CC = x86_64-w64-mingw32-gcc
 LIB_PREFIX =
 LIB_SUFFIX = .dll
 EXEC_SUFFIX = .exe
+PLATFORM_M = x86_64
+PLATFORM_P = x86_64

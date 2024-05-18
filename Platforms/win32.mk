@@ -2,3 +2,5 @@ CC = i686-w64-mingw32-gcc
 LIB_PREFIX =
 LIB_SUFFIX = .dll
 EXEC_SUFFIX = .exe
+PLATFORM_M = i686
+PLATFORM_P = i686
