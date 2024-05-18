@@ -114,6 +114,9 @@ int main(int argc, char** argv) {
 	printf("\n");
 	printf("Type a command (.help) for the help\n");
 	printf("\n");
+	double val;
+	__dw_big_endian(123.3, double, val = __converted);
+	printf("%f\n", val);
 	int len = 0;
 	char* buf = malloc(1);
 	buf[0] = 0;

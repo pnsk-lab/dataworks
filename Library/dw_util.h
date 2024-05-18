@@ -42,7 +42,29 @@ extern "C" {
 
 #include <stdbool.h>
 
+#include "dataworks.h"
+
 bool __dw_strcaseequ(const char* a, const char* b);
+
+#define __dw_xstr(x) #x
+#define __dw_str(x) __dw_xstr(x)
+
+#define __dw_big_endian(arg, type, exec) { \
+	type __original = arg; \
+	signed char* __ptr = (signed char*)&__original; \
+	type __converted; \
+	signed char* __converted_ptr = (signed char*)&__converted; \
+	int __i; \
+	char __endian = dataworks_get_endian(); \
+	for(__i = 0; __i < sizeof(type); __i++){ \
+		if(__endian == 'L'){ \
+			__converted_ptr[sizeof(type) - __i - 1] = __ptr[__i]; \
+		}else{ \
+			__converted_ptr[__i] = __ptr[__i]; \
+		} \
+	} \
+	exec; \
+}
 
 #ifdef __cplusplus
 }
