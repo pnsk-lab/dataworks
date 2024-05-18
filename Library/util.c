@@ -58,6 +58,8 @@ bool __dw_lockfile(FILE* fp){
 
 bool __dw_unlockfile(FILE* fp){
 #ifdef __MINGW32__
+	OVERLAPPED overlap = {0};
+	UnlockFileEx(fp, 0, MAXDWORD, MAXDWORD, &overlap);
 #else
 	lockf(fp, F_ULOCK);
 #endif
