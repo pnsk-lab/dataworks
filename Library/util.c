@@ -46,24 +46,28 @@ bool __dw_strcaseequ(const char* a, const char* b) {
 	return true;
 }
 
-bool __dw_lockfile(FILE* fp){
+bool __dw_lockfile(FILE* fp) {
+	off_t off = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 #ifdef __MINGW32__
 	OVERLAPPED overlap = {0};
 	LockFileEx(fp, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlap);
 #else
-	fseek(fp, SEEK_SET, 0);
 	lockf(fileno(fp), F_LOCK, 0);
 #endif
+	fseek(fp, off, SEEK_SET);
 	return false;
 }
 
-bool __dw_unlockfile(FILE* fp){
+bool __dw_unlockfile(FILE* fp) {
+	off_t off = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 #ifdef __MINGW32__
 	OVERLAPPED overlap = {0};
 	UnlockFileEx(fp, 0, MAXDWORD, MAXDWORD, &overlap);
 #else
-	fseek(fp, SEEK_SET, 0);
 	lockf(fileno(fp), F_ULOCK, 0);
 #endif
+	fseek(fp, off, SEEK_SET);
 	return false;
 }

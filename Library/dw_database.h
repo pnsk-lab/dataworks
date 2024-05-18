@@ -40,6 +40,7 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include <stdio.h>
 
 /**
@@ -54,6 +55,12 @@ struct dataworks_db {
 	 *
 	 */
 	FILE* fp;
+	/**
+	 * @~english
+	 * @brief Version of the database version.
+	 *
+	 */
+	uint16_t version;
 };
 
 /**

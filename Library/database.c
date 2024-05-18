@@ -28,10 +28,12 @@
 
 #include "dw_database.h"
 
+#include "dw_util.h"
+
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 const char sig[3] = {0x7f, 'D', 'W'};
 
@@ -69,7 +71,15 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 		fclose(fp);
 		return NULL;
 	}
+	__dw_lockfile(fp);
+	char ptrver[2];
+	fread(ptrver, 1, 2, fp);
+	uint16_t be_ver = *(uint16_t*)(char*)ptrver;
+	uint16_t ver;
+	__dw_native_endian(be_ver, uint16_t, ver = __converted);
+	__dw_unlockfile(fp);
 	struct dataworks_db* db = malloc(sizeof(*db));
 	db->fp = fp;
+	db->version = ver;
 	return db;
 }
