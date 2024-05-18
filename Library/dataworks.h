@@ -64,6 +64,14 @@ const char* dataworks_get_compile_date(void);
  */
 const char* dataworks_get_platform(void);
 
+/**
+ * @~english
+ * @brief Get the compilation endian of DataWorks
+ * @return Compilation endian of DataWorks
+ *
+ */
+char dataworks_get_endian(void);
+
 #ifdef __cplusplus
 }
 #endif

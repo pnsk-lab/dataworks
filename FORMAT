@@ -1,6 +1,12 @@
 DataWorks Database Format
 ==============================================
 Extension should be .dwf
+
+
 First 3 bytes should be 7F 44 57 (\x7F DW)
+
+Every entries should look like this:
+type: 1 byte ASCII
+length: 4, uint32_t
 ==============================================
 $Id$

@@ -77,6 +77,11 @@ int main(int argc, char** argv) {
 		fflush(stdout);
 	}
 	printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+	if(dataworks_get_endian() == 'L') {
+		printf("This system is little-endian.\n");
+	} else {
+		printf("This system is big-endian.\n");
+	}
 	printf("\n");
 	printf("Copyright (c) Nishi 2024\n");
 	printf("All rights reserved.\n");
