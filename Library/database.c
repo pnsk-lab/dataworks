@@ -64,7 +64,7 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 	}
 	char readsig[sizeof(sig)];
 	fread(readsig, 1, sizeof(sig), fp);
-	if(memcmp(readsig, sig, sizeof(sig)) != 0){
+	if(memcmp(readsig, sig, sizeof(sig)) != 0) {
 		fclose(fp);
 		return NULL;
 	}
