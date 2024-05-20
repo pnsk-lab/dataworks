@@ -1,6 +1,6 @@
-# DataWorks Database Format 1.0
+# DWF - DataWorks Database Format 1.0
 
-DataWorks is a simple database format designed for DataWorks.
+DWF is a simple database format designed for DataWorks.
 
 ## Specification
 
@@ -15,7 +15,7 @@ First 3 bytes MUST be 7F 44 57 (\x7F DW) (`signature`)
 Database entry (`dbentry`) MUST be in this format:
 
 | Name | Size | Type | Info |
-| ---- | ----- | ---- | ---- |
+| ---- | ---- | ---- | ---- |
 | length | 4 bytes | uint32\_t | Size of the entry |
 | size | 4 bytes | uint32\_t | |
 | type | 1 byte | ASCII | |
@@ -42,25 +42,33 @@ and 2 flags for `dbentry`:
 | Fragment | 0b01000000 | Flag this if the entry is fragment. |
 
 Index entry (`indexentry`) MUST be in this format:
-flag       : 1            byte   uint8_t
-count      : 8            bytes  uint64_t
-dbname_len : 1            byte   uint8_t
-dbname     : 256          bytes  ASCII
-fields     : 4096         bytes  ASCII (Separate field names using NUL. Put NUL twice on the last field name.)
+| Name | Size | Type | Info |
+| ---- | ---- | ---- | ---- |
+| flag | 1 byte | uint8\_t | |
+| count | 8 bytes | uint64\_t | |
+| dbname\_len | 1 byte | uint8\_t | |
+| dbname | 256 bytes | ASCII | |
+| fields | 4096 bytes | ASCII | Separate field names using NUL. Put NUL twice on the last field name. |
 
 There is 1 flag for `indexentry`:
-Used       : 0b10000000          Flag this if you are using the entry.
+| Type | Mask | Info |
+| ---- | ---- | ---- |
+| Used | 0b10000000 | Flag this if you are using the entry. |
 
 Info entry (`infoentry`) MUST be in this format:
-version    : 2            bytes  uint16_t (MUST be 1 for 1.0)
+| Name | Size | Type | Info |
+| ---- | ---- | ---- | ---- |
+| version | 2 bytes | uint16\_t | MUST be 1 for 1.0 |
 `infoentry` IS the only thing which SHOULD be compatible in later format.
 
 File MUST look like this:
-  `signature`
-  `infoentry`
-  uint64_t for the last modified time
-  256 `indexentry`
-  `dbentry` 0
-  `dbentry` 1
-  ...
-  `dbentry` n
+| Data | Info |
+| ---- | ---- |
+| `signature` | |
+| `infoentry` | |
+| uint64\_t  | Last modified time of the database |
+| 256 `indexentry` | |
+| `dbentry` | 1st one |
+| `dbentry` | 2nd one |
+| ... | |
+| `dbentry` | nth one |
