@@ -1,4 +1,4 @@
-# DWF - DataWorks Database Format 1.0
+# DWF - DataWorks Database Format 1.0 {#FORMATv1}
 
 DWF is a simple database format designed for DataWorks.
 
@@ -67,7 +67,10 @@ File MUST look like this:
 | `signature` | |
 | `infoentry` | |
 | uint64\_t  | Last modified time of the database |
-| 256 `indexentry` | |
+| `indexentry` | 1st one |
+| `indexentry` | 2nd one |
+| ... | |
+| `indexentry` | 256th one |
 | `dbentry` | 1st one |
 | `dbentry` | 2nd one |
 | ... | |

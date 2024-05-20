@@ -64,6 +64,6 @@ archive-zip:
 
 archive:
 	$(MAKE) archive-prepare
-	$(MAKE) archive-targz PREP=NO
-	$(MAKE) archive-zip PREP=NO
+	-$(MAKE) archive-targz PREP=NO
+	-$(MAKE) archive-zip PREP=NO
 	$(MAKE) archive-cleanup

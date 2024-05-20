@@ -73,8 +73,8 @@ struct dataworks_db {
 
 /**
  * @~english
- * @ref FORMAT
  * @brief indexentry for v1 database.
+ * @note See \ref FORMATv1 for more info.
  *
  */
 struct dataworks_db_v1_indexentry {
@@ -84,7 +84,7 @@ struct dataworks_db_v1_indexentry {
 	char dbname[256];
 	char fields[4096];
 };
-
+ 
 /**
  * @~english
  * @brief Creates the database.
