@@ -12,6 +12,7 @@ $(LIB_PREFIX)dataworks$(LIB_SUFFIX): $(OBJS)
 
 $(STATICLIB_PREFIX)dataworks$(STATICLIB_SUFFIX): $(OBJS)
 	$(AR) rcs $@ $(OBJS)
+	$(RANLIB) $@
 
 .c.o:
 	$(CC) $(CFLAGS) -DPLATFORM_M=\"$(PLATFORM_M)\" -DPLATFORM_P=\"$(PLATFORM_P)\" -fPIC -c -o $@ $<

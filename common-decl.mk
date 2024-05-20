@@ -1,7 +1,8 @@
 # $Id$
 
 CC = cc
-AR = gcc-ar
+AR = ar
+RANLIB = ranlib
 CFLAGS = -std=c99 -D_DEFAULT_SOURCE
 LDFLAGS = -L`pwd`/Library
 LIBS =

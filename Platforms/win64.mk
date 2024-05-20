@@ -1,5 +1,6 @@
 CC = x86_64-w64-mingw32-gcc
-AR = x86_64-w64-mingw32-gcc-ar
+AR = x86_64-w64-mingw32-ar
+RANLIB = x86_64-w64-mingw32-ranlib
 LIB_PREFIX =
 LIB_SUFFIX = .dll
 EXEC_SUFFIX = .exe
