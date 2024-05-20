@@ -5,10 +5,13 @@
 
 OBJS = parser.o database.o util.o dataworks.o
 
-all: $(LIB_PREFIX)dataworks$(LIB_SUFFIX)
+all: $(LIB_PREFIX)dataworks$(LIB_SUFFIX) $(STATICLIB_PREFIX)dataworks$(STATICLIB_SUFFIX)
 
 $(LIB_PREFIX)dataworks$(LIB_SUFFIX): $(OBJS)
 	$(CC) -shared $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+
+$(STATICLIB_PREFIX)dataworks$(STATICLIB_SUFFIX): $(OBJS)
+	$(AR) rcs $@ $(OBJS)
 
 .c.o:
 	$(CC) $(CFLAGS) -DPLATFORM_M=\"$(PLATFORM_M)\" -DPLATFORM_P=\"$(PLATFORM_P)\" -fPIC -c -o $@ $<

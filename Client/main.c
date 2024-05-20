@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
 		printf("Bad database file or non-existent.\n");
 		return 1;
 	}
-	printf("Opened the database (Version %d).\n", db->version);
+	printf("Opened the database (Version %d).\n", dataworks_database_get_version(db));
 	printf("\n");
 	printf("Type a command (.help) for the help\n");
 	printf("\n");

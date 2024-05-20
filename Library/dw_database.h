@@ -83,6 +83,15 @@ int dataworks_database_create(const char* fname);
  */
 struct dataworks_db* dataworks_database_open(const char* fname);
 
+/**
+ * @~english
+ * @brief Get the version of the database.
+ * @param db Database
+ * @return Version of the database
+ *
+ */
+int dataworks_database_get_version(struct dataworks_db* db);
+
 #ifdef __cplusplus
 }
 #endif

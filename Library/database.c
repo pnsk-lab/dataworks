@@ -78,8 +78,17 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 	uint16_t ver;
 	__dw_native_endian(be_ver, uint16_t, ver = __converted);
 	__dw_unlockfile(fp);
-	struct dataworks_db* db = malloc(sizeof(*db));
-	db->fp = fp;
-	db->version = ver;
-	return db;
+	if(ver == 1){
+		struct dataworks_db* db = malloc(sizeof(*db));
+		db->fp = fp;
+		db->version = ver;
+		return db;
+	}else{
+		fclose(fp);
+		return NULL;
+	}
+}
+
+int dataworks_database_get_version(struct dataworks_db* db){
+	return db->version;
 }
