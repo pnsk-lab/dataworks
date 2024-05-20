@@ -45,6 +45,7 @@ version    : 2            bytes  uint16_t (MUST be 1 for 1.0)
 File MUST look like this:
   `signature`
   `infoentry`
+  uint64_t for the last modified time
   256 `indexentry`
   `dbentry` 0
   `dbentry` 1

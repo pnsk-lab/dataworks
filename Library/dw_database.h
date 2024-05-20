@@ -55,12 +55,20 @@ struct dataworks_db {
 	 *
 	 */
 	FILE* fp;
+
 	/**
 	 * @~english
-	 * @brief Version of the database version.
+	 * @brief Version of the database.
 	 *
 	 */
 	uint16_t version;
+
+	/**
+	 * @~english
+	 * @brief Last modified time of the database.
+	 *
+	 */
+	uint64_t mtime;
 };
 
 /**
@@ -91,6 +99,15 @@ struct dataworks_db* dataworks_database_open(const char* fname);
  *
  */
 int dataworks_database_get_version(struct dataworks_db* db);
+
+/**
+ * @~english
+ * @brief Get the last modified time of the database.
+ * @param db Database
+ * @return Last modified time of the database
+ *
+ */
+uint64_t dataworks_database_get_mtime(struct dataworks_db* db);
 
 #ifdef __cplusplus
 }
