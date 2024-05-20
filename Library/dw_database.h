@@ -73,9 +73,24 @@ struct dataworks_db {
 
 /**
  * @~english
+ * @ref FORMAT
+ * @brief indexentry for v1 database.
+ *
+ */
+struct dataworks_db_v1_indexentry {
+	uint8_t flag;
+	uint64_t count;
+	uint8_t dbname_len;
+	char dbname[256];
+	char fields[4096];
+};
+
+/**
+ * @~english
  * @brief Creates the database.
  * @param fname Filename
  * @return 0 if successful
+ *
  *
  */
 int dataworks_database_create(const char* fname);

@@ -18,4 +18,4 @@ $(STATICLIB_PREFIX)dataworks$(STATICLIB_SUFFIX): $(OBJS)
 	$(CC) $(CFLAGS) -DPLATFORM_M=\"$(PLATFORM_M)\" -DPLATFORM_P=\"$(PLATFORM_P)\" -fPIC -c -o $@ $<
 
 clean:
-	rm -f *.o *.so *.dll
+	rm -f *.o *.so *.dll *.a
