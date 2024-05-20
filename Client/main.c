@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #ifdef __MINGW32__
 #include <windows.h>
@@ -118,7 +119,11 @@ int main(int argc, char** argv) {
 		printf("Bad database file or non-existent.\n");
 		return 1;
 	}
-	printf("Opened the database (Version %d).\n", dataworks_database_get_version(db));
+	time_t mtime = (time_t)dataworks_database_get_mtime(db);
+	struct tm* tm = localtime(&mtime);
+	char mtimestr[256];
+	strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
+	printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);
 	printf("\n");
 	printf("Type a command (.help) for the help\n");
 	printf("\n");

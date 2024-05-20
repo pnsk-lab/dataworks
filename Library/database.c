@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 const char sig[3] = {0x7f, 'D', 'W'};
 
@@ -48,6 +49,8 @@ int dataworks_database_create(const char* fname) {
 	nul[0] = 0;
 	nul[1] = 1;
 	fwrite(nul, 1, 2, f);
+	uint64_t t = time(NULL);
+	__dw_big_endian(t, uint64_t, fwrite(__converted_ptr, 1, 8, f));
 	for(i = 0; i < 4096; i++) nul[i] = 0;
 	for(i = 0; i < 256; i++) {
 		fwrite(nul, 1, 1, f);
@@ -72,23 +75,28 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 		return NULL;
 	}
 	__dw_lockfile(fp);
-	char ptrver[2];
+	char ptrver[8];
 	fread(ptrver, 1, 2, fp);
 	uint16_t be_ver = *(uint16_t*)(char*)ptrver;
 	uint16_t ver;
 	__dw_native_endian(be_ver, uint16_t, ver = __converted);
+	fread(ptrver, 1, 8, fp);
+	uint64_t be_mtime = *(uint64_t*)(char*)ptrver;
+	uint64_t mtime;
+	__dw_native_endian(be_mtime, uint64_t, mtime = __converted);
 	__dw_unlockfile(fp);
-	if(ver == 1){
+	if(ver == 1) {
 		struct dataworks_db* db = malloc(sizeof(*db));
 		db->fp = fp;
 		db->version = ver;
+		db->mtime = mtime;
 		return db;
-	}else{
+	} else {
 		fclose(fp);
 		return NULL;
 	}
 }
 
-int dataworks_database_get_version(struct dataworks_db* db){
-	return db->version;
-}
+int dataworks_database_get_version(struct dataworks_db* db) { return db->version; }
+
+uint64_t dataworks_database_get_mtime(struct dataworks_db* db) { return db->mtime; }
