@@ -43,8 +43,8 @@ archive-prepare: all
 	mkdir -p dataworks-dist/Client
 	mkdir -p dataworks-dist/Library
 	mkdir -p dataworks-dist/Document
-	cp Library/*$(LIB_SUFFIX) dataworks-dist/Library/
-	cp Library/*$(STATICLIB_SUFFIX) dataworks-dist/Library/
+	-cp Library/*$(LIB_SUFFIX) dataworks-dist/Library/
+	-cp Library/*$(STATICLIB_SUFFIX) dataworks-dist/Library/
 	-cp Library/*.lib dataworks-dist/Library/
 	cp Library/*.h dataworks-dist/Library/
 	cp Client/dataworks$(EXEC_SUFFIX) dataworks-dist/Client/
