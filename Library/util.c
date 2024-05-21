@@ -49,7 +49,9 @@ bool __dw_strcaseequ(const char* a, const char* b) {
 bool __dw_lockfile(FILE* fp) {
 	off_t off = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-#ifdef __MINGW32__
+#if defined(DOS)
+
+#elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};
 	LockFileEx(fp, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlap);
 #else
@@ -62,7 +64,9 @@ bool __dw_lockfile(FILE* fp) {
 bool __dw_unlockfile(FILE* fp) {
 	off_t off = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-#ifdef __MINGW32__
+#if defined(DOS)
+
+#elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};
 	UnlockFileEx(fp, 0, MAXDWORD, MAXDWORD, &overlap);
 #else

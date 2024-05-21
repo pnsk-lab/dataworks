@@ -38,12 +38,21 @@
 
 const char sig[3] = {0x7f, 'D', 'W'};
 
+#ifdef M_I86
+#define BUFSIZE 128
+#else
+#endif
+
 int dataworks_database_create(const char* fname) {
 	FILE* f = fopen(fname, "wb");
 	if(f == NULL) {
 		return 1;
 	}
+#ifdef BUFSIZE
+	uint8_t nul[BUFSIZE];
+#else
 	uint8_t nul[4096];
+#endif
 	int i;
 	fwrite(sig, 1, 3, f);
 	nul[0] = 0;
@@ -51,13 +60,23 @@ int dataworks_database_create(const char* fname) {
 	fwrite(nul, 1, 2, f);
 	uint64_t t = time(NULL);
 	__dw_big_endian(t, uint64_t, fwrite(__converted_ptr, 1, 8, f));
-	for(i = 0; i < 4096; i++) nul[i] = 0;
+	for(i = 0; i < 16; i++) nul[i] = 0;
 	for(i = 0; i < 256; i++) {
 		fwrite(nul, 1, 1, f);
 		fwrite(nul, 1, 8, f);
 		fwrite(nul, 1, 1, f);
+		int j;
+#ifdef BUFSIZE
+		for(j = 0; j < 256 / BUFSIZE; j++){
+			fwrite(nul, 1, BUFSIZE, f);
+		}
+		for(j = 0; j < 4096 / BUFSIZE; j++){
+			fwrite(nul, 1, BUFSIZE, f);
+		}
+#else
 		fwrite(nul, 1, 256, f);
 		fwrite(nul, 1, 4096, f);
+#endif
 	}
 	fclose(f);
 	return 0;

@@ -37,6 +37,8 @@ const char* dataworks_platform = "Windows/"
 const char* dataworks_platform = "NetBSD/"
 #elif defined(__linux__)
 const char* dataworks_platform = "Linux/"
+#elif defined(__WATCOMC__)
+const char* dataworks_platform = "WatcomC/"
 #else
 const char* dataworks_platform = "Unknown/"
 #endif
