@@ -11,7 +11,7 @@ $(LIB_PREFIX)dataworks$(LIB_SUFFIX): $(OBJS)
 	$(SHCC) -shared $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 $(STATICLIB_PREFIX)dataworks$(STATICLIB_SUFFIX): $(OBJS)
-	$(AR) rcs $@ $(OBJS)
+	$(AR) $(AR_ARGS) $(OBJS)
 	$(RANLIB) $@
 
 .c.o:
