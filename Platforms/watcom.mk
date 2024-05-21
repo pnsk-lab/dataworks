@@ -1,6 +1,8 @@
-CC = WATCOM=$$WATCOM INCLUDE=$$WATCOM/h PATH=$$PATH:$$WATCOM/binl64 owcc
+# $Id$
+
+CC = owcc
 SHCC = /bin/true
-AR = WATCOM=$$WATCOM INCLUDE=$$WATCOM/h PATH=$$PATH:$$WATCOM/binl64 wlib
+AR = wlib
 AR_ARGS = -b -n -fag -o=\$$@
 RANLIB = /bin/true
 LIB_PREFIX =
