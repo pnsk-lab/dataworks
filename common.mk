@@ -45,6 +45,7 @@ archive-prepare: all
 	mkdir -p dataworks-dist/Document
 	cp Library/*$(LIB_SUFFIX) dataworks-dist/Library/
 	cp Library/*$(STATICLIB_SUFFIX) dataworks-dist/Library/
+	-cp Library/*.lib dataworks-dist/Library/
 	cp Library/*.h dataworks-dist/Library/
 	cp Client/dataworks$(EXEC_SUFFIX) dataworks-dist/Client/
 	cp -rf Document/doc/html dataworks-dist/Document/html

@@ -8,3 +8,4 @@ STATICLIB_PREFIX =
 STATICLIB_SUFFIX = .a
 PLATFORM_M = i686
 PLATFORM_P = i686
+LDFLAGS += -Wl,--out-implib,./dataworks.lib
