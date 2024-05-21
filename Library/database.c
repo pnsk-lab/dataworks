@@ -58,8 +58,8 @@ int dataworks_database_create(const char* fname) {
 	nul[0] = 0;
 	nul[1] = 1;
 	fwrite(nul, 1, 2, f);
-	uint64_t t = time(NULL);
-	__dw_big_endian(t, uint64_t, fwrite(__converted_ptr, 1, 8, f));
+	int64_t t = time(NULL);
+	__dw_big_endian(t, int64_t, fwrite(__converted_ptr, 1, 8, f));
 	for(i = 0; i < 16; i++) nul[i] = 0;
 	for(i = 0; i < 256; i++) {
 		fwrite(nul, 1, 1, f);

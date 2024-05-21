@@ -30,6 +30,7 @@
 
 const char* dataworks_version = "0.0.0";
 const char* dataworks_compile_date = __DATE__;
+const char* dataworks_copyright = "Copyright (c) Crabware 2024";
 
 #if defined(__MINGW32__)
 const char* dataworks_platform = "Windows/"
@@ -50,4 +51,8 @@ const char* dataworks_get_platform(void) { return dataworks_platform; }
 char dataworks_get_endian(void) {
 	volatile unsigned short n = 1;
 	return *(char*)&n == 1 ? 'L' : 'B';
+}
+
+const char* dataworks_get_copyright(void){
+	return dataworks_copyright;
 }

@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
 		printf("This system is big-endian.\n");
 	}
 	printf("\n");
-	printf("Copyright (c) Nishi 2024\n");
+	printf("%s\n", dataworks_get_copyright());
 	printf("All rights reserved.\n");
 	if(create) {
 		printf("\n");

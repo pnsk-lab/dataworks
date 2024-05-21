@@ -66,11 +66,19 @@ const char* dataworks_get_platform(void);
 
 /**
  * @~english
- * @brief Get the compilation endian of DataWorks
- * @return Compilation endian of DataWorks
+ * @brief Get the Endian of the platform
+ * @return Endian of the platform
  *
  */
 char dataworks_get_endian(void);
+
+/**
+ * @~english
+ * @brief Get the copyright of DataWorks
+ * @return Copyright of DataWorks
+ *
+ */
+const char* dataworks_get_copyright(void);
 
 #ifdef __cplusplus
 }
