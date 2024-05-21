@@ -84,7 +84,7 @@ struct dataworks_db_v1_indexentry {
 	char dbname[256];
 	char fields[4096];
 };
- 
+
 /**
  * @~english
  * @brief Creates the database.

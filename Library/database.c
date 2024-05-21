@@ -67,10 +67,10 @@ int dataworks_database_create(const char* fname) {
 		fwrite(nul, 1, 1, f);
 		int j;
 #ifdef BUFSIZE
-		for(j = 0; j < 256 / BUFSIZE; j++){
+		for(j = 0; j < 256 / BUFSIZE; j++) {
 			fwrite(nul, 1, BUFSIZE, f);
 		}
-		for(j = 0; j < 4096 / BUFSIZE; j++){
+		for(j = 0; j < 4096 / BUFSIZE; j++) {
 			fwrite(nul, 1, BUFSIZE, f);
 		}
 #else
