@@ -14,4 +14,4 @@ dataworks$(EXEC_SUFFIX): $(OBJS) ../Library/*.o
 	$(CC) -I../Library $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f *.o dataworks *.exe *.dos *.dos4g
+	rm -f *.o dataworks *.exe *.dos *.dos4g *.com
