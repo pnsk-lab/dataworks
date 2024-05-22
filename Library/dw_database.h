@@ -212,6 +212,14 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
  */
 const char* dataworks_database_strerror(int n);
 
+/**
+ * @~english
+ * @brief Update mtime.
+ * @param db Database
+ *
+ */
+void dataworks_database_update_mtime(struct dataworks_db* db);
+
 #ifdef __cplusplus
 }
 #endif

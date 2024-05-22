@@ -122,3 +122,11 @@ uint64_t dataworks_database_get_mtime(struct dataworks_db* db) { return db->mtim
 const char* dw_errors[] = {"Success", "Used already"};
 
 const char* dataworks_database_strerror(int n) { return dw_errors[n]; }
+
+void dataworks_database_update_mtime(struct dataworks_db* db) {
+	__dw_lockfile(db->fp);
+	fseek(db->fp, 3 + 2, SEEK_SET);
+	int64_t t = time(NULL);
+	__dw_big_endian(t, int64_t, fwrite(__converted_ptr, 1, 8, db->fp));
+	__dw_unlockfile(db->fp);
+}

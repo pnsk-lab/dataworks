@@ -78,6 +78,7 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
 		}
 		free(buf);
 		__dw_unlockfile(db->fp);
+		dataworks_database_update_mtime(db);
 	}
 }
 
