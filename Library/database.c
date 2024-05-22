@@ -40,7 +40,6 @@ const char sig[3] = {0x7f, 'D', 'W'};
 
 #ifdef M_I86
 #define BUFSIZE 128
-#else
 #endif
 
 int dataworks_database_create(const char* fname) {
@@ -60,7 +59,7 @@ int dataworks_database_create(const char* fname) {
 	fwrite(nul, 1, 2, f);
 	int64_t t = time(NULL);
 	__dw_big_endian(t, int64_t, fwrite(__converted_ptr, 1, 8, f));
-	for(i = 0; i < 16; i++) nul[i] = 0;
+	for(i = 0; i < sizeof(nul); i++) nul[i] = 0;
 	for(i = 0; i < 256; i++) {
 		fwrite(nul, 1, 1, f);
 		fwrite(nul, 1, 8, f);
@@ -119,3 +118,14 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 int dataworks_database_get_version(struct dataworks_db* db) { return db->version; }
 
 uint64_t dataworks_database_get_mtime(struct dataworks_db* db) { return db->mtime; }
+
+char** dataworks_database_get_table_list(struct dataworks_db* db){
+	if(db->version == 1){
+		__dw_lockfile(db->fp);
+		fseek(db->fp, sizeof(sig) + 10, SEEK_SET);
+		__dw_unlockfile(db->fp);
+	}else{
+		/* Not implemented for the version */
+		return NULL;
+	}
+}

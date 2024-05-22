@@ -83,7 +83,18 @@ struct dataworks_db_v1_indexentry {
 	uint8_t dbname_len;
 	char dbname[256];
 	char fields[4096];
-};
+} __attribute__((__packed__));
+
+/**
+ * @~english
+ * @brief infoentry for database.
+ * @note See \ref FORMATv1 for more info.
+ *
+ */
+struct dataworks_db_infoentry {
+	uint16_t version;
+	uint64_t mtime;
+} __attribute__((__packed__));
 
 /**
  * @~english
@@ -123,6 +134,15 @@ int dataworks_database_get_version(struct dataworks_db* db);
  *
  */
 uint64_t dataworks_database_get_mtime(struct dataworks_db* db);
+
+/**
+ * @~english
+ * @brief Get the table list of the database.
+ * @param db Database
+ * @return Table list of the databas 
+ *
+ */
+char** dataworks_database_get_table_list(struct dataworks_db* db);
 
 #ifdef __cplusplus
 }

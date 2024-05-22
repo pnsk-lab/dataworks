@@ -150,6 +150,22 @@ int main(int argc, char** argv) {
 					printf("Quits from the CLI.\n");
 					padleft(16, ".version");
 					printf("Shows the version of DataWorks.\n");
+					padleft(16, ".tables");
+					printf("Shows the table list.\n");
+				} else if(__dw_strcaseequ(buf, ".tables")){
+					char** list = dataworks_database_get_table_list(db);
+					if(list != NULL){
+						int i;
+						for(i = 0; list[i] != NULL; i++);
+						printf("%d tables found.\n", i);
+						for(i = 0; list[i] != NULL; i++){
+							printf("  %s\n", list[i]);
+							free(list[i]);
+						}
+						free(list);
+					}else{
+						printf("Failed to get the list.\n");
+					}
 				} else {
 					printf("Unknown dot-command.\n");
 				}
