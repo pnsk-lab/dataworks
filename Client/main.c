@@ -216,32 +216,34 @@ int main(int argc, char** argv) {
 				linebuf = __dw_strcat(tmp, buf);
 				free(tmp);
 				int i;
-rep:;
-				for(i = 0; linebuf[i] != 0; i++){
-					if(linebuf[i] == ';'){
-						char* line = malloc(i + 1);
-						line[i] = 0;
-						memcpy(line, linebuf, i);
-						struct __dw_token* token = __dw_parser_parse(NULL, line);
-						if(token != NULL) {
-							if(token->error) {
-								printf("%s\n", dataworks_database_strerror(token->errnum));
+				while(true){
+					for(i = 0; linebuf[i] != 0; i++){
+						if(linebuf[i] == ';'){
+							char* line = malloc(i + 1);
+							line[i] = 0;
+							memcpy(line, linebuf, i);
+							struct __dw_token* token = __dw_parser_parse(NULL, line);
+							if(token != NULL) {
+								if(token->error) {
+									printf("%s\n", dataworks_database_strerror(token->errnum));
+								} else {
+								}
 							} else {
+								printf("Parser returned NULL. Help!\n");
 							}
-						} else {
-							printf("Parser returned NULL. Help!\n");
+							if(fprog != NULL){
+								printf("%s\n", line);
+							}
+							free(line);
+							char* newbuf = malloc(strlen(linebuf) - i);
+							newbuf[strlen(linebuf) - i - 1] = 0;
+							memcpy(newbuf, linebuf + i + 1, strlen(linebuf) - i - 1);
+							free(linebuf);
+							linebuf = newbuf;
+							continue;
 						}
-						if(fprog != NULL){
-							printf("%s\n", line);
-						}
-						free(line);
-						char* newbuf = malloc(strlen(linebuf) - i);
-						newbuf[strlen(linebuf) - i - 1] = 0;
-						memcpy(newbuf, linebuf + i + 1, strlen(linebuf) - i - 1);
-						free(linebuf);
-						linebuf = newbuf;
-						goto rep;
 					}
+					break;
 				}
 			}
 			if(fprog == NULL){
