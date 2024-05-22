@@ -29,6 +29,7 @@
 #include "dw_parser.h"
 
 #include "dw_database.h"
+#include "dw_util.h"
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -39,5 +40,49 @@ struct __dw_token* __dw_parser_parse(const char* str){
 	token->error = false;
 	token->errnum = DW_ERR_SUCCESS;
 	token->token = NULL;
+	char* buf = malloc(1);
+	buf[0] = 0;
+	int i;
+	bool dq = false;
+	char cbuf[2];
+	cbuf[1] = 0;
+	int brace = 0;
+	char* br = malloc(1);
+	br[0] = 0;
+	for(i = 0; str[i] != 0; i++){
+		cbuf[0] = str[i];
+		if(brace > 0){
+			if(str[i] == '(') brace++;
+			if(str[i] == ')') brace--;
+			if(brace > 0){
+				char* tmp = br;
+				br = __dw_strcat(tmp, cbuf);
+				free(tmp);
+			}else{
+				printf("%s\n", br);
+				__dw_parser_parse(br);
+			}
+		}else if(dq){
+			char* tmp = buf;
+			buf = __dw_strcat(tmp, cbuf);
+			free(tmp);
+		}else if(str[i] == '('){
+			printf("%s\n", buf);
+			free(buf);
+			buf = malloc(1);
+			buf[0] = 0;
+			brace++;
+		}else if(str[i] == ')'){
+			brace--;
+		}else if(str[i] == '"'){
+			dq = !dq;
+		}else{
+			char* tmp = buf;
+			buf = __dw_strcat(tmp, cbuf);
+			free(tmp);
+		}
+	}
+	free(br);
+	free(buf);
 	return token;
 }

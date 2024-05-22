@@ -45,6 +45,14 @@ char* __dw_strdup(const char* a) {
 	return str;
 }
 
+char* __dw_strcat(const char* a, const char* b){
+	char* str = malloc(strlen(a) + strlen(b) + 1);
+	memcpy(str, a, strlen(a));
+	memcpy(str + strlen(a), b, strlen(b));
+	str[strlen(a) + strlen(b)] = 0;
+	return str;
+}
+
 bool __dw_strcaseequ(const char* a, const char* b) {
 	if(strlen(a) != strlen(b)) return false;
 	int i;

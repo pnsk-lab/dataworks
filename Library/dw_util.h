@@ -46,6 +46,7 @@ extern "C" {
 #include "dataworks.h"
 
 char* __dw_strdup(const char* a);
+char* __dw_strcat(const char* a, const char* b);
 bool __dw_strcaseequ(const char* a, const char* b);
 bool __dw_lockfile(FILE* fp);
 bool __dw_unlockfile(FILE* fp);
