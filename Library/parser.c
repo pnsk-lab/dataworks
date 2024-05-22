@@ -28,8 +28,16 @@
 
 #include "dw_parser.h"
 
+#include "dw_database.h"
+
 #include <stddef.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 struct __dw_token* __dw_parser_parse(const char* str){
-	return NULL;
+	struct __dw_token* token = malloc(sizeof(*token));
+	token->error = false;
+	token->errnum = DW_ERR_SUCCESS;
+	token->token = NULL;
+	return token;
 }

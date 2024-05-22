@@ -181,6 +181,10 @@ int main(int argc, char** argv) {
 			}else if(strlen(buf) > 0){
 				struct __dw_token* token = __dw_parser_parse(buf);
 				if(token != NULL){
+					if(token->error){
+						printf("%s\n", dataworks_database_strerror(token->errnum));
+					}else{
+					}
 				}else{
 					printf("Parser returned NULL. Help!\n");
 				}
