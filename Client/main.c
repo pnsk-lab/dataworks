@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
 	strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
 	printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);
 	printf("\n");
-	printf("Type a command (.help) for the help\n");
+	printf("Type a command (.help) for the help.\n");
 	printf("\n");
 	int len = 0;
 	char* buf = malloc(1);
@@ -152,6 +152,8 @@ int main(int argc, char** argv) {
 					printf("Shows the version of DataWorks.\n");
 					padleft(16, ".tables");
 					printf("Shows the table list.\n");
+					padleft(16, ".clear");
+					printf("Clears the console.\n");
 				} else if(__dw_strcaseequ(buf, ".tables")) {
 					char** list = dataworks_database_get_table_list(db);
 					if(list != NULL) {
@@ -167,6 +169,9 @@ int main(int argc, char** argv) {
 					} else {
 						printf("Failed to get the list.\n");
 					}
+				} else if(__dw_strcaseequ(buf, ".clear")) {
+					printf("\x1b[2J\x1b[1;1H");
+					fflush(stdout);
 				} else {
 					printf("Unknown dot-command.\n");
 				}
