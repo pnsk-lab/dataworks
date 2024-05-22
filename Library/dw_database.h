@@ -46,7 +46,7 @@ extern "C" {
 #ifdef __WATCOMC__
 #define PACKED _Packed
 #else
-#define PACKED __attribute__((packed))
+#define PACKED __attribute__((__packed__))
 #endif
 
 /**

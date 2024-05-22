@@ -119,15 +119,30 @@ int dataworks_database_get_version(struct dataworks_db* db) { return db->version
 
 uint64_t dataworks_database_get_mtime(struct dataworks_db* db) { return db->mtime; }
 
+#define buffer_to_db_v1_indexentry(buf, index) \
+			memcpy(&index.flag, buf, 1); \
+			uint64_t be_count; \
+			memcpy(&be_count, buf + 1, 8); \
+			__dw_native_endian(be_count, uint64_t, index.count = __converted); \
+			memcpy(&index.dbname_len, buf + 1 + 8, 1); \
+			memcpy(index.dbname, buf + 1 + 8 + 1, 256); \
+			memcpy(index.fields, buf + 1 + 8 + 1 + 256, 4096);
+
 char** dataworks_database_get_table_list(struct dataworks_db* db){
 	if(db->version == 1){
 		__dw_lockfile(db->fp);
 		fseek(db->fp, sizeof(sig) + 10, SEEK_SET);
-		struct dataworks_db_v1_indexentry index;
-		printf("%d\n", sizeof(index));
 		int i;
+		struct dataworks_db_v1_indexentry index;
+		char* buf = malloc(1 + 8 + 1 + 256 + 4096);
 		for(i = 0; i < 256; i++){
-			fread(&index, 1, sizeof(index), db->fp);
+			fread(buf, 1, 1 + 8 + 1 + 256 + 4096, db->fp);
+			buffer_to_db_v1_indexentry(buf, index);
+		}
+		fseek(db->fp, sizeof(sig) + 10, SEEK_SET);
+		for(i = 0; i < 256; i++){
+			fread(buf, 1, 1 + 8 + 1 + 256 + 4096, db->fp);
+			buffer_to_db_v1_indexentry(buf, index);
 			if(index.flag & DATAWORKS_V1_INDEXENTRY_USED){
 				printf("%d\n", index.dbname_len);
 				printf("[");
@@ -136,6 +151,7 @@ char** dataworks_database_get_table_list(struct dataworks_db* db){
 				printf("]\n");
 			}
 		}
+		free(buf);
 		__dw_unlockfile(db->fp);
 	}else{
 		/* Not implemented for the version */
