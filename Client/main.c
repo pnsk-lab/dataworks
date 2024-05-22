@@ -54,8 +54,10 @@ void padleft(int leftpad, const char* str) {
 
 int main(int argc, char** argv) {
 	int i;
-	bool noclear = false;
+	bool clear = true;
 	bool create = false;
+	bool banner = true;
+	bool log = true;
 	const char* fname = NULL;
 	for(i = 1; i < argc; i++) {
 		if(argv[i][0] == '-') {
@@ -64,8 +66,15 @@ int main(int argc, char** argv) {
 				return 0;
 			} else if(strcmp(argv[i], "--create") == 0 || strcmp(argv[i], "-C") == 0) {
 				create = true;
-			} else if(strcmp(argv[i], "--noclear") == 0) {
-				noclear = true;
+			} else if(strcmp(argv[i], "--noclear") == 0 || strcmp(argv[i], "-NC") == 0) {
+				clear = false;
+			} else if(strcmp(argv[i], "--quiet") == 0 || strcmp(argv[i], "-q") == 0) {
+				banner = false;
+				log = false;
+			} else if(strcmp(argv[i], "--nobanner") == 0 || strcmp(argv[i], "-NB") == 0) {
+				banner = false;
+			} else if(strcmp(argv[i], "--nolog") == 0 || strcmp(argv[i], "-NL") == 0) {
+				log = false;
 			} else {
 				fprintf(stderr, "%s: %s: invalid option\n", argv[0], argv[i]);
 				return 1;
@@ -90,46 +99,54 @@ int main(int argc, char** argv) {
 	mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 	SetConsoleMode(winstdout, mode);
 #endif
-	if(!noclear) {
+	if(clear) {
 		printf("\x1b[2J\x1b[1;1H");
 		fflush(stdout);
 	}
-	printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
-	if(dataworks_get_endian() == 'L') {
-		printf("This system is little-endian.\n");
-	} else {
-		printf("This system is big-endian.\n");
-	}
-	printf("\n");
-	printf("%s\n", dataworks_get_copyright());
-	printf("All rights reserved.\n");
-	if(create) {
+	if(banner){
+		printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+		if(dataworks_get_endian() == 'L') {
+			printf("This system is little-endian.\n");
+		} else {
+			printf("This system is big-endian.\n");
+		}
 		printf("\n");
-		printf("Creating the database: %s\n", fname);
+		printf("%s\n", dataworks_get_copyright());
+		printf("All rights reserved.\n");
+	}
+	if(create) {
+		if(log){
+			printf("\n");
+			printf("Creating the database: %s\n", fname);
+		}
 		int n = dataworks_database_create(fname);
 		if(n != 0) {
 			printf("Failed to create.\n");
 			return 1;
 		} else {
-			printf("Created successfully.\n");
+			if(log) printf("Created successfully.\n");
 		}
 	}
-	printf("\n");
-	printf("Opening the database: %s\n", fname);
+	if(log){
+		printf("\n");
+		printf("Opening the database: %s\n", fname);
+	}
 	struct dataworks_db* db = dataworks_database_open(fname);
 	if(db->error) {
 		printf("%s.\n", dataworks_database_strerror(db->errnum));
 		dataworks_database_close(db);
 		return 1;
 	}
-	time_t mtime = (time_t)dataworks_database_get_mtime(db);
-	struct tm* tm = localtime(&mtime);
-	char mtimestr[256];
-	strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
-	printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);
-	printf("\n");
-	printf("Type a command (.help) for the help.\n");
-	printf("\n");
+	if(log){
+		time_t mtime = (time_t)dataworks_database_get_mtime(db);
+		struct tm* tm = localtime(&mtime);
+		char mtimestr[256];
+		strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
+		printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);
+		printf("\n");
+		printf("Type a command (.help) for the help.\n");
+		printf("\n");
+	}
 	int len = 0;
 	char* buf = malloc(1);
 	buf[0] = 0;
