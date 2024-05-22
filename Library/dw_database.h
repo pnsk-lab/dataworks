@@ -40,6 +40,7 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -70,12 +71,34 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_SUCCESS = 0,
+
 	/**
 	 * @~english
 	 * @brief Used already
 	 *
 	 */
-	DW_ERR_USED
+	DW_ERR_USED,
+
+	/**
+	 * @~english
+	 * @brief File open fail
+	 *
+	 */
+	DW_ERR_FAIL_FOPEN,
+
+	/**
+	 * @~english
+	 * @brief Invalid signature
+	 *
+	 */
+	DW_ERR_INVALID_SIGNATURE,
+
+	/**
+	 * @~english
+	 * @brief Invalid version
+	 *
+	 */
+	DW_ERR_INVALID_VERSION,
 };
 
 /**
@@ -104,6 +127,20 @@ struct dataworks_db {
 	 *
 	 */
 	uint64_t mtime;
+
+	/**
+	 * @~english
+	 * @brief True if this is an error.
+	 *
+	 */
+	bool error;
+
+	/**
+	 * @~english
+	 * @brief Error number.
+	 *
+	 */
+	int errnum;
 };
 
 /**
@@ -164,12 +201,38 @@ struct dataworks_db* dataworks_database_open(const char* fname);
 
 /**
  * @~english
+ * @brief Closes the database.
+ * @param db Database
+ *
+ */
+void dataworks_database_close(struct dataworks_db* db);
+
+/**
+ * @~english
  * @brief Get the version of the database.
  * @param db Database
  * @return Version of the database
  *
  */
 int dataworks_database_get_version(struct dataworks_db* db);
+
+/**
+ * @~english
+ * @brief Get the error flag of the database.
+ * @param db Database
+ * @return Error flag of the database
+ *
+ */
+bool dataworks_database_get_error(struct dataworks_db* db);
+
+/**
+ * @~english
+ * @brief Get the error number of the database.
+ * @param db Database
+ * @return Error number of the database
+ *
+ */
+int dataworks_database_get_error_number(struct dataworks_db* db);
 
 /**
  * @~english

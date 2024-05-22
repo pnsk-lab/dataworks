@@ -81,16 +81,28 @@ int dataworks_database_create(const char* fname) {
 	return 0;
 }
 
+void dataworks_database_close(struct dataworks_db* db) {
+	if(db->fp != NULL) fclose(db->fp);
+	free(db);
+}
+
 struct dataworks_db* dataworks_database_open(const char* fname) {
+	struct dataworks_db* db = malloc(sizeof(*db));
+	db->error = false;
+	db->fp = NULL;
 	FILE* fp = fopen(fname, "rb+");
 	if(fp == NULL) {
-		return NULL;
+		db->error = true;
+		db->errnum = DW_ERR_FAIL_FOPEN;
+		return db;
 	}
+	fseek(fp, 0, SEEK_SET);
 	char readsig[sizeof(sig)];
 	fread(readsig, 1, sizeof(sig), fp);
 	if(memcmp(readsig, sig, sizeof(sig)) != 0) {
-		fclose(fp);
-		return NULL;
+		db->error = true;
+		db->errnum = DW_ERR_INVALID_SIGNATURE;
+		return db;
 	}
 	__dw_lockfile(fp);
 	char ptrver[8];
@@ -104,14 +116,15 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 	__dw_native_endian(be_mtime, uint64_t, mtime = __converted);
 	__dw_unlockfile(fp);
 	if(ver == 1) {
-		struct dataworks_db* db = malloc(sizeof(*db));
 		db->fp = fp;
 		db->version = ver;
 		db->mtime = mtime;
 		return db;
 	} else {
 		fclose(fp);
-		return NULL;
+		db->error = true;
+		db->errnum = DW_ERR_INVALID_VERSION;
+		return db;
 	}
 }
 
@@ -119,7 +132,9 @@ int dataworks_database_get_version(struct dataworks_db* db) { return db->version
 
 uint64_t dataworks_database_get_mtime(struct dataworks_db* db) { return db->mtime; }
 
-const char* dw_errors[] = {"Success", "Used already"};
+int dataworks_database_get_error_number(struct dataworks_db* db) { return db->errnum; }
+
+const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version"};
 
 const char* dataworks_database_strerror(int n) { return dw_errors[n]; }
 

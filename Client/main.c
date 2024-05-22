@@ -115,8 +115,9 @@ int main(int argc, char** argv) {
 	printf("\n");
 	printf("Opening the database: %s\n", fname);
 	struct dataworks_db* db = dataworks_database_open(fname);
-	if(db == NULL) {
-		printf("Bad database file or non-existent.\n");
+	if(db->error) {
+		printf("%s.\n", dataworks_database_strerror(db->errnum));
+		dataworks_database_close(db);
 		return 1;
 	}
 	time_t mtime = (time_t)dataworks_database_get_mtime(db);
