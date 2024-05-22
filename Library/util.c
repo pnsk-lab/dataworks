@@ -37,6 +37,13 @@
 #include <unistd.h>
 #endif
 
+char* __dw_strdup(const char* a) {
+	char* str = malloc(strlen(a) + 1);
+	memcpy(str, a, strlen(a));
+	str[strlen(a)] = 0;
+	return str;
+}
+
 bool __dw_strcaseequ(const char* a, const char* b) {
 	if(strlen(a) != strlen(b)) return false;
 	int i;

@@ -1,4 +1,4 @@
-/* $Id: dw_database.h 7 2024-05-16 15:56:44Z nishi $ */
+/* $Id$ */
 /* --- START LICENSE --- */
 /* -------------------------------------------------------------------------- */
 /* Copyright (c) 2024 Nishi.                                                  */
@@ -155,7 +155,7 @@ uint64_t dataworks_database_get_mtime(struct dataworks_db* db);
  * @~english
  * @brief Get the table list of the database.
  * @param db Database
- * @return Table list of the databas 
+ * @return Table list of the databas
  *
  */
 char** dataworks_database_get_table_list(struct dataworks_db* db);
