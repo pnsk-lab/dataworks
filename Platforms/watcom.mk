@@ -3,7 +3,7 @@
 CC = owcc
 SHCC = /bin/true
 AR = wlib
-AR_ARGS = -b -n -fo -o=\$$@
+AR_ARGS = -b -n -fo \$$@
 RANLIB = /bin/true
 LIB_PREFIX =
 LIB_SUFFIX = .dll
