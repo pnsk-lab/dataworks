@@ -43,7 +43,11 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
 
+#ifdef __WATCOMC__
+#define PACKED _Packed
+#else
 #define PACKED __attribute__((packed))
+#endif
 
 /**
  * @~english
