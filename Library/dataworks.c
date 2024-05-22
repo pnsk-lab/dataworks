@@ -30,7 +30,9 @@
 
 const char* dataworks_version = "0.0.0";
 const char* dataworks_compile_date = __DATE__;
-const char* dataworks_copyright = "Copyright (c) Crabware 2024";
+const char* dataworks_copyright = "Copyright (c) Crabware 2024\n"
+				  "              Crabware is the software-development division of\n"
+				  "              Hinode Gakuen PC-Club. Contact: <nishi@nishi.boats>";
 
 #if defined(__MINGW32__)
 const char* dataworks_platform = "Windows/"
@@ -53,6 +55,4 @@ char dataworks_get_endian(void) {
 	return *(char*)&n == 1 ? 'L' : 'B';
 }
 
-const char* dataworks_get_copyright(void){
-	return dataworks_copyright;
-}
+const char* dataworks_get_copyright(void) { return dataworks_copyright; }

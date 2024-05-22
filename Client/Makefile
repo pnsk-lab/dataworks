@@ -7,8 +7,8 @@ OBJS = main.o
 
 all: dataworks$(EXEC_SUFFIX)
 
-dataworks$(EXEC_SUFFIX): $(OBJS) ../Library/*.o
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)  ../Library/*.o
+dataworks$(EXEC_SUFFIX): $(OBJS) $(LINK_LIB)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS) $(LINK_LIB)
 
 .c.o:
 	$(CC) -I../Library $(CFLAGS) -c -o $@ $<
