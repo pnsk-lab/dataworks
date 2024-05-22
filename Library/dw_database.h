@@ -83,7 +83,7 @@ struct dataworks_db_v1_indexentry {
 	uint8_t dbname_len;
 	char dbname[256];
 	char fields[4096];
-} __attribute__((__packed__));
+};
 
 /**
  * @~english
@@ -94,7 +94,7 @@ struct dataworks_db_v1_indexentry {
 struct dataworks_db_infoentry {
 	uint16_t version;
 	uint64_t mtime;
-} __attribute__((__packed__));
+};
 
 /**
  * @~english
