@@ -72,6 +72,7 @@ bool __dw_lockfile(FILE* fp) {
 bool __dw_unlockfile(FILE* fp) {
 	off_t off = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
+	fflush(fp);
 #if defined(DOS)
 
 #elif defined(__MINGW32__)

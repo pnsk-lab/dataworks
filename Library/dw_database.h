@@ -49,6 +49,35 @@ extern "C" {
 #define PACKED __attribute__((__packed__))
 #endif
 
+#define __dw_buffer_to_db_v1_indexentry(buf, index) \
+	memcpy(&index.flag, buf, 1); \
+	uint64_t be_count; \
+	memcpy(&be_count, buf + 1, 8); \
+	__dw_native_endian(be_count, uint64_t, index.count = __converted); \
+	memcpy(&index.dbname_len, buf + 1 + 8, 1); \
+	memcpy(index.dbname, buf + 1 + 8 + 1, 256); \
+	memcpy(index.fields, buf + 1 + 8 + 1 + 256, 4096);
+
+/**
+ * @~english
+ * @brief Error enum
+ *
+ */
+enum DW_ERRORS {
+	/**
+	 * @~english
+	 * @brief Success
+	 *
+	 */
+	DW_ERR_SUCCESS = 0,
+	/**
+	 * @~english
+	 * @brief Used already
+	 *
+	 */
+	DW_ERR_USED
+};
+
 /**
  * @~english
  * @brief Database struct
@@ -155,10 +184,33 @@ uint64_t dataworks_database_get_mtime(struct dataworks_db* db);
  * @~english
  * @brief Get the table list of the database.
  * @param db Database
- * @return Table list of the databas
+ * @return Table list of the database
  *
  */
 char** dataworks_database_get_table_list(struct dataworks_db* db);
+
+/**
+ * @~english
+ * @brief Creates a table.
+ * @param db Database
+ * @param name Table name
+ * @param fields Fields
+ * @param fieldtypes Types
+ * @return
+ * - `0` if success
+ * - `DW_ERR_USED` if the name is already used
+ *
+ */
+int dataworks_database_create_table(struct dataworks_db* db, const char* name, char** fields, const char* fieldtypes);
+
+/**
+ * @~english
+ * @brief Converts error number to a string.
+ * @param n Error number
+ * @return Error string
+ *
+ */
+const char* dataworks_database_strerror(int n);
 
 #ifdef __cplusplus
 }

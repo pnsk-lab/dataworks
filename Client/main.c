@@ -123,7 +123,7 @@ int main(int argc, char** argv) {
 	struct tm* tm = localtime(&mtime);
 	char mtimestr[256];
 	strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
-	printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);
+	printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);	
 	printf("\n");
 	printf("Type a command (.help) for the help.\n");
 	printf("\n");
@@ -160,7 +160,7 @@ int main(int argc, char** argv) {
 						int i;
 						for(i = 0; list[i] != NULL; i++)
 							;
-						printf("%d tables found.\n", i);
+						printf("%d table(s) found.\n", i);
 						for(i = 0; list[i] != NULL; i++) {
 							printf("  %s\n", list[i]);
 							free(list[i]);

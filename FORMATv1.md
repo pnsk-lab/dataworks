@@ -18,22 +18,12 @@ Database entry (`dbentry`) MUST be in this format:
 | ---- | ---- | ---- | ---- |
 | length | 4 bytes | uint32\_t | Size of the entry |
 | size | 4 bytes | uint32\_t | |
-| type | 1 byte | ASCII | |
 | flag | 1 byte | uint8\_t | |
 | field\_index | 1 byte | uint8\_t | |
 | db\_index | 1 byte | uint8\_t | |
 | count | 8 bytes | uint64\_t | |
 | fragnum | 8 bytes | uint64\_t | |
 | data | \[size\] bytes | ASCII | |
-
-There are 5 types for `dbentry`:
-| Type | Character | Type | Info |
-| ---- | --------- | ---- | ---- |
-| String | `S` | ASCII | |
-| Integer | `I` | uint64\_t | |
-| Double | `D` | double | |
-| Logical | `L` | uint8\_t | 0 for false, other value for true |
-| Help | `?` | ASCII | Should be just ignored |
 
 and 2 flags for `dbentry`:
 | Type | Mask | Info |
@@ -48,7 +38,16 @@ Index entry (`indexentry`) MUST be in this format:
 | count | 8 bytes | uint64\_t | |
 | dbname\_len | 1 byte | uint8\_t | |
 | dbname | 256 bytes | ASCII | |
-| fields | 4096 bytes | ASCII | Separate field names using NUL. Put NUL twice on the last field name. |
+| fields | 4096 bytes | ASCII | Separate field names using NUL. Put NUL twice on the last field name. Like: `type` `name` `<NUL>` `type` `name` `<NUL>` ... `type` `name` `<NUL>` `<NUL>` |
+
+There are 5 types for `indexentry`:
+| Type | Character | Type | Info |
+| ---- | --------- | ---- | ---- |
+| String | `S` | ASCII | |
+| Integer | `I` | uint64\_t | |
+| Double | `D` | double | |
+| Logical | `L` | uint8\_t | 0 for false, other value for true |
+| Help | `?` | ASCII | Should be just ignored |
 
 There is 1 flag for `indexentry`:
 | Type | Mask | Info |
