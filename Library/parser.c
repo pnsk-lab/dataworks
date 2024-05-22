@@ -1,7 +1,7 @@
 /* $Id$ */
 /* --- START LICENSE --- */
 /* -------------------------------------------------------------------------- */
-/* Copyright (c) 2024 Nishi.                                                  */
+/* Copyright (c) 2024 Crabware.                                               */
 /* Redistribution and use in source and binary forms, with or without modific */
 /* ation, are permitted provided that the following conditions are met:       */
 /*     1. Redistributions of source code must retain the above copyright noti */
@@ -31,11 +31,11 @@
 #include "dw_database.h"
 #include "dw_util.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
-struct __dw_token* __dw_parser_parse(const char* str){
+struct __dw_token* __dw_parser_parse(const char* str) {
 	struct __dw_token* token = malloc(sizeof(*token));
 	token->error = false;
 	token->errnum = DW_ERR_SUCCESS;
@@ -49,34 +49,34 @@ struct __dw_token* __dw_parser_parse(const char* str){
 	int brace = 0;
 	char* br = malloc(1);
 	br[0] = 0;
-	for(i = 0; str[i] != 0; i++){
+	for(i = 0; str[i] != 0; i++) {
 		cbuf[0] = str[i];
-		if(brace > 0){
+		if(brace > 0) {
 			if(str[i] == '(') brace++;
 			if(str[i] == ')') brace--;
-			if(brace > 0){
+			if(brace > 0) {
 				char* tmp = br;
 				br = __dw_strcat(tmp, cbuf);
 				free(tmp);
-			}else{
+			} else {
 				printf("%s\n", br);
 				__dw_parser_parse(br);
 			}
-		}else if(dq){
+		} else if(dq) {
 			char* tmp = buf;
 			buf = __dw_strcat(tmp, cbuf);
 			free(tmp);
-		}else if(str[i] == '('){
+		} else if(str[i] == '(') {
 			printf("%s\n", buf);
 			free(buf);
 			buf = malloc(1);
 			buf[0] = 0;
 			brace++;
-		}else if(str[i] == ')'){
+		} else if(str[i] == ')') {
 			brace--;
-		}else if(str[i] == '"'){
+		} else if(str[i] == '"') {
 			dq = !dq;
-		}else{
+		} else {
 			char* tmp = buf;
 			buf = __dw_strcat(tmp, cbuf);
 			free(tmp);

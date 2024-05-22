@@ -1,7 +1,7 @@
 /* $Id$ */
 /* --- START LICENSE --- */
 /* -------------------------------------------------------------------------- */
-/* Copyright (c) 2024 Nishi.                                                  */
+/* Copyright (c) 2024 Crabware.                                               */
 /* Redistribution and use in source and binary forms, with or without modific */
 /* ation, are permitted provided that the following conditions are met:       */
 /*     1. Redistributions of source code must retain the above copyright noti */
@@ -29,8 +29,8 @@
 #include <dataworks.h>
 
 #include <dw_database.h>
-#include <dw_util.h>
 #include <dw_parser.h>
+#include <dw_util.h>
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -178,14 +178,14 @@ int main(int argc, char** argv) {
 				} else {
 					printf("Unknown dot-command.\n");
 				}
-			}else if(strlen(buf) > 0){
+			} else if(strlen(buf) > 0) {
 				struct __dw_token* token = __dw_parser_parse(buf);
-				if(token != NULL){
-					if(token->error){
+				if(token != NULL) {
+					if(token->error) {
 						printf("%s\n", dataworks_database_strerror(token->errnum));
-					}else{
+					} else {
 					}
-				}else{
+				} else {
 					printf("Parser returned NULL. Help!\n");
 				}
 			}

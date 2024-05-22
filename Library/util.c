@@ -1,7 +1,7 @@
 /* $Id$ */
 /* --- START LICENSE --- */
 /* -------------------------------------------------------------------------- */
-/* Copyright (c) 2024 Nishi.                                                  */
+/* Copyright (c) 2024 Crabware.                                               */
 /* Redistribution and use in source and binary forms, with or without modific */
 /* ation, are permitted provided that the following conditions are met:       */
 /*     1. Redistributions of source code must retain the above copyright noti */
@@ -45,7 +45,7 @@ char* __dw_strdup(const char* a) {
 	return str;
 }
 
-char* __dw_strcat(const char* a, const char* b){
+char* __dw_strcat(const char* a, const char* b) {
 	char* str = malloc(strlen(a) + strlen(b) + 1);
 	memcpy(str, a, strlen(a));
 	memcpy(str + strlen(a), b, strlen(b));
