@@ -49,7 +49,7 @@ struct __dw_token {
 	int type;
 	bool error;
 	int errnum;
-	struct __dw_token* token;
+	struct __dw_token** token;
 };
 
 struct __dw_token* __dw_parser_parse(const char* name, const char* str);

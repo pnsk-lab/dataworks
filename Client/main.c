@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
 	bool banner = true;
 	bool log = true;
 	const char* fname = NULL;
+	const char* fprog = NULL;
 	for(i = 1; i < argc; i++) {
 		if(argv[i][0] == '-') {
 			if(strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-V") == 0) {
@@ -75,6 +76,9 @@ int main(int argc, char** argv) {
 				banner = false;
 			} else if(strcmp(argv[i], "--nolog") == 0 || strcmp(argv[i], "-NL") == 0) {
 				log = false;
+			} else if(strcmp(argv[i], "-f") == 0){
+				fprog = argv[i + 1];
+				i++;
 			} else {
 				fprintf(stderr, "%s: %s: invalid option\n", argv[0], argv[i]);
 				return 1;
@@ -152,10 +156,22 @@ int main(int argc, char** argv) {
 	buf[0] = 0;
 	char ch;
 	char prompt = '.';
-	printf("%c ", prompt);
-	fflush(stdout);
+	FILE* fp = stdin;
+	if(fprog != NULL){
+		fp = fopen(fprog, "r");
+		if(fp == NULL){
+			printf("Could not open the program file.\n");
+			return 1;
+		}
+	}
+	if(fprog == NULL){
+		printf("%c ", prompt);
+		fflush(stdout);
+	}
+	char* linebuf = malloc(1);
+	linebuf[0] = 0;
 	while(1) {
-		if(fread(&ch, 1, 1, stdin) <= 0) break;
+		if(fread(&ch, 1, 1, fp) <= 0) break;
 		if(ch == '\n') {
 			if(buf[0] == '.') {
 				if(__dw_strcaseequ(buf, ".bye") || __dw_strcaseequ(buf, ".quit")) {
@@ -196,18 +212,42 @@ int main(int argc, char** argv) {
 					printf("Unknown dot-command.\n");
 				}
 			} else if(strlen(buf) > 0) {
-				struct __dw_token* token = __dw_parser_parse(NULL, buf);
-				if(token != NULL) {
-					if(token->error) {
-						printf("%s\n", dataworks_database_strerror(token->errnum));
-					} else {
+				char* tmp = linebuf;
+				linebuf = __dw_strcat(tmp, buf);
+				free(tmp);
+				int i;
+rep:;
+				for(i = 0; linebuf[i] != 0; i++){
+					if(linebuf[i] == ';'){
+						char* line = malloc(i + 1);
+						line[i] = 0;
+						memcpy(line, linebuf, i);
+						struct __dw_token* token = __dw_parser_parse(NULL, line);
+						if(token != NULL) {
+							if(token->error) {
+								printf("%s\n", dataworks_database_strerror(token->errnum));
+							} else {
+							}
+						} else {
+							printf("Parser returned NULL. Help!\n");
+						}
+						if(fprog != NULL){
+							printf("%s\n", line);
+						}
+						free(line);
+						char* newbuf = malloc(strlen(linebuf) - i);
+						newbuf[strlen(linebuf) - i - 1] = 0;
+						memcpy(newbuf, linebuf + i + 1, strlen(linebuf) - i - 1);
+						free(linebuf);
+						linebuf = newbuf;
+						goto rep;
 					}
-				} else {
-					printf("Parser returned NULL. Help!\n");
 				}
 			}
-			printf("%c ", prompt);
-			fflush(stdout);
+			if(fprog == NULL){
+				printf("%c ", prompt);
+				fflush(stdout);
+			}
 			free(buf);
 			buf = malloc(1);
 			buf[0] = 0;
@@ -224,6 +264,7 @@ int main(int argc, char** argv) {
 			len++;
 		}
 	}
+	free(linebuf);
 	free(buf);
 	printf("\n");
 }
