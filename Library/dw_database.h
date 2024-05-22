@@ -43,6 +43,8 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
 
+#define PACKED __attribute__((packed))
+
 /**
  * @~english
  * @brief Database struct
@@ -77,6 +79,7 @@ struct dataworks_db {
  * @note See \ref FORMATv1 for more info.
  *
  */
+PACKED
 struct dataworks_db_v1_indexentry {
 	uint8_t flag;
 	uint64_t count;
@@ -87,10 +90,19 @@ struct dataworks_db_v1_indexentry {
 
 /**
  * @~english
+ * @brief "Used" bitmask for indexentry for v1 database.
+ * @note See \ref FORMATv1 for more info.
+ *
+ */
+#define DATAWORKS_V1_INDEXENTRY_USED (1 << 7)
+
+/**
+ * @~english
  * @brief infoentry for database.
  * @note See \ref FORMATv1 for more info.
  *
  */
+PACKED
 struct dataworks_db_infoentry {
 	uint16_t version;
 	uint64_t mtime;

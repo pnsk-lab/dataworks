@@ -123,6 +123,19 @@ char** dataworks_database_get_table_list(struct dataworks_db* db){
 	if(db->version == 1){
 		__dw_lockfile(db->fp);
 		fseek(db->fp, sizeof(sig) + 10, SEEK_SET);
+		struct dataworks_db_v1_indexentry index;
+		printf("%d\n", sizeof(index));
+		int i;
+		for(i = 0; i < 256; i++){
+			fread(&index, 1, sizeof(index), db->fp);
+			if(index.flag & DATAWORKS_V1_INDEXENTRY_USED){
+				printf("%d\n", index.dbname_len);
+				printf("[");
+				fflush(stdout);
+				fwrite(index.dbname, 1, index.dbname_len, stdout);
+				printf("]\n");
+			}
+		}
 		__dw_unlockfile(db->fp);
 	}else{
 		/* Not implemented for the version */
