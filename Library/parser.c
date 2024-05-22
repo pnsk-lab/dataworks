@@ -25,3 +25,11 @@
 /* OF SUCH DAMAGE.                                                            */
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
+
+#include "dw_parser.h"
+
+#include <stddef.h>
+
+struct __dw_token* __dw_parser_parse(const char* str){
+	return NULL;
+}

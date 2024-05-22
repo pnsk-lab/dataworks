@@ -44,12 +44,6 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
 
-#ifdef __WATCOMC__
-#define PACKED _Packed
-#else
-#define PACKED __attribute__((__packed__))
-#endif
-
 #define __dw_buffer_to_db_v1_indexentry(buf, index) \
 	memcpy(&index.flag, buf, 1); \
 	uint64_t be_count; \
@@ -145,11 +139,10 @@ struct dataworks_db {
 
 /**
  * @~english
- * @brief indexentry for v1 database.
+ * @brief `indexentry` for v1 database.
  * @note See \ref FORMATv1 for more info.
  *
  */
-PACKED
 struct dataworks_db_v1_indexentry {
 	uint8_t flag;
 	uint64_t count;
@@ -168,11 +161,10 @@ struct dataworks_db_v1_indexentry {
 
 /**
  * @~english
- * @brief infoentry for database.
+ * @brief `infoentry` for database.
  * @note See \ref FORMATv1 for more info.
  *
  */
-PACKED
 struct dataworks_db_infoentry {
 	uint16_t version;
 	uint64_t mtime;

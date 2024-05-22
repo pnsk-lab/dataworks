@@ -40,6 +40,23 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
+enum __token {
+	METHOD = 0,
+	VALUE
+};
+
+struct __dw_token {
+	char* name;
+	int type;
+	bool error;
+	int errnum;
+	struct __dw_token* token;
+};
+
+struct __dw_token* __dw_parser_parse(const char* str);
+
 #ifdef __cplusplus
 }
 #endif

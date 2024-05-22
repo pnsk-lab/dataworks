@@ -27,8 +27,10 @@
 /* --- END LICENSE --- */
 
 #include <dataworks.h>
+
 #include <dw_database.h>
 #include <dw_util.h>
+#include <dw_parser.h>
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -175,6 +177,12 @@ int main(int argc, char** argv) {
 					fflush(stdout);
 				} else {
 					printf("Unknown dot-command.\n");
+				}
+			}else if(strlen(buf) > 0){
+				struct __dw_token* token = __dw_parser_parse(buf);
+				if(token != NULL){
+				}else{
+					printf("Parser returned NULL. Help!\n");
 				}
 			}
 			printf("%c ", prompt);
