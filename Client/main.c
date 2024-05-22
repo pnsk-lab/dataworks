@@ -148,8 +148,10 @@ int main(int argc, char** argv) {
 		strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
 		printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);
 		printf("\n");
-		printf("Type a command (.help) for the help.\n");
-		printf("\n");
+		if(fprog == NULL){
+			printf("Type a command (.help) for the help.\n");
+			printf("\n");
+		}
 	}
 	int len = 0;
 	char* buf = malloc(1);
