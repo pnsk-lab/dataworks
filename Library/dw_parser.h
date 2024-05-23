@@ -42,7 +42,7 @@ extern "C" {
 
 #include <stdbool.h>
 
-enum __token { METHOD = 0, VALUE };
+enum __token { __DW_METHOD = 0, __DW_VALUE };
 
 struct __dw_token {
 	char* name;
@@ -52,7 +52,7 @@ struct __dw_token {
 	struct __dw_token** token;
 };
 
-struct __dw_token* __dw_parser_parse(const char* name, const char* str);
+struct __dw_token* __dw_parser_parse(const char* str);
 
 #ifdef __cplusplus
 }

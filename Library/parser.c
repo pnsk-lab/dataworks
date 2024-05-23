@@ -36,11 +36,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
+struct __dw_token* __dw_parser_parse(const char* str) {
 	struct __dw_token* token = malloc(sizeof(*token));
 	token->error = false;
 	token->errnum = DW_ERR_SUCCESS;
 	token->token = NULL;
+	token->name = NULL;
+	token->type = __DW_METHOD;
 	char* buf = malloc(1);
 	buf[0] = 0;
 	int i;
@@ -49,6 +51,7 @@ struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
 	cbuf[1] = 0;
 	int brace = 0;
 	char* br = malloc(1);
+	bool has_brace = false;
 	br[0] = 0;
 	for(i = 0; str[i] != 0; i++) {
 		cbuf[0] = str[i];
@@ -99,8 +102,47 @@ struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
 					free(buf);
 					buf = newbuf;
 				}
-				printf("%s:%s\n", buf, br);
-				__dw_parser_parse(buf, br);
+				token->name = __dw_strdup(buf);
+				int k;
+				char* comma = malloc(1);
+				comma[0] = 0;
+				int intbrace = 0;
+				for(k = 0;; k++){
+					char c = br[k];
+					if(c == '(' || c == ')' || intbrace > 0){
+						if(c == '(') intbrace++;
+						if(c == ')') intbrace--;
+						cbuf[0] = c;
+						char* tmp = comma;
+						comma = __dw_strcat(tmp, cbuf);
+						free(tmp);
+					}else if(c == 0 || c == ','){
+						j = 0;
+						if(token->token != NULL){
+							for(j = 0; token->token[j] != NULL; j++);
+						}
+						struct __dw_token** newtokens = malloc(sizeof(*newtokens) * (j + 2));
+						if(token->token != NULL){
+							for(j = 0; token->token[j] != NULL; j++){
+								newtokens[j] = token->token[j];
+							}
+							free(token->token);
+						}
+						token->token = newtokens;
+						token->token[j] = __dw_parser_parse(comma);
+						token->token[j + 1] = NULL;
+						free(comma);
+						comma = malloc(1);
+						comma[0] = 0;
+						if(c == 0) break;
+					}else{
+						cbuf[0] = c;
+						char* tmp = comma;
+						comma = __dw_strcat(tmp, cbuf);
+						free(tmp);
+					}
+				}
+				free(comma);
 				free(br);
 				br = malloc(1);
 				br[0] = 0;
@@ -117,16 +159,25 @@ struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
 				free(tmp);
 			}
 		} else if(str[i] == '(') {
+			has_brace = true;
 			brace++;
 		} else if(str[i] == ')') {
 			brace--;
 		} else if(str[i] == '"') {
 			dq = !dq;
+		} else if(str[i] == ',') {
+			free(buf);
+			buf = malloc(1);
+			buf[0] = 0;
 		} else {
 			char* tmp = buf;
 			buf = __dw_strcat(tmp, cbuf);
 			free(tmp);
 		}
+	}
+	if(!has_brace){
+		token->type = __DW_VALUE;
+		token->name = __dw_strdup(buf);
 	}
 	free(br);
 	free(buf);
