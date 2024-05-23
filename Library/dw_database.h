@@ -114,6 +114,13 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_EXEC_UNKNOWN_METHOD,
+
+	/**
+	 * @~english
+	 * @brief Insufficient arguments
+	 *
+	 */
+	DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS,
 };
 
 /**
@@ -177,6 +184,13 @@ struct dataworks_db_result {
 	 *
 	 */
 	int errnum;
+
+	/**
+	 * @~english
+	 * @brief Value.
+	 *
+	 */
+	char* value;
 };
 
 /**
@@ -326,6 +340,14 @@ void dataworks_database_update_mtime(struct dataworks_db* db);
  *
  */
 struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code);
+
+/**
+ * @~english
+ * @brief Frees the result.
+ * @param result Result
+ *
+ */
+void dataworks_database_free_result(struct dataworks_db_result* result);
 
 #ifdef __cplusplus
 }

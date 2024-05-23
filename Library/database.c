@@ -134,7 +134,7 @@ uint64_t dataworks_database_get_mtime(struct dataworks_db* db) { return db->mtim
 
 int dataworks_database_get_error_number(struct dataworks_db* db) { return db->errnum; }
 
-const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method"};
+const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method", "Insufficient arguments"};
 
 const char* dataworks_database_strerror(int n) { return dw_errors[n]; }
 
