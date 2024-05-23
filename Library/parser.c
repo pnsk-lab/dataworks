@@ -118,24 +118,26 @@ struct __dw_token* __dw_parser_parse(const char* str) {
 						comma = __dw_strcat(tmp, cbuf);
 						free(tmp);
 					} else if(c == 0 || c == ',') {
-						j = 0;
-						if(token->token != NULL) {
-							for(j = 0; token->token[j] != NULL; j++)
-								;
-						}
-						struct __dw_token** newtokens = malloc(sizeof(*newtokens) * (j + 2));
-						if(token->token != NULL) {
-							for(j = 0; token->token[j] != NULL; j++) {
-								newtokens[j] = token->token[j];
+						if(strlen(comma) > 0){
+							j = 0;
+							if(token->token != NULL) {
+								for(j = 0; token->token[j] != NULL; j++)
+									;
 							}
-							free(token->token);
+							struct __dw_token** newtokens = malloc(sizeof(*newtokens) * (j + 2));
+							if(token->token != NULL) {
+								for(j = 0; token->token[j] != NULL; j++) {
+									newtokens[j] = token->token[j];
+								}
+								free(token->token);
+							}
+							token->token = newtokens;
+							token->token[j] = __dw_parser_parse(comma);
+							token->token[j + 1] = NULL;
+							free(comma);
+							comma = malloc(1);
+							comma[0] = 0;
 						}
-						token->token = newtokens;
-						token->token[j] = __dw_parser_parse(comma);
-						token->token[j + 1] = NULL;
-						free(comma);
-						comma = malloc(1);
-						comma[0] = 0;
 						if(c == 0) break;
 					} else {
 						cbuf[0] = c;
