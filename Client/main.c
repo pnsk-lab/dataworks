@@ -227,6 +227,7 @@ int main(int argc, char** argv) {
 				free(tmp);
 				int i;
 				while(true) {
+					bool breakit = true;
 					for(i = 0; linebuf[i] != 0; i++) {
 						if(linebuf[i] == ';') {
 							char* line = malloc(i + 1);
@@ -251,10 +252,10 @@ int main(int argc, char** argv) {
 								free(linebuf);
 								linebuf = newbuf;
 							}
-							continue;
+							breakit = false;
 						}
 					}
-					break;
+					if(breakit) break;
 				}
 			}
 			if(fprog == NULL) {
