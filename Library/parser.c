@@ -34,6 +34,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
 	struct __dw_token* token = malloc(sizeof(*token));
@@ -55,10 +56,49 @@ struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
 			if(str[i] == '(') brace++;
 			if(str[i] == ')') brace--;
 			if(brace > 0) {
+				if(str[i] == ','){
+					i++;
+					for(; str[i] != 0 && (str[i] == '\t' || str[i] == ' '); i++);
+					i--;
+				}
 				char* tmp = br;
 				br = __dw_strcat(tmp, cbuf);
 				free(tmp);
 			} else {
+				int j;
+				for(j = 0; buf[j] != 0; j++){
+					if(buf[j] != ' ' && buf[j] != '\t'){
+						char* newbuf = __dw_strdup(buf + j);
+						free(buf);
+						buf = newbuf;
+						break;
+					}
+				}
+				for(j = 0; br[j] != 0; j++){
+					if(br[j] != ' ' && br[j] != '\t'){
+						char* newbr = __dw_strdup(br + j);
+						free(br);
+						br = newbr;
+						break;
+					}
+				}
+				for(j = strlen(buf) - 1; j >= 0; j--){
+					if(buf[j] != ' ' && buf[j] != '\t'){
+						buf[j + 1] = 0;
+						break;
+					}
+				}
+				for(j = strlen(br) - 1; j >= 0; j--){
+					if(br[j] != ' ' && br[j] != '\t'){
+						br[j + 1] = 0;
+						break;
+					}
+				}
+				if(buf[0] == ','){
+					char* newbuf = __dw_strdup(buf + 1);
+					free(buf);
+					buf = newbuf;
+				}
 				printf("%s:%s\n", buf, br);
 				__dw_parser_parse(buf, br);
 				free(br);
@@ -69,9 +109,13 @@ struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
 				buf[0] = 0;
 			}
 		} else if(dq) {
-			char* tmp = buf;
-			buf = __dw_strcat(tmp, cbuf);
-			free(tmp);
+			if(str[i] == '"'){
+				dq = !dq;
+			}else{
+				char* tmp = buf;
+				buf = __dw_strcat(tmp, cbuf);
+				free(tmp);
+			}
 		} else if(str[i] == '(') {
 			brace++;
 		} else if(str[i] == ')') {

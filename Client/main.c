@@ -233,9 +233,6 @@ int main(int argc, char** argv) {
 							} else {
 								printf("Parser returned NULL. Help!\n");
 							}
-							if(fprog != NULL){
-								printf("%s\n", line);
-							}
 							free(line);
 							if(strlen(linebuf) > 0){
 								char* newbuf = malloc(strlen(linebuf) - i);
