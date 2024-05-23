@@ -54,7 +54,7 @@ void padleft(int leftpad, const char* str) {
 void print_recursive(struct __dw_token* token, int depth) {
 	int i;
 	for(i = 0; i < depth; i++) printf("  ");
-	printf("%d:%s\n", token->type, token->name == NULL ? "(null)" : token->name);
+	printf("%d:[%s]\n", token->type, token->name == NULL ? "(null)" : token->name);
 	if(token->token != NULL) {
 		for(i = 0; token->token[i] != NULL; i++) print_recursive(token->token[i], depth + 1);
 	}
