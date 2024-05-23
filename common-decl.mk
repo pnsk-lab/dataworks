@@ -5,7 +5,7 @@ SHCC = cc
 AR = ar
 AR_ARGS = rcs \$$@
 RANLIB = ranlib
-CFLAGS = -std=c99 -D_DEFAULT_SOURCE
+CFLAGS = -g -std=c99 -D_DEFAULT_SOURCE
 LDFLAGS = -L`pwd`/Library
 LIBS =
 LIB_PREFIX = lib

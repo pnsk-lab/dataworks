@@ -61,6 +61,12 @@ struct __dw_token* __dw_parser_parse(const char* name, const char* str) {
 			} else {
 				printf("%s:%s\n", buf, br);
 				__dw_parser_parse(buf, br);
+				free(br);
+				br = malloc(1);
+				br[0] = 0;
+				free(buf);
+				buf = malloc(1);
+				buf[0] = 0;
 			}
 		} else if(dq) {
 			char* tmp = buf;

@@ -237,11 +237,13 @@ int main(int argc, char** argv) {
 								printf("%s\n", line);
 							}
 							free(line);
-							char* newbuf = malloc(strlen(linebuf) - i);
-							newbuf[strlen(linebuf) - i - 1] = 0;
-							memcpy(newbuf, linebuf + i + 1, strlen(linebuf) - i - 1);
-							free(linebuf);
-							linebuf = newbuf;
+							if(strlen(linebuf) > 0){
+								char* newbuf = malloc(strlen(linebuf) - i);
+								newbuf[strlen(linebuf) - i - 1] = 0;
+								memcpy(newbuf, linebuf + i + 1, strlen(linebuf) - i - 1);
+								free(linebuf);
+								linebuf = newbuf;
+							}
 							continue;
 						}
 					}
