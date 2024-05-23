@@ -51,15 +51,6 @@ void padleft(int leftpad, const char* str) {
 	free(spaces);
 }
 
-void print_recursive(struct __dw_token* token, int depth) {
-	int i;
-	for(i = 0; i < depth; i++) printf("  ");
-	printf("%d:[%s]\n", token->type, token->name == NULL ? "(null)" : token->name);
-	if(token->token != NULL) {
-		for(i = 0; token->token[i] != NULL; i++) print_recursive(token->token[i], depth + 1);
-	}
-}
-
 int main(int argc, char** argv) {
 	int i;
 	bool clear = true;
@@ -233,17 +224,12 @@ int main(int argc, char** argv) {
 							char* line = malloc(i + 1);
 							line[i] = 0;
 							memcpy(line, linebuf, i);
-							struct __dw_token* token = __dw_parser_parse(line);
-							if(token != NULL) {
-								if(token->error) {
-									printf("%s\n", dataworks_database_strerror(token->errnum));
-								} else {
-									print_recursive(token, 0);
-								}
-								__dw_parser_free(token);
-							} else {
-								printf("Parser returned NULL. Help!\n");
+
+							struct dataworks_db_result* r = dataworks_database_execute_code(db, line);
+							if(r->error) {
+								printf("%s\n", dataworks_database_strerror(r->errnum));
 							}
+
 							free(line);
 							if(strlen(linebuf) > 0) {
 								char* newbuf = malloc(strlen(linebuf) - i);

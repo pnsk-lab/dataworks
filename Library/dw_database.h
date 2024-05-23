@@ -93,6 +93,27 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_INVALID_VERSION,
+
+	/**
+	 * @~english
+	 * @brief Parser returned NULL
+	 *
+	 */
+	DW_ERR_PARSER_NULL,
+
+	/**
+	 * @~english
+	 * @brief Cannot call non-method
+	 *
+	 */
+	DW_ERR_EXEC_NON_METHOD,
+
+	/**
+	 * @~english
+	 * @brief Unknown method
+	 *
+	 */
+	DW_ERR_EXEC_UNKNOWN_METHOD,
 };
 
 /**
@@ -122,6 +143,27 @@ struct dataworks_db {
 	 */
 	uint64_t mtime;
 
+	/**
+	 * @~english
+	 * @brief True if this is an error.
+	 *
+	 */
+	bool error;
+
+	/**
+	 * @~english
+	 * @brief Error number.
+	 *
+	 */
+	int errnum;
+};
+
+/**
+ * @~english
+ * @brief Database result struct
+ *
+ */
+struct dataworks_db_result {
 	/**
 	 * @~english
 	 * @brief True if this is an error.
@@ -274,6 +316,16 @@ const char* dataworks_database_strerror(int n);
  *
  */
 void dataworks_database_update_mtime(struct dataworks_db* db);
+
+/**
+ * @~english
+ * @brief Executes the code.
+ * @param db Database
+ * @param code Code
+ * @return Result
+ *
+ */
+struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code);
 
 #ifdef __cplusplus
 }

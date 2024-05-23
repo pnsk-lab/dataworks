@@ -26,38 +26,46 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#ifndef __DATAWORKS_DW_PARSER_H__
-#define __DATAWORKS_DW_PARSER_H__
+#include "dw_database.h"
 
-/**
- * @file dw_parser.h
- * @~english
- * @brief DataWorks parser
- *
- */
+#include "dw_parser.h"
+#include "dw_util.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include <stdlib.h>
 #include <stdbool.h>
 
-enum __token { __DW_METHOD = 0, __DW_VALUE };
-
-struct __dw_token {
-	char* name;
-	int type;
-	bool error;
-	int errnum;
-	struct __dw_token** token;
-};
-
-struct __dw_token* __dw_parser_parse(const char* str);
-void __dw_parser_free(struct __dw_token* token);
-void __dw_parser_print(struct __dw_token* token, int depth);
-
-#ifdef __cplusplus
+struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_db* db, struct __dw_token* token) {
+	struct dataworks_db_result* r = malloc(sizeof(*r));
+	r->error = false;
+	if(token->type == __DW_METHOD){
+		if(__dw_strcaseequ(token->name, "create_table")){
+		}else{
+			r->error = true;
+			r->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
+		}
+	}else{
+		r->error = true;
+		r->errnum = DW_ERR_EXEC_NON_METHOD;
+	}
+	return r;
 }
-#endif
 
-#endif
+struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code) {
+	struct dataworks_db_result* r = malloc(sizeof(*r));
+	r->error = false;
+	struct __dw_token* token = __dw_parser_parse(code);
+	if(token != NULL){
+		if(token->error){
+			r->error = true;
+			r->errnum = token->errnum;
+		}else{
+			free(r);
+			r = __dataworks_database_execute_code(db, token);
+		}
+		__dw_parser_free(token);
+	}else{
+		r->error = true;
+		r->errnum = DW_ERR_PARSER_NULL;
+	}
+	return r;
+}

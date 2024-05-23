@@ -189,7 +189,7 @@ struct __dw_token* __dw_parser_parse(const char* str) {
 }
 
 void __dw_parser_free(struct __dw_token* token) {
-	free(token->name);
+	if(token->name != NULL) free(token->name);
 	if(token->type == __DW_METHOD) {
 		if(token->token != NULL) {
 			int i;
@@ -198,4 +198,13 @@ void __dw_parser_free(struct __dw_token* token) {
 		}
 	}
 	free(token);
+}
+
+void __dw_parser_print(struct __dw_token* token, int depth) {
+	int i;
+	for(i = 0; i < depth; i++) printf("  ");
+	printf("%d:[%s]\n", token->type, token->name == NULL ? "(null)" : token->name);
+	if(token->token != NULL) {
+		for(i = 0; token->token[i] != NULL; i++) __dw_parser_print(token->token[i], depth + 1);
+	}
 }
