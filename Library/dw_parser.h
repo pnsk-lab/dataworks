@@ -53,6 +53,7 @@ struct __dw_token {
 };
 
 struct __dw_token* __dw_parser_parse(const char* str);
+void __dw_parser_free(struct __dw_token* token);
 
 #ifdef __cplusplus
 }

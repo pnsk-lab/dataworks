@@ -51,11 +51,11 @@ void padleft(int leftpad, const char* str) {
 	free(spaces);
 }
 
-void print_recursive(struct __dw_token* token, int depth){
+void print_recursive(struct __dw_token* token, int depth) {
 	int i;
 	for(i = 0; i < depth; i++) printf("  ");
 	printf("%d:%s\n", token->type, token->name == NULL ? "(null)" : token->name);
-	if(token->token != NULL){
+	if(token->token != NULL) {
 		for(i = 0; token->token[i] != NULL; i++) print_recursive(token->token[i], depth + 1);
 	}
 }
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 				banner = false;
 			} else if(strcmp(argv[i], "--nolog") == 0 || strcmp(argv[i], "-NL") == 0) {
 				log = false;
-			} else if(strcmp(argv[i], "-f") == 0){
+			} else if(strcmp(argv[i], "-f") == 0) {
 				fprog = argv[i + 1];
 				i++;
 			} else {
@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
 		printf("\x1b[2J\x1b[1;1H");
 		fflush(stdout);
 	}
-	if(banner){
+	if(banner) {
 		printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 		if(dataworks_get_endian() == 'L') {
 			printf("This system is little-endian.\n");
@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
 		printf("All rights reserved.\n");
 	}
 	if(create) {
-		if(log){
+		if(log) {
 			printf("\n");
 			printf("Creating the database: %s\n", fname);
 		}
@@ -139,7 +139,7 @@ int main(int argc, char** argv) {
 			if(log) printf("Created successfully.\n");
 		}
 	}
-	if(log){
+	if(log) {
 		printf("\n");
 		printf("Opening the database: %s\n", fname);
 	}
@@ -149,14 +149,14 @@ int main(int argc, char** argv) {
 		dataworks_database_close(db);
 		return 1;
 	}
-	if(log){
+	if(log) {
 		time_t mtime = (time_t)dataworks_database_get_mtime(db);
 		struct tm* tm = localtime(&mtime);
 		char mtimestr[256];
 		strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
 		printf("Opened the database (Version %d, Modified at %s).\n", dataworks_database_get_version(db), mtimestr);
 		printf("\n");
-		if(fprog == NULL){
+		if(fprog == NULL) {
 			printf("Type a command (.help) for the help.\n");
 			printf("\n");
 		}
@@ -167,14 +167,14 @@ int main(int argc, char** argv) {
 	char ch;
 	char prompt = '.';
 	FILE* fp = stdin;
-	if(fprog != NULL){
+	if(fprog != NULL) {
 		fp = fopen(fprog, "r");
-		if(fp == NULL){
+		if(fp == NULL) {
 			printf("Could not open the program file.\n");
 			return 1;
 		}
 	}
-	if(fprog == NULL){
+	if(fprog == NULL) {
 		printf("%c ", prompt);
 		fflush(stdout);
 	}
@@ -226,9 +226,9 @@ int main(int argc, char** argv) {
 				linebuf = __dw_strcat(tmp, buf);
 				free(tmp);
 				int i;
-				while(true){
-					for(i = 0; linebuf[i] != 0; i++){
-						if(linebuf[i] == ';'){
+				while(true) {
+					for(i = 0; linebuf[i] != 0; i++) {
+						if(linebuf[i] == ';') {
 							char* line = malloc(i + 1);
 							line[i] = 0;
 							memcpy(line, linebuf, i);
@@ -239,11 +239,12 @@ int main(int argc, char** argv) {
 								} else {
 									print_recursive(token, 0);
 								}
+								__dw_parser_free(token);
 							} else {
 								printf("Parser returned NULL. Help!\n");
 							}
 							free(line);
-							if(strlen(linebuf) > 0){
+							if(strlen(linebuf) > 0) {
 								char* newbuf = malloc(strlen(linebuf) - i);
 								newbuf[strlen(linebuf) - i - 1] = 0;
 								memcpy(newbuf, linebuf + i + 1, strlen(linebuf) - i - 1);
@@ -256,7 +257,7 @@ int main(int argc, char** argv) {
 					break;
 				}
 			}
-			if(fprog == NULL){
+			if(fprog == NULL) {
 				printf("%c ", prompt);
 				fflush(stdout);
 			}
