@@ -119,6 +119,7 @@ struct __dw_token* __dw_parser_parse(const char* str) {
 						free(tmp);
 					} else if(c == 0 || c == ',') {
 						if(strlen(comma) > 0){
+							printf("%s\n", comma);
 							j = 0;
 							if(token->token != NULL) {
 								for(j = 0; token->token[j] != NULL; j++)
