@@ -253,6 +253,7 @@ int main(int argc, char** argv) {
 								linebuf = newbuf;
 							}
 							breakit = false;
+							break;
 						}
 					}
 					if(breakit) break;
