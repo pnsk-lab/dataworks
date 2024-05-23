@@ -52,7 +52,7 @@ struct __dw_token {
 	struct __dw_token** token;
 };
 
-struct __dw_token* __dw_parser_parse(const char* str);
+struct __dw_token* __dw_parser_parse(const char* str, bool top);
 void __dw_parser_free(struct __dw_token* token);
 void __dw_parser_print(struct __dw_token* token, int depth);
 

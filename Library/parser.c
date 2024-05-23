@@ -36,7 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct __dw_token* __dw_parser_parse(const char* str) {
+struct __dw_token* __dw_parser_parse(const char* str, bool top) {
 	struct __dw_token* token = malloc(sizeof(*token));
 	token->error = false;
 	token->errnum = DW_ERR_SUCCESS;
@@ -53,6 +53,7 @@ struct __dw_token* __dw_parser_parse(const char* str) {
 	char* br = malloc(1);
 	bool has_brace = false;
 	br[0] = 0;
+	int start = 0;
 	for(i = 0; str[i] != 0; i++) {
 		cbuf[0] = str[i];
 		if(brace > 0) {
@@ -132,7 +133,7 @@ struct __dw_token* __dw_parser_parse(const char* str) {
 								free(token->token);
 							}
 							token->token = newtokens;
-							token->token[j] = __dw_parser_parse(comma);
+							token->token[j] = __dw_parser_parse(comma, false);
 							token->token[j + 1] = NULL;
 							free(comma);
 							comma = malloc(1);
@@ -146,6 +147,7 @@ struct __dw_token* __dw_parser_parse(const char* str) {
 						free(tmp);
 					}
 				}
+				if(top) printf("%s(%s)\n", buf, br);
 				free(comma);
 				free(br);
 				br = malloc(1);

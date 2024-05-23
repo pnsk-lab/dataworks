@@ -181,7 +181,7 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
 	struct dataworks_db_result* r = malloc(sizeof(*r));
 	r->error = false;
 	r->value = NULL;
-	struct __dw_token* token = __dw_parser_parse(code);
+	struct __dw_token* token = __dw_parser_parse(code, true);
 	if(token != NULL) {
 		if(token->error) {
 			r->error = true;
