@@ -33,8 +33,9 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
-struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_db* db, struct __dw_token* token) {
+struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_db* db, struct __dw_token* token, bool dolog) {
 	struct dataworks_db_result* r = malloc(sizeof(*r));
 	r->value = NULL;
 	r->error = false;
@@ -47,7 +48,7 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 			for(i = 0; token->token[i] != NULL; i++) {
 				argc++;
 				if(token->token[i]->type == __DW_METHOD) {
-					struct dataworks_db_result* r2 = __dataworks_database_execute_code(db, token->token[i]);
+					struct dataworks_db_result* r2 = __dataworks_database_execute_code(db, token->token[i], dolog);
 					if(r2->error) {
 						int j;
 						for(j = 0; results[j] != NULL; j++) {
@@ -161,6 +162,41 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 					printf("%s\n", results[j]->value);
 				}
 			}
+		} else if(__dw_strcaseequ(token->name, "use")) {
+			int j;
+			bool set = false;
+			for(j = 0; results[j] != NULL; j++) {
+				if(results[j]->value != NULL) {
+					if(set) {
+						r->error = true;
+						r->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
+						break;
+					}
+					if(db->name != NULL) free(db->name);
+					bool has = false;
+					char** names = dataworks_database_get_table_list(db);
+					if(names != NULL) {
+						int k;
+						for(k = 0; names[k] != NULL; k++) {
+							if(strcmp(names[k], results[j]->value) == 0) {
+								has = true;
+							}
+							free(names[k]);
+						}
+						free(names);
+						if(has) {
+							db->name = __dw_strdup(results[j]->value);
+							set = true;
+							if(dolog) {
+								printf("Using table `%s'.\n", db->name);
+							}
+						}
+					} else {
+						r->error = true;
+						r->errnum = DW_ERR_PARSER_NULL;
+					}
+				}
+			}
 		} else {
 			r->error = true;
 			r->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
@@ -177,18 +213,18 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 	return r;
 }
 
-struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code) {
+struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code, bool dolog) {
 	struct dataworks_db_result* r = malloc(sizeof(*r));
 	r->error = false;
 	r->value = NULL;
-	struct __dw_token* token = __dw_parser_parse(code, true);
+	struct __dw_token* token = __dw_parser_parse(code, dolog);
 	if(token != NULL) {
 		if(token->error) {
 			r->error = true;
 			r->errnum = token->errnum;
 		} else {
 			dataworks_database_free_result(r);
-			r = __dataworks_database_execute_code(db, token);
+			r = __dataworks_database_execute_code(db, token, dolog);
 		}
 		__dw_parser_free(token);
 	} else {

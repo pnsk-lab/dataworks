@@ -38,6 +38,8 @@
 
 const char sig[3] = {0x7f, 'D', 'W'};
 
+const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method", "Insufficient arguments", "Too many arguments"};
+
 #ifdef M_I86
 #define BUFSIZE 128
 #endif
@@ -90,6 +92,7 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 	struct dataworks_db* db = malloc(sizeof(*db));
 	db->error = false;
 	db->fp = NULL;
+	db->name = NULL;
 	FILE* fp = fopen(fname, "rb+");
 	if(fp == NULL) {
 		db->error = true;
@@ -134,8 +137,6 @@ uint64_t dataworks_database_get_mtime(struct dataworks_db* db) { return db->mtim
 
 int dataworks_database_get_error_number(struct dataworks_db* db) { return db->errnum; }
 
-const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method", "Insufficient arguments"};
-
 const char* dataworks_database_strerror(int n) { return dw_errors[n]; }
 
 void dataworks_database_update_mtime(struct dataworks_db* db) {
@@ -144,4 +145,14 @@ void dataworks_database_update_mtime(struct dataworks_db* db) {
 	int64_t t = time(NULL);
 	__dw_big_endian(t, int64_t, fwrite(__converted_ptr, 1, 8, db->fp));
 	__dw_unlockfile(db->fp);
+}
+
+void dataworks_database_free(struct dataworks_db* db) {
+	if(db->fp != NULL) {
+		fclose(db->fp);
+	}
+	if(db->name != NULL) {
+		free(db->name);
+	}
+	free(db);
 }

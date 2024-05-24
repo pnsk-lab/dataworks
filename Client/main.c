@@ -225,9 +225,9 @@ int main(int argc, char** argv) {
 							line[i] = 0;
 							memcpy(line, linebuf, i);
 
-							struct dataworks_db_result* r = dataworks_database_execute_code(db, line);
+							struct dataworks_db_result* r = dataworks_database_execute_code(db, line, true);
 							if(r->error) {
-								printf("%s\n", dataworks_database_strerror(r->errnum));
+								printf("%s.\n", dataworks_database_strerror(r->errnum));
 							}
 
 							free(line);

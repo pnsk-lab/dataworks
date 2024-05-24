@@ -121,6 +121,13 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS,
+
+	/**
+	 * @~english
+	 * @brief Too many arguments
+	 *
+	 */
+	DW_ERR_EXEC_TOO_MANY_ARGUMENTS,
 };
 
 /**
@@ -163,6 +170,13 @@ struct dataworks_db {
 	 *
 	 */
 	int errnum;
+
+	/**
+	 * @~english
+	 * @brief Database being used.
+	 *
+	 */
+	char* name;
 };
 
 /**
@@ -336,10 +350,11 @@ void dataworks_database_update_mtime(struct dataworks_db* db);
  * @brief Executes the code.
  * @param db Database
  * @param code Code
+ * @param dolog Output the log if true
  * @return Result
  *
  */
-struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code);
+struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code, bool dolog);
 
 /**
  * @~english
