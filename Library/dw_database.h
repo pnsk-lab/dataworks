@@ -128,6 +128,13 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_EXEC_TOO_MANY_ARGUMENTS,
+
+	/**
+	 * @~english
+	 * @brief Not used
+	 *
+	 */
+	DW_ERR_NOT_USED,
 };
 
 /**
@@ -322,11 +329,23 @@ char** dataworks_database_get_table_list(struct dataworks_db* db);
  * @param fields Fields
  * @param fieldtypes Types
  * @return
- * - `0` if success
+ * - `DW_ERR_SUCCESS` if success
  * - `DW_ERR_USED` if the name is already used
  *
  */
 int dataworks_database_create_table(struct dataworks_db* db, const char* name, char** fields, const char* fieldtypes);
+
+/**
+ * @~english
+ * @brief Deletes a table.
+ * @param db Database
+ * @param name Table name
+ * @return
+ * - `DW_ERR_SUCCESS` if success
+ * - `DW_ERR_NOT_USED` if the name is not used
+ *
+ */
+int dataworks_database_delete_table(struct dataworks_db* db, const char* name);
 
 /**
  * @~english

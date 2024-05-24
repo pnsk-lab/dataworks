@@ -144,6 +144,29 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 				free(fields);
 				free(fieldtypes);
 			}
+		} else if(__dw_strcaseequ(token->name, "delete_table")) {
+			argc = 0;
+			int j;
+			for(j = 0; results[j] != NULL; j++) {
+				if(results[j]->value != NULL) {
+					argc++;
+				}
+			}
+			if(argc < 1) {
+				r->error = true;
+				r->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+			} else {
+				for(j = 0; results[j] != NULL; j++) {
+					if(results[j]->value != NULL) {
+						int er = dataworks_database_delete_table(db, results[j]->value);
+						if(er != DW_ERR_SUCCESS) {
+							r->error = true;
+							r->errnum = er;
+							break;
+						}
+					}
+				}
+			}
 		} else if(__dw_strcaseequ(token->name, "concat")) {
 			r->value = malloc(1);
 			r->value[0] = 0;
@@ -190,6 +213,9 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 							if(dolog) {
 								printf("Using table `%s'.\n", db->name);
 							}
+						} else {
+							r->error = true;
+							r->errnum = DW_ERR_NOT_USED;
 						}
 					} else {
 						r->error = true;
