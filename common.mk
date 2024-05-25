@@ -2,7 +2,7 @@
 
 COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)" PLATFORM_M="$(PLATFORM_M)" PLATFORM_P="$(PLATFORM_P)" STATICLIB_PREFIX="$(STATICLIB_PREFIX)" STATICLIB_SUFFIX="$(STATICLIB_SUFFIX)" AR="$(AR)" RANLIB="$(RANLIB)" SHCC="$(SHCC)" LINK_LIB="$(LINK_LIB)" AR_ARGS="$(AR_ARGS)"
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document archive archive-prepare archive-cleanup archive-targz archive-zip
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document archive archive-prepare archive-cleanup archive-targz archive-zip dosbox
 
 all: ./Library ./Client ./Document
 
@@ -68,3 +68,21 @@ archive:
 	-$(MAKE) archive-targz PREP=NO
 	-$(MAKE) archive-zip PREP=NO
 	$(MAKE) archive-cleanup
+
+dosbox: no-doc
+	echo 'create_table("test", "string:key", "double:value");' > op.txt
+	echo '.tables' >> op.txt
+	echo "[cpu]" > dosbox.conf
+	echo "cycles=12000" >> dosbox.conf
+	echo "[autoexec]" >> dosbox.conf
+	echo "mount c: ." >> dosbox.conf
+	echo "c:" >> dosbox.conf
+	echo "copy Client\*$(EXEC_SUFFIX) dw$(EXEC_SUFFIX)" >> dosbox.conf
+	echo "dw -NC -f op.txt --create db.dwf" >> dosbox.conf
+	echo "pause" >> dosbox.conf
+	echo "del db.dwf" >> dosbox.conf
+	echo "del dw.exe" >> dosbox.conf
+	echo "exit" >> dosbox.conf
+	if [ ! -e "dos4gw.exe" ]; then wget "https://github.com/yetmorecode/dos32a-ng/releases/download/9.1.2/DOS32ANG.EXE" -O dos4gw.exe ; fi
+	dosbox
+	rm op.txt dosbox.conf
