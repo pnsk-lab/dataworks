@@ -1,10 +1,10 @@
 # $Id$
 
 CC = owcc
-SHCC = /bin/true
+SHCC = true
 AR = wlib
 AR_ARGS = -b -n -fo \$$@
-RANLIB = /bin/true
+RANLIB = true
 LIB_PREFIX =
 LIB_SUFFIX = .dll
 EXEC_SUFFIX = .$(WATCOM_PLATFORM)
