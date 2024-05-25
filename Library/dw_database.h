@@ -140,7 +140,7 @@ enum DW_ERRORS {
 /**
  * @~english
  * @brief Type enum
- * 
+ *
  */
 enum DW_RECORD_TYPES {
 	/**
@@ -160,21 +160,21 @@ enum DW_RECORD_TYPES {
 	/**
 	 * @~english
 	 * @brief Double
-	 * 
+	 *
 	 */
 	DW_RECORD_DOUBLE = 'D',
 
 	/**
 	 * @~english
 	 * @brief Logical
-	 * 
+	 *
 	 */
 	DW_RECORD_LOGICAL = 'L',
 
 	/**
 	 * @~english
 	 * @brief HELP
-	 * 
+	 *
 	 */
 	DW_RECORD_HELP = '?',
 };
@@ -245,7 +245,7 @@ struct dataworks_db_record {
 	/**
 	 * @~english
 	 * @brief Type. See enum DW_RECORD_TYPES.
-	 * 
+	 *
 	 */
 	char type;
 };
@@ -384,6 +384,16 @@ uint64_t dataworks_database_get_mtime(struct dataworks_db* db);
  *
  */
 char** dataworks_database_get_table_list(struct dataworks_db* db);
+
+/**
+ * @~english
+ * @brief Get the fields of the table of the database.
+ * @param db Database
+ * @param table Table name
+ * @return Fields of the table
+ *
+ */
+char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* table);
 
 /**
  * @~english

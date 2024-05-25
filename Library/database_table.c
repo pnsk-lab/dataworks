@@ -148,3 +148,56 @@ char** dataworks_database_get_table_list(struct dataworks_db* db) {
 		return list;
 	}
 }
+
+char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* table) {
+	if(db->version == 1) {
+		__dw_lockfile(db->fp);
+		fseek(db->fp, 3 + 10, SEEK_SET);
+		int i;
+		struct dataworks_db_v1_indexentry index;
+		char* buf = malloc(1 + 8 + 1 + 256 + 4096);
+		int c = 0;
+		for(i = 0; i < 256; i++) {
+			fread(buf, 1, 1 + 8 + 1 + 256 + 4096, db->fp);
+			__dw_buffer_to_db_v1_indexentry(buf, index);
+			if(index.flag & DATAWORKS_V1_INDEXENTRY_USED) {
+				char* dbname = malloc(index.dbname_len + 1);
+				memcpy(dbname, index.dbname, index.dbname_len);
+				dbname[index.dbname_len] = 0;
+				if(strcmp(dbname, table) == 0) {
+					char** list = malloc(sizeof(*list));
+					list[0] = NULL;
+					int j;
+					int start = 1;
+					for(j = 1;; j++) {
+						if(index.fields[j] == 0) {
+							char* nam = malloc(j - start + 1);
+							nam[start - j] = 0;
+							memcpy(nam, index.fields + start, j - start);
+							int k;
+							for(k = 0; list[k] != NULL; k++)
+								;
+							char** newlist = malloc(sizeof(*newlist) * (k + 2));
+							for(k = 0; list[k] != NULL; k++) newlist[k] = list[k];
+							newlist[k] = nam;
+							newlist[k + 1] = NULL;
+							free(list);
+							list = newlist;
+							j++;
+							start = j + 1;
+							if(index.fields[j] == 0) break;
+						}
+					}
+					free(dbname);
+					free(buf);
+					__dw_unlockfile(db->fp);
+					return list;
+				}
+				free(dbname);
+			}
+		}
+		free(buf);
+		__dw_unlockfile(db->fp);
+	}
+	return NULL;
+}
