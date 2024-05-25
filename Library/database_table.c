@@ -146,8 +146,5 @@ char** dataworks_database_get_table_list(struct dataworks_db* db) {
 		free(buf);
 		__dw_unlockfile(db->fp);
 		return list;
-	} else {
-		/* Not implemented for the version */
-		return NULL;
 	}
 }
