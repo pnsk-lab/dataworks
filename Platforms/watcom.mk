@@ -31,4 +31,4 @@ dosbox: no-doc
 	echo "exit" >> dosbox.conf
 	if [ ! -e "dos4gw.exe" ]; then wget "https://github.com/yetmorecode/dos32a-ng/releases/download/9.1.2/DOS32ANG.EXE" -O dos4gw.exe ; fi
 	dosbox
-	rm op.txt
+	rm op.txt dos4gw.exe dosbox.conf
