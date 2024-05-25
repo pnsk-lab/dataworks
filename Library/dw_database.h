@@ -139,6 +139,56 @@ enum DW_ERRORS {
 
 /**
  * @~english
+ * @brief Type enum
+ * 
+ */
+enum DW_RECORD_TYPES {
+	/**
+	 * @~english
+	 * @brief String
+	 *
+	 */
+	DW_RECORD_STRING = 'C',
+
+	/**
+	 * @~english
+	 * @brief Integer
+	 *
+	 */
+	DW_RECORD_INTEGER = 'I',
+
+	/**
+	 * @~english
+	 * @brief Double
+	 * 
+	 */
+	DW_RECORD_DOUBLE = 'D',
+
+	/**
+	 * @~english
+	 * @brief Logical
+	 * 
+	 */
+	DW_RECORD_LOGICAL = 'L',
+
+	/**
+	 * @~english
+	 * @brief HELP
+	 * 
+	 */
+	DW_RECORD_HELP = '?',
+};
+
+/*
+| String | `S` | ASCII | |
+| Integer | `I` | uint64\_t | |
+| Double | `D` | double | |
+| Logical | `L` | uint8\_t | 0 for false, other value for true |
+| Help | `?` | ASCII | Should be just ignored |
+*/
+
+/**
+ * @~english
  * @brief Database struct
  *
  */
@@ -189,14 +239,15 @@ struct dataworks_db {
 /**
  * @~english
  * @brief Database record struct
- *
+
  */
 struct dataworks_db_record {
 	/**
 	 * @~english
-	 * @brief Type. See enum DW
+	 * @brief Type. See enum DW_RECORD_TYPES.
+	 * 
 	 */
-
+	char type;
 };
 
 /**
