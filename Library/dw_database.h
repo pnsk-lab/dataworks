@@ -188,6 +188,19 @@ struct dataworks_db {
 
 /**
  * @~english
+ * @brief Database record struct
+ *
+ */
+struct dataworks_db_record {
+	/**
+	 * @~english
+	 * @brief Type. See enum DW
+	 */
+
+};
+
+/**
+ * @~english
  * @brief Database result struct
  *
  */
