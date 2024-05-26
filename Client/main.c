@@ -43,6 +43,16 @@
 HANDLE winstdout;
 #endif
 
+#if defined(__WATCOMC__) || defined(__MINGW32__)
+#define LONGOPT_PREFIX "/"
+#define SHORTOPT_PREFIX "/"
+#define OPT_CHAR '/'
+#else
+#define LONGOPT_PREFIX "--"
+#define SHORTOPT_PREFIX "-"
+#define OPT_CHAR '-'
+#endif
+
 void padleft(int leftpad, const char* str) {
 	char* spaces = malloc(leftpad - strlen(str) + 1);
 	memset(spaces, ' ', leftpad - strlen(str));
@@ -60,22 +70,22 @@ int main(int argc, char** argv) {
 	const char* fname = NULL;
 	const char* fprog = NULL;
 	for(i = 1; i < argc; i++) {
-		if(argv[i][0] == '-') {
-			if(strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-V") == 0) {
+		if(argv[i][0] == OPT_CHAR) {
+			if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "version") || strcmp(argv[i], SHORTOPT_PREFIX "V") == 0) {
 				printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 				return 0;
-			} else if(strcmp(argv[i], "--create") == 0 || strcmp(argv[i], "-C") == 0) {
+			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "create") || strcmp(argv[i], SHORTOPT_PREFIX "C") == 0) {
 				create = true;
-			} else if(strcmp(argv[i], "--noclear") == 0 || strcmp(argv[i], "-NC") == 0) {
+			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "noclear") || strcmp(argv[i], SHORTOPT_PREFIX "NC") == 0) {
 				clear = false;
-			} else if(strcmp(argv[i], "--quiet") == 0 || strcmp(argv[i], "-q") == 0) {
+			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "quiet") || strcmp(argv[i], SHORTOPT_PREFIX "q") == 0) {
 				banner = false;
 				log = false;
-			} else if(strcmp(argv[i], "--nobanner") == 0 || strcmp(argv[i], "-NB") == 0) {
+			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "nobanner") || strcmp(argv[i], SHORTOPT_PREFIX "NB") == 0) {
 				banner = false;
-			} else if(strcmp(argv[i], "--nolog") == 0 || strcmp(argv[i], "-NL") == 0) {
+			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "nolog") || strcmp(argv[i], SHORTOPT_PREFIX "NL") == 0) {
 				log = false;
-			} else if(strcmp(argv[i], "-f") == 0) {
+			} else if(strcmp(argv[i], SHORTOPT_PREFIX "f") == 0) {
 				fprog = argv[i + 1];
 				i++;
 			} else {
