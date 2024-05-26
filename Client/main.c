@@ -37,6 +37,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#ifdef __MINGW32__
+#include <locale.h>
+#endif
 
 #ifdef __MINGW32__
 #include <windows.h>
@@ -62,6 +65,9 @@ void padleft(int leftpad, const char* str) {
 }
 
 int main(int argc, char** argv) {
+#ifdef __MINGW32__
+	setlocale(LC_ALL, "");
+#endif
 	int i;
 	bool clear = true;
 	bool create = false;
