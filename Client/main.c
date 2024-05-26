@@ -215,7 +215,22 @@ int main(int argc, char** argv) {
 							;
 						printf("%d table(s) found.\n", i);
 						for(i = 0; list[i] != NULL; i++) {
-							printf("  %s\n", list[i]);
+							printf("  %s: ", list[i]);
+							fflush(stdout);
+							char** fields = dataworks_database_get_table_fields(db, list[i]);
+							if(fields != NULL) {
+								int j;
+								for(j = 0; fields[j] != NULL; j++) {
+									printf("%s ", fields[j]);
+									fflush(stdout);
+									free(fields[j]);
+								}
+								free(fields);
+							} else {
+								printf("(failed to get)");
+								fflush(stdout);
+							}
+							printf("\n");
 							free(list[i]);
 						}
 						free(list);

@@ -172,7 +172,7 @@ char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* 
 					for(j = 1;; j++) {
 						if(index.fields[j] == 0) {
 							char* nam = malloc(j - start + 1);
-							nam[start - j] = 0;
+							nam[j - start] = 0;
 							memcpy(nam, index.fields + start, j - start);
 							int k;
 							for(k = 0; list[k] != NULL; k++)
