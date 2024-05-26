@@ -156,3 +156,28 @@ void dataworks_database_free(struct dataworks_db* db) {
 	}
 	free(db);
 }
+
+int dataworks_database_use_table(struct dataworks_db* db, const char* table) {
+	int errnum = DW_ERR_SUCCESS;
+	if(db->name != NULL) free(db->name);
+	bool has = false;
+	char** names = dataworks_database_get_table_list(db);
+	if(names != NULL) {
+		int k;
+		for(k = 0; names[k] != NULL; k++) {
+			if(strcmp(names[k], table) == 0) {
+				has = true;
+			}
+			free(names[k]);
+		}
+		free(names);
+		if(has) {
+			db->name = __dw_strdup(table);
+		} else {
+			errnum = DW_ERR_NOT_USED;
+		}
+	} else {
+		errnum = DW_ERR_PARSER_NULL;
+	}
+	return errnum;
+}

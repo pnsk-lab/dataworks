@@ -195,31 +195,11 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 						r->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
 						break;
 					}
-					if(db->name != NULL) free(db->name);
-					bool has = false;
-					char** names = dataworks_database_get_table_list(db);
-					if(names != NULL) {
-						int k;
-						for(k = 0; names[k] != NULL; k++) {
-							if(strcmp(names[k], results[j]->value) == 0) {
-								has = true;
-							}
-							free(names[k]);
-						}
-						free(names);
-						if(has) {
-							db->name = __dw_strdup(results[j]->value);
-							set = true;
-							if(dolog) {
-								printf("Using table `%s'.\n", db->name);
-							}
-						} else {
-							r->error = true;
-							r->errnum = DW_ERR_NOT_USED;
-						}
-					} else {
+					r->errnum = dataworks_database_use_table(db, results[j]->value);
+					if(r->errnum != DW_ERR_SUCCESS) {
 						r->error = true;
-						r->errnum = DW_ERR_PARSER_NULL;
+					} else if(dolog) {
+						printf("Using table `%s`.\n", results[j]->value);
 					}
 				}
 			}
@@ -241,6 +221,15 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 					r->error = true;
 					r->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 				} else {
+					double dn = 123123;
+					int64_t in = 123123;
+					void* data[3] = {"data", &dn, &in};
+					struct dataworks_db_result* dbr = dataworks_database_insert_record(db, data, "SSS");
+					if(dbr->error) {
+						r->error = true;
+						r->errnum = dbr->errnum;
+					}
+					dataworks_database_free_result(dbr);
 				}
 			}
 		} else {

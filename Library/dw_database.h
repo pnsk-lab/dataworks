@@ -57,15 +57,15 @@ extern "C" {
 	memcpy(&dbent.flag, buf, 1); \
 	uint64_t be; \
 	memcpy(&be, buf + 1, 8); \
-	__dw_native_endian(be, uint64_t, index.length = __converted); \
+	__dw_native_endian(be, uint64_t, dbent.length = __converted); \
 	memcpy(&be, buf + 1 + 8, 8); \
-	__dw_native_endian(be, uint64_t, index.size = __converted); \
-	memcpy(&dbent.field_index, 1 + 8 + 8, 1); \
-	memcpy(&dbent.db_index, 1 + 8 + 8 + 1, 1); \
+	__dw_native_endian(be, uint64_t, dbent.size = __converted); \
+	memcpy(&dbent.field_index, buf + 1 + 8 + 8, 1); \
+	memcpy(&dbent.db_index, buf + 1 + 8 + 8 + 1, 1); \
 	memcpy(&be, buf + 1 + 8 + 8 + 1 + 1, 8); \
-	__dw_native_endian(be, uint64_t, index.count = __converted); \
+	__dw_native_endian(be, uint64_t, dbent.count = __converted); \
 	memcpy(&be, buf + 1 + 8 + 8 + 1 + 1 + 8, 8); \
-	__dw_native_endian(be, uint64_t, index.fragnum = __converted);
+	__dw_native_endian(be, uint64_t, dbent.fragnum = __converted);
 
 /**
  * @~english
@@ -201,7 +201,7 @@ enum DW_RECORD_TYPES {
 
 	/**
 	 * @~english
-	 * @brief HELP
+	 * @brief Help
 	 *
 	 */
 	DW_RECORD_HELP = '?',
@@ -262,20 +262,6 @@ struct dataworks_db {
 	 *
 	 */
 	char* name;
-};
-
-/**
- * @~english
- * @brief Database record struct
-
- */
-struct dataworks_db_record {
-	/**
-	 * @~english
-	 * @brief Type. See enum DW_RECORD_TYPES.
-	 *
-	 */
-	char type;
 };
 
 /**
@@ -466,6 +452,16 @@ char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* 
 
 /**
  * @~english
+ * @brief Get the field types of the table of the database.
+ * @param db Database
+ * @param table Table name
+ * @return Field types of the table
+ *
+ */
+char* dataworks_database_get_table_field_types(struct dataworks_db* db, const char* table);
+
+/**
+ * @~english
  * @brief Creates a table.
  * @param db Database
  * @param name Table name
@@ -531,12 +527,23 @@ void dataworks_database_free_result(struct dataworks_db_result* result);
  * @brief Inserts the record.
  * @param db Database
  * @param records Records
+ * @param fields Fields in binary
  * @param prop List which contains character `U` or `S`
  * `U` indicates the field is unset
+ * `S` indicates the field is set
  * @return Result
  *
  */
-struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, char** fields, const char* prop);
+struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** fields, const char* prop);
+
+/**
+ * @~english
+ * @param db Database
+ * @param table Table name
+ * @return Result
+ *
+ */
+int dataworks_database_use_table(struct dataworks_db* db, const char* table);
 
 #ifdef __cplusplus
 }

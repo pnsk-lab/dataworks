@@ -27,3 +27,64 @@
 /* --- END LICENSE --- */
 
 #include "dw_database.h"
+
+#include "dw_util.h"
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void __dw_add_record(struct dataworks_db* db, uint64_t index, void* _data, uint64_t size, bool set) {
+	uint8_t* data = _data;
+	__dw_lockfile(db->fp);
+	if(db->version == 1) {
+		char* buf = malloc(1 + 8 + 8 + 1 + 1 + 8 + 8);
+		fseek(db->fp, 3 + 2 + 8 + (1 + 8 + 1 + 256 + 4096) * 256, SEEK_SET);
+		struct dataworks_db_v1_dbentry dbentry;
+		while(1) {
+			fread(buf, 1, 1 + 8 + 8 + 1 + 1 + 8 + 8, db->fp);
+			__dw_buffer_to_db_v1_dbentry(buf, dbentry);
+			if(feof(db->fp)) break;
+			if(!(dbentry.flag & DATAWORKS_V1_DBENTRY_USED)) {
+				fseek(db->fp, -(1 + 8 + 8 + 1 + 1 + 8 + 8), SEEK_CUR);
+				buf[0] |= DATAWORKS_V1_DBENTRY_USED;
+				fwrite(buf, 1, 1 + 8 + 8 + 1 + 1 + 8 + 8, db->fp);
+			}
+			fseek(db->fp, dbentry.size, SEEK_CUR);
+		}
+		free(buf);
+	}
+	__dw_unlockfile(db->fp);
+}
+
+struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** fields, const char* prop) {
+	struct dataworks_db_result* r = malloc(sizeof(*r));
+	r->error = false;
+	int i;
+	char* types = dataworks_database_get_table_field_types(db, db->name);
+	for(i = 0; prop[i] != 0; i++)
+		;
+	if(strlen(types) != i) {
+		r->error = true;
+		r->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+		return r;
+	}
+	for(i = 0; prop[i] != 0; i++) {
+		uint64_t entsize = 0;
+		if(types[i] == DW_RECORD_STRING) {
+			entsize = strlen(fields[i]);
+		} else if(types[i] == DW_RECORD_INTEGER) {
+			entsize = 8;
+		} else if(types[i] == DW_RECORD_DOUBLE) {
+			entsize = sizeof(double);
+		} else if(types[i] == DW_RECORD_LOGICAL) {
+			entsize = 1;
+		} else if(types[i] == DW_RECORD_HELP) {
+			entsize = strlen(fields[i]);
+		}
+		__dw_add_record(db, i, fields[i], entsize, prop[i] == 'S');
+	}
+	return r;
+}
