@@ -2,7 +2,7 @@
 
 COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)" PLATFORM_M="$(PLATFORM_M)" PLATFORM_P="$(PLATFORM_P)" STATICLIB_PREFIX="$(STATICLIB_PREFIX)" STATICLIB_SUFFIX="$(STATICLIB_SUFFIX)" AR="$(AR)" RANLIB="$(RANLIB)" SHCC="$(SHCC)" LINK_LIB="$(LINK_LIB)" AR_ARGS="$(AR_ARGS)"
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document archive archive-prepare archive-cleanup archive-targz archive-zip dosbox
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox
 
 all: ./Library ./Client ./Document
 
@@ -87,4 +87,11 @@ prepare-dosbox: no-doc
 
 dosbox: prepare-dosbox
 	dosbox
-	rm op.txt dosbox.conf
+	$(MAKE) cleanup-dosbox
+
+dosbox-x: prepare-dosbox
+	dosbox-x -conf dosbox.conf
+	$(MAKE) cleanup-dosbox
+
+cleanup-dosbox:
+	rm -f op.txt dosbox.conf
