@@ -135,6 +135,13 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_NOT_USED,
+
+	/**
+	 * @~english
+	 * @brief Too many tables
+	 *
+	 */
+	DW_ERR_TOO_MANY_TABLES,
 };
 
 /**

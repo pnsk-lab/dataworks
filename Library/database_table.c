@@ -72,6 +72,7 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
 		int i;
 		struct dataworks_db_v1_indexentry index;
 		char* buf = malloc(1 + 8 + 1 + 256 + 4096);
+		int cnt = 0;
 		for(i = 0; i < 256; i++) {
 			fread(buf, 1, 1 + 8 + 1 + 256 + 4096, db->fp);
 			__dw_buffer_to_db_v1_indexentry(buf, index);
@@ -85,7 +86,13 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
 					__dw_unlockfile(db->fp);
 					return DW_ERR_USED;
 				}
+				cnt++;
 			}
+		}
+		if(cnt == 256) {
+			free(buf);
+			__dw_unlockfile(db->fp);
+			return DW_ERR_TOO_MANY_TABLES;
 		}
 		fseek(db->fp, 3 + 10, SEEK_SET);
 		for(i = 0; i < 256; i++) {
