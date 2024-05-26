@@ -69,7 +69,7 @@ archive:
 	-$(MAKE) archive-zip PREP=NO
 	$(MAKE) archive-cleanup
 
-dosbox: no-doc
+prepare-dosbox: no-doc
 	echo 'create_table("test", "string:key", "double:value");' > op.txt
 	echo '.tables' >> op.txt
 	echo "[cpu]" > dosbox.conf
@@ -84,5 +84,7 @@ dosbox: no-doc
 	echo "del dw.exe" >> dosbox.conf
 	echo "exit" >> dosbox.conf
 	if [ ! -e "dos4gw.exe" ]; then wget "https://github.com/yetmorecode/dos32a-ng/releases/download/9.1.2/DOS32ANG.EXE" -O dos4gw.exe ; fi
+
+dosbox: prepare-dosbox
 	dosbox
 	rm op.txt dosbox.conf
