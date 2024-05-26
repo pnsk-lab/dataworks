@@ -53,6 +53,20 @@ extern "C" {
 	memcpy(index.dbname, buf + 1 + 8 + 1, 256); \
 	memcpy(index.fields, buf + 1 + 8 + 1 + 256, 4096);
 
+#define __dw_buffer_to_db_v1_dbentry(buf, dbent) \
+	memcpy(&dbent.flag, buf, 1); \
+	uint64_t be; \
+	memcpy(&be, buf + 1, 8); \
+	__dw_native_endian(be, uint64_t, index.length = __converted); \
+	memcpy(&be, buf + 1 + 8, 8); \
+	__dw_native_endian(be, uint64_t, index.size = __converted); \
+	memcpy(&dbent.field_index, 1 + 8 + 8, 1); \
+	memcpy(&dbent.db_index, 1 + 8 + 8 + 1, 1); \
+	memcpy(&be, buf + 1 + 8 + 8 + 1 + 1, 8); \
+	__dw_native_endian(be, uint64_t, index.count = __converted); \
+	memcpy(&be, buf + 1 + 8 + 8 + 1 + 1 + 8, 8); \
+	__dw_native_endian(be, uint64_t, index.fragnum = __converted);
+
 /**
  * @~english
  * @brief Error enum
@@ -142,6 +156,13 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_TOO_MANY_TABLES,
+
+	/**
+	 * @~english
+	 * @brief Database not selected
+	 *
+	 */
+	DW_ERR_DATABASE_NOT_SELECTED,
 };
 
 /**
@@ -301,11 +322,52 @@ struct dataworks_db_v1_indexentry {
 
 /**
  * @~english
+ * @brief `dbentry` for v1 database.
+ * @note See \ref FORMATv1 for more info.
+ *
+ */
+struct dataworks_db_v1_dbentry {
+	uint8_t flag;
+	uint64_t length;
+	uint64_t size;
+	uint8_t field_index;
+	uint8_t db_index;
+	uint64_t count;
+	uint64_t fragnum;
+	uint8_t* data;
+};
+
+/**
+ * @~english
  * @brief "Used" bitmask for indexentry for v1 database.
  * @note See \ref FORMATv1 for more info.
  *
  */
 #define DATAWORKS_V1_INDEXENTRY_USED (1 << 7)
+
+/**
+ * @~english
+ * @brief "Used" bitmask for dbentry for v1 database.
+ * @note See \ref FORMATv1 for more info.
+ *
+ */
+#define DATAWORKS_V1_DBENTRY_USED (1 << 7)
+
+/**
+ * @~english
+ * @brief "Fragment" bitmask for dbentry for v1 database.
+ * @note See \ref FORMATv1 for more info.
+ *
+ */
+#define DATAWORKS_V1_DBENTRY_FRAGMENT (1 << 6)
+
+/**
+ * @~english
+ * @brief "Unset" bitmask for dbentry for v1 database.
+ * @note See \ref FORMATv1 for more info.
+ *
+ */
+#define DATAWORKS_V1_DBENTRY_UNSET (1 << 5)
 
 /**
  * @~english
@@ -463,6 +525,18 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
  *
  */
 void dataworks_database_free_result(struct dataworks_db_result* result);
+
+/**
+ * @~english
+ * @brief Inserts the record.
+ * @param db Database
+ * @param records Records
+ * @param prop List which contains character `U` or `S`
+ * `U` indicates the field is unset
+ * @return Result
+ *
+ */
+struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, char** fields, const char* prop);
 
 #ifdef __cplusplus
 }

@@ -16,20 +16,21 @@ Database entry (`dbentry`) MUST be in this format:
 
 | Name | Size | Type | Info |
 | ---- | ---- | ---- | ---- |
-| length | 4 bytes | uint32\_t | Size of the entry |
-| size | 4 bytes | uint32\_t | |
 | flag | 1 byte | uint8\_t | |
+| length | 8 bytes | uint64\_t | Size of the entry |
+| size | 8 bytes | uint64\_t | |
 | field\_index | 1 byte | uint8\_t | |
 | db\_index | 1 byte | uint8\_t | |
 | count | 8 bytes | uint64\_t | |
 | fragnum | 8 bytes | uint64\_t | |
-| data | \[size\] bytes | ASCII | |
+| data | \[size\] bytes | Binary | |
 
 and 2 flags for `dbentry`:
 | Type | Mask | Info |
 | ---- | ---- | ---- |
 | Used | 0b10000000 | Flag this if you are using the entry. |
 | Fragment | 0b01000000 | Flag this if the entry is fragment. |
+| Unset | 0b00100000 | Flag this if the entry is unset. |
 
 Index entry (`indexentry`) MUST be in this format:
 | Name | Size | Type | Info |

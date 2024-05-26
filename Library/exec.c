@@ -223,6 +223,26 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 					}
 				}
 			}
+		} else if(__dw_strcaseequ(token->name, "insert")) {
+			if(db->name == NULL) {
+				r->error = true;
+				r->errnum = DW_ERR_DATABASE_NOT_SELECTED;
+			} else {
+				argc = 0;
+				int first = -1;
+				int j;
+				for(j = 0; results[j] != NULL; j++) {
+					if(results[j]->value != NULL) {
+						argc++;
+						if(first == -1) first = j;
+					}
+				}
+				if(argc == 0) {
+					r->error = true;
+					r->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+				} else {
+				}
+			}
 		} else {
 			r->error = true;
 			r->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
