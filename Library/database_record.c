@@ -36,9 +36,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-void __dw_add_record(struct dataworks_db* db, uint64_t index, void* _data, uint64_t size, bool set) {
+void __dw_add_record(struct dataworks_db* db, uint64_t dbindex, uint64_t index, void* _data, uint64_t size, bool set) {
 	uint8_t* data = _data;
-	__dw_lockfile(db->fp);
+	int fragnum = 0;
+	__dw_lockfile(db);
 	if(db->version == 1) {
 		char* buf = malloc(1 + 8 + 8 + 1 + 1 + 8 + 8);
 		fseek(db->fp, 3 + 2 + 8 + (1 + 8 + 1 + 256 + 4096) * 256, SEEK_SET);
@@ -50,19 +51,39 @@ void __dw_add_record(struct dataworks_db* db, uint64_t index, void* _data, uint6
 			if(!(dbentry.flag & DATAWORKS_V1_DBENTRY_USED)) {
 				fseek(db->fp, -(1 + 8 + 8 + 1 + 1 + 8 + 8), SEEK_CUR);
 				buf[0] |= DATAWORKS_V1_DBENTRY_USED;
+				if(dbentry.size <= size) {
+					if(dbentry.size < size) buf[0] |= DATAWORKS_V1_DBENTRY_FRAGMENT;
+					__dw_big_endian(dbentry.size, uint64_t, memcpy(buf + 1, __converted_ptr, 8));
+					buf[1 + 8 + 8] = index;
+					buf[1 + 8 + 8 + 1] = dbindex;
+					__dw_big_endian(fragnum, uint64_t, memcpy(buf + 1 + 8 + 8 + 1 + 1 + 8, __converted_ptr, 8));
+					fragnum++;
+					size -= dbentry.size;
+				}
 				fwrite(buf, 1, 1 + 8 + 8 + 1 + 1 + 8 + 8, db->fp);
 			}
 			fseek(db->fp, dbentry.size, SEEK_CUR);
 		}
 		free(buf);
 	}
-	__dw_unlockfile(db->fp);
+	__dw_unlockfile(db);
 }
 
 struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** fields, const char* prop) {
 	struct dataworks_db_result* r = malloc(sizeof(*r));
 	r->error = false;
 	int i;
+	char** dbi = dataworks_database_get_table_list(db);
+	uint64_t dbindex;
+	bool set = false;
+	for(i = 0; dbi[i] != NULL; i++) {
+		if(!set && strcmp(dbi[i], db->name) == 0) {
+			dbindex = i;
+			set = true;
+		}
+		free(dbi[i]);
+	}
+	free(dbi);
 	char* types = dataworks_database_get_table_field_types(db, db->name);
 	for(i = 0; prop[i] != 0; i++)
 		;
@@ -84,7 +105,7 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
 		} else if(types[i] == DW_RECORD_HELP) {
 			entsize = strlen(fields[i]);
 		}
-		__dw_add_record(db, i, fields[i], entsize, prop[i] == 'S');
+		__dw_add_record(db, dbindex, i, fields[i], entsize, prop[i] == 'S');
 	}
 	return r;
 }

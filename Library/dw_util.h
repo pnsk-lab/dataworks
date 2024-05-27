@@ -44,12 +44,13 @@ extern "C" {
 #include <stdio.h>
 
 #include "dataworks.h"
+#include "dw_database.h"
 
 char* __dw_strdup(const char* a);
 char* __dw_strcat(const char* a, const char* b);
 bool __dw_strcaseequ(const char* a, const char* b);
-bool __dw_lockfile(FILE* fp);
-bool __dw_unlockfile(FILE* fp);
+bool __dw_lockfile(struct dataworks_db* db);
+bool __dw_unlockfile(struct dataworks_db* db);
 
 #define __dw_xstr(x) #x
 #define __dw_str(x) __dw_xstr(x)

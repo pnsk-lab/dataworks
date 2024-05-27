@@ -37,7 +37,7 @@
 int dataworks_database_delete_table(struct dataworks_db* db, const char* name) {
 	bool rm = false;
 	if(db->version == 1) {
-		__dw_lockfile(db->fp);
+		__dw_lockfile(db);
 		fseek(db->fp, 3 + 10, SEEK_SET);
 		int i;
 		struct dataworks_db_v1_indexentry index;
@@ -59,7 +59,7 @@ int dataworks_database_delete_table(struct dataworks_db* db, const char* name) {
 			}
 		}
 		free(buf);
-		__dw_unlockfile(db->fp);
+		__dw_unlockfile(db);
 	}
 	if(rm) return DW_ERR_SUCCESS;
 	return DW_ERR_NOT_USED;
@@ -67,7 +67,7 @@ int dataworks_database_delete_table(struct dataworks_db* db, const char* name) {
 
 int dataworks_database_create_table(struct dataworks_db* db, const char* name, char** fields, const char* fieldtypes) {
 	if(db->version == 1) {
-		__dw_lockfile(db->fp);
+		__dw_lockfile(db);
 		fseek(db->fp, 3 + 10, SEEK_SET);
 		int i;
 		struct dataworks_db_v1_indexentry index;
@@ -83,7 +83,7 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
 				if(strcmp(name, dbname) == 0) {
 					free(dbname);
 					free(buf);
-					__dw_unlockfile(db->fp);
+					__dw_unlockfile(db);
 					return DW_ERR_USED;
 				}
 				cnt++;
@@ -91,7 +91,7 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
 		}
 		if(cnt == 256) {
 			free(buf);
-			__dw_unlockfile(db->fp);
+			__dw_unlockfile(db);
 			return DW_ERR_TOO_MANY_TABLES;
 		}
 		fseek(db->fp, 3 + 10, SEEK_SET);
@@ -115,7 +115,7 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
 			}
 		}
 		free(buf);
-		__dw_unlockfile(db->fp);
+		__dw_unlockfile(db);
 		dataworks_database_update_mtime(db);
 	}
 	return DW_ERR_SUCCESS;
@@ -123,7 +123,7 @@ int dataworks_database_create_table(struct dataworks_db* db, const char* name, c
 
 char** dataworks_database_get_table_list(struct dataworks_db* db) {
 	if(db->version == 1) {
-		__dw_lockfile(db->fp);
+		__dw_lockfile(db);
 		fseek(db->fp, 3 + 10, SEEK_SET);
 		int i;
 		struct dataworks_db_v1_indexentry index;
@@ -151,14 +151,14 @@ char** dataworks_database_get_table_list(struct dataworks_db* db) {
 		}
 		list[c] = NULL;
 		free(buf);
-		__dw_unlockfile(db->fp);
+		__dw_unlockfile(db);
 		return list;
 	}
 }
 
 char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* table) {
 	if(db->version == 1) {
-		__dw_lockfile(db->fp);
+		__dw_lockfile(db);
 		fseek(db->fp, 3 + 10, SEEK_SET);
 		int i;
 		struct dataworks_db_v1_indexentry index;
@@ -197,21 +197,21 @@ char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* 
 					}
 					free(dbname);
 					free(buf);
-					__dw_unlockfile(db->fp);
+					__dw_unlockfile(db);
 					return list;
 				}
 				free(dbname);
 			}
 		}
 		free(buf);
-		__dw_unlockfile(db->fp);
+		__dw_unlockfile(db);
 	}
 	return NULL;
 }
 
 char* dataworks_database_get_table_field_types(struct dataworks_db* db, const char* table) {
 	if(db->version == 1) {
-		__dw_lockfile(db->fp);
+		__dw_lockfile(db);
 		fseek(db->fp, 3 + 10, SEEK_SET);
 		int i;
 		struct dataworks_db_v1_indexentry index;
@@ -245,14 +245,14 @@ char* dataworks_database_get_table_field_types(struct dataworks_db* db, const ch
 					list[count] = 0;
 					free(dbname);
 					free(buf);
-					__dw_unlockfile(db->fp);
+					__dw_unlockfile(db);
 					return list;
 				}
 				free(dbname);
 			}
 		}
 		free(buf);
-		__dw_unlockfile(db->fp);
+		__dw_unlockfile(db);
 	}
 	return NULL;
 }

@@ -258,10 +258,17 @@ struct dataworks_db {
 
 	/**
 	 * @~english
-	 * @brief Database being used.
+	 * @brief Table which is being used.
 	 *
 	 */
 	char* name;
+
+	/**
+	 * @~english
+	 * @brief Locked or not.
+	 *
+	 */
+	bool locked;
 };
 
 /**

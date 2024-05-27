@@ -93,38 +93,39 @@ struct dataworks_db* dataworks_database_open(const char* fname) {
 	db->error = false;
 	db->fp = NULL;
 	db->name = NULL;
-	FILE* fp = fopen(fname, "rb+");
-	if(fp == NULL) {
+	db->locked = false;
+	db->fp = fopen(fname, "rb+");
+	if(db->fp == NULL) {
 		db->error = true;
 		db->errnum = DW_ERR_FAIL_FOPEN;
 		return db;
 	}
-	fseek(fp, 0, SEEK_SET);
+	fseek(db->fp, 0, SEEK_SET);
 	char readsig[sizeof(sig)];
-	fread(readsig, 1, sizeof(sig), fp);
+	fread(readsig, 1, sizeof(sig), db->fp);
 	if(memcmp(readsig, sig, sizeof(sig)) != 0) {
 		db->error = true;
 		db->errnum = DW_ERR_INVALID_SIGNATURE;
 		return db;
 	}
-	__dw_lockfile(fp);
+	__dw_lockfile(db);
 	char ptrver[8];
-	fread(ptrver, 1, 2, fp);
+	fread(ptrver, 1, 2, db->fp);
 	uint16_t be_ver = *(uint16_t*)(char*)ptrver;
 	uint16_t ver;
 	__dw_native_endian(be_ver, uint16_t, ver = __converted);
-	fread(ptrver, 1, 8, fp);
+	fread(ptrver, 1, 8, db->fp);
 	uint64_t be_mtime = *(uint64_t*)(char*)ptrver;
 	uint64_t mtime;
 	__dw_native_endian(be_mtime, uint64_t, mtime = __converted);
-	__dw_unlockfile(fp);
+	__dw_unlockfile(db);
 	if(ver == 1) {
-		db->fp = fp;
 		db->version = ver;
 		db->mtime = mtime;
 		return db;
 	} else {
-		fclose(fp);
+		fclose(db->fp);
+		db->fp = NULL;
 		db->error = true;
 		db->errnum = DW_ERR_INVALID_VERSION;
 		return db;
@@ -140,11 +141,11 @@ int dataworks_database_get_error_number(struct dataworks_db* db) { return db->er
 const char* dataworks_database_strerror(int n) { return dw_errors[n]; }
 
 void dataworks_database_update_mtime(struct dataworks_db* db) {
-	__dw_lockfile(db->fp);
+	__dw_lockfile(db);
 	fseek(db->fp, 3 + 2, SEEK_SET);
 	int64_t t = time(NULL);
 	__dw_big_endian(t, int64_t, fwrite(__converted_ptr, 1, 8, db->fp));
-	__dw_unlockfile(db->fp);
+	__dw_unlockfile(db);
 }
 
 void dataworks_database_free(struct dataworks_db* db) {

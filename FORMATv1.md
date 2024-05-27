@@ -17,7 +17,7 @@ Database entry (`dbentry`) MUST be in this format:
 | Name | Size | Type | Info |
 | ---- | ---- | ---- | ---- |
 | flag | 1 byte | uint8\_t | |
-| length | 8 bytes | uint64\_t | Size of the entry |
+| length | 8 bytes | uint64\_t | Size of the actual data inside |
 | size | 8 bytes | uint64\_t | |
 | field\_index | 1 byte | uint8\_t | |
 | db\_index | 1 byte | uint8\_t | |
