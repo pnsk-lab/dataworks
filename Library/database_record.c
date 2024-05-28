@@ -51,6 +51,7 @@ void __dw_add_record(struct dataworks_db* db, uint64_t count, uint64_t dbindex, 
 			if(feof(db->fp)) break;
 			if(!(dbentry.flag & DATAWORKS_V1_DBENTRY_USED)) {
 				fseek(db->fp, -(1 + 8 + 8 + 1 + 1 + 8 + 8), SEEK_CUR);
+				buf[0] = 0;
 				buf[0] |= DATAWORKS_V1_DBENTRY_USED;
 				uint64_t writ = 0;
 				if(dbentry.size <= size) {

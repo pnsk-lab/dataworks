@@ -224,7 +224,7 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 					double dn = 123123;
 					int64_t in = 123123;
 					void* data[3];
-					data[0] = "data";
+					data[0] = "dataworks";
 					data[1] = &dn;
 					data[2] = &in;
 					struct dataworks_db_result* dbr = dataworks_database_insert_record(db, data, "SSS");
