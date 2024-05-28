@@ -1,0 +1,12 @@
+id ICON "../dataworks.ico"
+VS_VERSION_INFO VERSIONINFO
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "000004b0"
+		BEGIN
+			VALUE "ProductName", "DataWorks\0"
+		END
+	END
+END
+

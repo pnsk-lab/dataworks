@@ -5,6 +5,7 @@ SHCC = cc
 AR = ar
 AR_ARGS = rcs \$$@
 RANLIB = ranlib
+WINDRES = windres
 CFLAGS = -g -std=c99 -D_DEFAULT_SOURCE
 LDFLAGS = -L`pwd`/Library
 LIBS =
