@@ -552,6 +552,24 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
  */
 int dataworks_database_use_table(struct dataworks_db* db, const char* table);
 
+/**
+ * @~english
+ * @param db Database
+ * @param table Table name
+ * @return Count
+ *
+ */
+uint64_t dataworks_database_get_table_count(struct dataworks_db* db, const char* table);
+
+/**
+ * @~english
+ * @param db Database
+ * @param table Table name
+ * @param count Count
+ *
+ */
+void dataworks_database_set_table_count(struct dataworks_db* db, const char* table, uint64_t count);
+
 #ifdef __cplusplus
 }
 #endif

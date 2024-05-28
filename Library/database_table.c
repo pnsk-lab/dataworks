@@ -209,6 +209,69 @@ char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* 
 	return NULL;
 }
 
+void dataworks_database_set_table_count(struct dataworks_db* db, const char* table, uint64_t count) {
+	if(db->version == 1) {
+		__dw_lockfile(db);
+		fseek(db->fp, 3 + 10, SEEK_SET);
+		int i;
+		struct dataworks_db_v1_indexentry index;
+		char* buf = malloc(1 + 8 + 1 + 256 + 4096);
+		int c = 0;
+		for(i = 0; i < 256; i++) {
+			fread(buf, 1, 1 + 8 + 1 + 256 + 4096, db->fp);
+			__dw_buffer_to_db_v1_indexentry(buf, index);
+			if(index.flag & DATAWORKS_V1_INDEXENTRY_USED) {
+				char* dbname = malloc(index.dbname_len + 1);
+				memcpy(dbname, index.dbname, index.dbname_len);
+				dbname[index.dbname_len] = 0;
+				if(strcmp(dbname, table) == 0) {
+					__dw_big_endian(count, uint64_t, memcpy(buf + 1, __converted_ptr, 8));
+					fseek(db->fp, -(1 + 8 + 1 + 256 + 4096), SEEK_CUR);
+					fwrite(buf, 1, 1 + 8 + 1 + 256 + 4096, db->fp);
+					free(dbname);
+					free(buf);
+					__dw_unlockfile(db);
+					return;
+				}
+				free(dbname);
+			}
+		}
+		free(buf);
+		__dw_unlockfile(db);
+	}
+}
+
+uint64_t dataworks_database_get_table_count(struct dataworks_db* db, const char* table) {
+	if(db->version == 1) {
+		__dw_lockfile(db);
+		fseek(db->fp, 3 + 10, SEEK_SET);
+		int i;
+		struct dataworks_db_v1_indexentry index;
+		char* buf = malloc(1 + 8 + 1 + 256 + 4096);
+		int c = 0;
+		for(i = 0; i < 256; i++) {
+			fread(buf, 1, 1 + 8 + 1 + 256 + 4096, db->fp);
+			__dw_buffer_to_db_v1_indexentry(buf, index);
+			if(index.flag & DATAWORKS_V1_INDEXENTRY_USED) {
+				char* dbname = malloc(index.dbname_len + 1);
+				memcpy(dbname, index.dbname, index.dbname_len);
+				dbname[index.dbname_len] = 0;
+				if(strcmp(dbname, table) == 0) {
+					free(dbname);
+					free(buf);
+					__dw_unlockfile(db);
+					return index.count;
+				}
+				free(dbname);
+			}
+		}
+		free(buf);
+		__dw_unlockfile(db);
+	} else {
+		return 0;
+	}
+}
+
 char* dataworks_database_get_table_field_types(struct dataworks_db* db, const char* table) {
 	if(db->version == 1) {
 		__dw_lockfile(db);

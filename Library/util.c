@@ -68,7 +68,7 @@ bool __dw_lockfile(struct dataworks_db* db) {
 	}
 	off_t off = ftell(db->fp);
 	fseek(db->fp, 0, SEEK_SET);
-#if defined(DOS)
+#if defined(__WATCOMC__)
 
 #elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};
@@ -88,7 +88,7 @@ bool __dw_unlockfile(struct dataworks_db* db) {
 	off_t off = ftell(db->fp);
 	fseek(db->fp, 0, SEEK_SET);
 	fflush(db->fp);
-#if defined(DOS)
+#if defined(__WATCOMC__)
 
 #elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};

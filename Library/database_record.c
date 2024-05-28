@@ -36,9 +36,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-void __dw_add_record(struct dataworks_db* db, uint64_t dbindex, uint64_t index, void* _data, uint64_t size, bool set) {
+void __dw_add_record(struct dataworks_db* db, uint64_t count, uint64_t dbindex, uint64_t index, void* _data, uint64_t size, bool set) {
 	uint8_t* data = _data;
-	int fragnum = 0;
+	uint64_t fragnum = 0;
+	uint64_t seekmore = 0;
 	__dw_lockfile(db);
 	if(db->version == 1) {
 		char* buf = malloc(1 + 8 + 8 + 1 + 1 + 8 + 8);
@@ -51,18 +52,40 @@ void __dw_add_record(struct dataworks_db* db, uint64_t dbindex, uint64_t index, 
 			if(!(dbentry.flag & DATAWORKS_V1_DBENTRY_USED)) {
 				fseek(db->fp, -(1 + 8 + 8 + 1 + 1 + 8 + 8), SEEK_CUR);
 				buf[0] |= DATAWORKS_V1_DBENTRY_USED;
+				uint64_t writ = 0;
 				if(dbentry.size <= size) {
-					if(dbentry.size < size) buf[0] |= DATAWORKS_V1_DBENTRY_FRAGMENT;
-					__dw_big_endian(dbentry.size, uint64_t, memcpy(buf + 1, __converted_ptr, 8));
-					buf[1 + 8 + 8] = index;
-					buf[1 + 8 + 8 + 1] = dbindex;
-					__dw_big_endian(fragnum, uint64_t, memcpy(buf + 1 + 8 + 8 + 1 + 1 + 8, __converted_ptr, 8));
-					fragnum++;
-					size -= dbentry.size;
+					writ = dbentry.size;
+				} else {
+					writ = size;
 				}
+				if(dbentry.size < size) buf[0] |= DATAWORKS_V1_DBENTRY_FRAGMENT;
+				__dw_big_endian(writ, uint64_t, memcpy(buf + 1, __converted_ptr, 8));
+				buf[1 + 8 + 8] = index;
+				buf[1 + 8 + 8 + 1] = dbindex;
+				__dw_big_endian(count, uint64_t, memcpy(buf + 1 + 8 + 8 + 1 + 1, __converted_ptr, 8));
+				__dw_big_endian(fragnum, uint64_t, memcpy(buf + 1 + 8 + 8 + 1 + 1 + 8, __converted_ptr, 8));
+				fragnum++;
 				fwrite(buf, 1, 1 + 8 + 8 + 1 + 1 + 8 + 8, db->fp);
+				fwrite(data + seekmore, 1, writ, db->fp);
+				fseek(db->fp, dbentry.size - writ, SEEK_CUR);
+				size -= writ;
+				seekmore += writ;
+				if(size == 0) break;
+			} else {
+				fseek(db->fp, dbentry.size, SEEK_CUR);
 			}
-			fseek(db->fp, dbentry.size, SEEK_CUR);
+		}
+		if(size > 0) {
+			uint8_t flag = DATAWORKS_V1_DBENTRY_USED;
+			if(seekmore > 0) flag |= DATAWORKS_V1_DBENTRY_FRAGMENT;
+			fwrite(&flag, 1, 1, db->fp);
+			__dw_big_endian(size, uint64_t, fwrite(__converted_ptr, 1, 8, db->fp));
+			__dw_big_endian(size, uint64_t, fwrite(__converted_ptr, 1, 8, db->fp));
+			__dw_big_endian(index, uint8_t, fwrite(__converted_ptr, 1, 1, db->fp));
+			__dw_big_endian(dbindex, uint8_t, fwrite(__converted_ptr, 1, 1, db->fp));
+			__dw_big_endian(count, uint64_t, fwrite(__converted_ptr, 1, 8, db->fp));
+			__dw_big_endian(fragnum, uint64_t, fwrite(__converted_ptr, 1, 8, db->fp));
+			fwrite(data + seekmore, 1, size, db->fp);
 		}
 		free(buf);
 	}
@@ -92,6 +115,8 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
 		r->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 		return r;
 	}
+	__dw_lockfile(db);
+	uint64_t count = dataworks_database_get_table_count(db, db->name);
 	for(i = 0; prop[i] != 0; i++) {
 		uint64_t entsize = 0;
 		if(types[i] == DW_RECORD_STRING) {
@@ -105,7 +130,9 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
 		} else if(types[i] == DW_RECORD_HELP) {
 			entsize = strlen(fields[i]);
 		}
-		__dw_add_record(db, dbindex, i, fields[i], entsize, prop[i] == 'S');
+		__dw_add_record(db, count, dbindex, i, fields[i], entsize, prop[i] == 'S');
 	}
+	dataworks_database_set_table_count(db, db->name, count + 1);
+	__dw_unlockfile(db);
 	return r;
 }
