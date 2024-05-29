@@ -124,7 +124,7 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
 			entsize = strlen(fields[i]);
 		} else if(types[i] == DW_RECORD_INTEGER) {
 			entsize = 8;
-		} else if(types[i] == DW_RECORD_DOUBLE) {
+		} else if(types[i] == DW_RECORD_FLOATING) {
 			entsize = sizeof(double);
 		} else if(types[i] == DW_RECORD_LOGICAL) {
 			entsize = 1;

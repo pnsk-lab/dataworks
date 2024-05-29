@@ -117,15 +117,15 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 							if(val[k] == ':') {
 								val[k] = 0;
 								if(__dw_strcaseequ(val, "string")) {
-									fieldtypes[argc] = 'S';
+									fieldtypes[argc] = DW_RECORD_STRING;
 								} else if(__dw_strcaseequ(val, "integer")) {
-									fieldtypes[argc] = 'I';
-								} else if(__dw_strcaseequ(val, "double")) {
-									fieldtypes[argc] = 'D';
+									fieldtypes[argc] = DW_RECORD_INTEGER;
+								} else if(__dw_strcaseequ(val, "floating")) {
+									fieldtypes[argc] = DW_RECORD_FLOATING;
 								} else if(__dw_strcaseequ(val, "logical")) {
-									fieldtypes[argc] = 'L';
+									fieldtypes[argc] = DW_RECORD_LOGICAL;
 								} else if(__dw_strcaseequ(val, "help")) {
-									fieldtypes[argc] = '?';
+									fieldtypes[argc] = DW_RECORD_HELP;
 								}
 								fields[argc] = __dw_strdup(val + k + 1);
 								argc++;

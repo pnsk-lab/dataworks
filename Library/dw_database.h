@@ -187,10 +187,10 @@ enum DW_RECORD_TYPES {
 
 	/**
 	 * @~english
-	 * @brief Double
+	 * @brief Floating
 	 *
 	 */
-	DW_RECORD_DOUBLE = 'D',
+	DW_RECORD_FLOATING = 'F',
 
 	/**
 	 * @~english
@@ -375,6 +375,69 @@ struct dataworks_db_infoentry {
 
 /**
  * @~english
+ * @brief Record value
+ *
+ */
+union dataworks_db_result_value {
+	/**
+	 * @~english
+	 * @brief Integer
+	 *
+	 */
+	int64_t integer;
+
+	/**
+	 * @~english
+	 * @brief Floating
+	 *
+	 */
+	double floating;
+
+	/**
+	 * @~english
+	 * @brief String
+	 *
+	 */
+	char* string;
+
+	/**
+	 * @~english
+	 * @brief Logical
+	 *
+	 */
+	uint8_t logical;
+
+	/**
+	 * @~english
+	 * @brief Help
+	 *
+	 */
+	char* help;
+};
+
+/**
+ * @~english
+ * @brief Database Record.
+ *
+ */
+struct dataworks_db_record {
+	/**
+	 * @~english
+	 * @brief Record value
+	 *
+	 */
+	union dataworks_db_result_value value;
+
+	/**
+	 * @~english
+	 * @brief Type. See DW_RECORD_TYPES.
+	 *
+	 */
+	char type;
+};
+
+/**
+ * @~english
  * @brief Creates the database.
  * @param fname Filename
  * @return 0 if successful
@@ -545,6 +608,7 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
 
 /**
  * @~english
+ * @brief Select the table.
  * @param db Database
  * @param table Table name
  * @return Result
@@ -554,6 +618,7 @@ int dataworks_database_use_table(struct dataworks_db* db, const char* table);
 
 /**
  * @~english
+ * @brief Get the table count.
  * @param db Database
  * @param table Table name
  * @return Count
@@ -563,6 +628,7 @@ uint64_t dataworks_database_get_table_count(struct dataworks_db* db, const char*
 
 /**
  * @~english
+ * @brief Set the table count.
  * @param db Database
  * @param table Table name
  * @param count Count

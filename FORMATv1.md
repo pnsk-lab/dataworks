@@ -46,7 +46,7 @@ There are 5 types for `indexentry`:
 | ---- | --------- | ---- | ---- |
 | String | `S` | ASCII | |
 | Integer | `I` | int64\_t | |
-| Double | `D` | double | |
+| Floating | `F` | double | |
 | Logical | `L` | uint8\_t | 0 for false, other value for true |
 | Help | `?` | ASCII | Should be just ignored |
 
