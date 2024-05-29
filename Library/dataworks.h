@@ -40,6 +40,8 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 /**
  * @~english
  * @brief Get the version of DataWorks
@@ -79,6 +81,14 @@ char dataworks_get_endian(void);
  *
  */
 const char* dataworks_get_copyright(void);
+
+/**
+ * @~english
+ * @brief Get if your platform is supported or not
+ * @return Supported or not
+ *
+ */
+bool dataworks_get_if_supported(void);
 
 #ifdef __cplusplus
 }

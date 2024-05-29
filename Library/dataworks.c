@@ -28,12 +28,15 @@
 
 #include "dataworks.h"
 
+#include <stdbool.h>
+
 const char* dataworks_version = "0.0.0";
 const char* dataworks_compile_date = __DATE__;
 const char* dataworks_copyright = "Copyright (c) Crabware 2024\n"
 				  "              Crabware is the software-development division of\n"
 				  "              Hinode Gakuen PC-Club. Contact: <nishi@nishi.boats>";
 
+#define SUPPORTED
 #if defined(__MINGW32__)
 const char* dataworks_platform = "Windows/"
 #elif defined(__NetBSD__)
@@ -45,6 +48,7 @@ const char* dataworks_platform = "Linux/"
 #elif defined(__WATCOMC__)
 const char* dataworks_platform = "WatcomC/"
 #else
+#undef SUPPORTED
 const char* dataworks_platform = "Unknown/"
 #endif
     PLATFORM_M " (" PLATFORM_P ")";
@@ -58,3 +62,10 @@ char dataworks_get_endian(void) {
 }
 
 const char* dataworks_get_copyright(void) { return dataworks_copyright; }
+bool dataworks_get_if_supported(void){
+#ifdef SUPPORTED
+	return true;
+#else
+	return false;
+#endif
+}
