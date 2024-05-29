@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
 			printf("This system is big-endian.\n");
 		}
 		printf("\n");
-		if(!dataworks_get_if_supported()){
+		if(!dataworks_get_if_supported()) {
 			printf("!!! THIS PLATFORM IS UNSUPPORTED! !!!\n\n");
 		}
 		printf("%s\n", dataworks_get_copyright());

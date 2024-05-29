@@ -62,7 +62,7 @@ char dataworks_get_endian(void) {
 }
 
 const char* dataworks_get_copyright(void) { return dataworks_copyright; }
-bool dataworks_get_if_supported(void){
+bool dataworks_get_if_supported(void) {
 #ifdef SUPPORTED
 	return true;
 #else

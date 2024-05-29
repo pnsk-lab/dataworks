@@ -100,3 +100,24 @@ bool __dw_unlockfile(struct dataworks_db* db) {
 	db->locked = false;
 	return true;
 }
+
+double __dw_atof(const char* str) {
+	double num = 0;
+	bool pr = false;
+	int i;
+	double mul = 10;
+	for(i = 0; str[i] != 0; i++) {
+		if(str[i] >= '0' && str[i] <= '9') {
+			if(!pr) {
+				num *= 10;
+				num += str[i] - '0';
+			} else {
+				num += (str[i] - '0') / mul;
+				mul *= 10;
+			}
+		} else if(str[i] == '.') {
+			pr = true;
+		}
+	}
+	return str[0] == '-' ? -num : num;
+}

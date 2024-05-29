@@ -51,6 +51,7 @@ char* __dw_strcat(const char* a, const char* b);
 bool __dw_strcaseequ(const char* a, const char* b);
 bool __dw_lockfile(struct dataworks_db* db);
 bool __dw_unlockfile(struct dataworks_db* db);
+double __dw_atof(const char* str);
 
 #define __dw_xstr(x) #x
 #define __dw_str(x) __dw_xstr(x)
