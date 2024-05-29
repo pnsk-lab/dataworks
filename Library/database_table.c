@@ -154,6 +154,7 @@ char** dataworks_database_get_table_list(struct dataworks_db* db) {
 		__dw_unlockfile(db);
 		return list;
 	}
+	return NULL;
 }
 
 char** dataworks_database_get_table_fields(struct dataworks_db* db, const char* table) {
@@ -267,6 +268,7 @@ uint64_t dataworks_database_get_table_count(struct dataworks_db* db, const char*
 		}
 		free(buf);
 		__dw_unlockfile(db);
+		return 0;
 	} else {
 		return 0;
 	}

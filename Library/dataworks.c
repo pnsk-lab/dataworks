@@ -38,6 +38,8 @@ const char* dataworks_copyright = "Copyright (c) Crabware 2024\n"
 const char* dataworks_platform = "Windows/"
 #elif defined(__NetBSD__)
 const char* dataworks_platform = "NetBSD/"
+#elif defined(__FreeBSD__)
+const char* dataworks_platform = "FreeBSD/"
 #elif defined(__linux__)
 const char* dataworks_platform = "Linux/"
 #elif defined(__WATCOMC__)
