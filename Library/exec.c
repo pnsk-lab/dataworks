@@ -221,13 +221,14 @@ struct dataworks_db_result* __dataworks_database_execute_code(struct dataworks_d
 					r->error = true;
 					r->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 				} else {
-					double dn = 123123;
-					int64_t in = 123123;
-					void* data[3];
-					data[0] = "dataworks";
-					data[1] = &dn;
-					data[2] = &in;
-					struct dataworks_db_result* dbr = dataworks_database_insert_record(db, data, "SSS");
+					char* f = dataworks_database_get_table_field_types(db, db->name);
+					void** data = malloc(sizeof(*data) * strlen(f));
+					char* fields = malloc(sizeof(*data) * (strlen(f) + 1));
+					for(j = 0; f[j] != 0; j++) fields[j] = 'U';
+					fields[strlen(f)] = 0;
+					for(j = 0; f[j] != 0; j++) data[j] = "";
+					free(f);
+					struct dataworks_db_result* dbr = dataworks_database_insert_record(db, data, fields);
 					if(dbr->error) {
 						r->error = true;
 						r->errnum = dbr->errnum;
