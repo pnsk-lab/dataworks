@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
 	char* linebuf = malloc(1);
 	linebuf[0] = 0;
 	while(1) {
-		if(fread(&ch, 1, 1, fp) <= 0) break;
+		if((ch = fgetc(fp)) == EOF) break;
 		if(ch == '\n') {
 			if(buf[0] == '.') {
 				if(__dw_strcaseequ(buf, ".bye") || __dw_strcaseequ(buf, ".quit")) {
@@ -294,8 +294,8 @@ int main(int argc, char** argv) {
 			for(i = 0; i < len; i++) {
 				newbuf[i] = buf[i];
 			}
-			newbuf[i] = ch;
-			newbuf[i + 1] = 0;
+			newbuf[len] = ch;
+			newbuf[len + 1] = 0;
 			free(buf);
 			buf = newbuf;
 			len++;
