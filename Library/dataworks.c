@@ -54,9 +54,11 @@ const char* dataworks_platform = "Unknown/"
     PLATFORM_M " (" PLATFORM_P ")";
 
 extern const char* yaccver;
+extern const char* lexver;
 
 const char* dataworks_get_version(void) { return dataworks_version; }
 const char* dataworks_get_yacc_version(void) { return yaccver; }
+const char* dataworks_get_lex_version(void) { return lexver; }
 const char* dataworks_get_compile_date(void) { return dataworks_compile_date; }
 const char* dataworks_get_platform(void) { return dataworks_platform; }
 char dataworks_get_endian(void) {

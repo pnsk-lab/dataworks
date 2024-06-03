@@ -81,6 +81,7 @@ prepare-dosbox: no-doc
 	echo "c:" >> dosbox.conf
 	echo "copy Client\*$(EXEC_SUFFIX) dw$(EXEC_SUFFIX)" >> dosbox.conf
 	echo "dw /NC /f op.txt /create db.dwf" >> dosbox.conf
+	echo "dw /NC /f op.txt db.dwf" >> dosbox.conf
 	echo "pause" >> dosbox.conf
 	echo "del db.dwf" >> dosbox.conf
 	echo "del dw.exe" >> dosbox.conf

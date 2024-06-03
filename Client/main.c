@@ -125,6 +125,7 @@ int main(int argc, char** argv) {
 	if(banner) {
 		printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 		printf("Using Yacc: %s\n", dataworks_get_yacc_version());
+		printf("       Lex: %s\n", dataworks_get_lex_version());
 		if(dataworks_get_endian() == 'L') {
 			printf("This system is little-endian.\n");
 		} else {

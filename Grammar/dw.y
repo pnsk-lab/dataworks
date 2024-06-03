@@ -76,4 +76,6 @@ const char* yaccver = "GNU Bison " YYBISON_VERSION;
 #define XSTR(x) #x
 #define STR(x) XSTR(x)
 const char* yaccver = "Berkeley Yacc " STR(YYMAJOR) "." STR(YYMINOR);
+#else
+const char* yaccver = "Unknown";
 #endif

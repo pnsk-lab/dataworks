@@ -60,6 +60,14 @@ const char* dataworks_get_yacc_version(void);
 
 /**
  * @~english
+ * @brief Get the version of Lex used by DataWorks
+ * @return Lex version of DataWorks
+ *
+ */
+const char* dataworks_get_lex_version(void);
+
+/**
+ * @~english
  * @brief Get the compilation date of DataWorks
  * @return Compilation date of DataWorks
  *

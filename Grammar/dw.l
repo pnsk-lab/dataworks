@@ -55,3 +55,13 @@ extern YYSTYPE yylval;
 [ \t\v]*		{
 	return (SPACE);
 }
+
+%%
+
+#if defined(FLEX_SCANNER)
+#define XSTR(x) #x
+#define STR(x) XSTR(x)
+const char* lexver = "Flex " STR(YY_FLEX_MAJOR_VERSION) "." STR(YY_FLEX_MINOR_VERSION) "." STR(YY_FLEX_SUBMINOR_VERSION);
+#else
+const char* lexver = "Unknown";
+#endif
