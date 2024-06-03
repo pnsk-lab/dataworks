@@ -26,54 +26,54 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#include "dataworks.h"
+%{
+#include "grammersym.h"
+#include <stdio.h>
+%}
 
-#include <stdbool.h>
+%token IDENTIFIER STRING SPACE
+%start command
 
-const char* dataworks_version = "0.0.0";
-const char* dataworks_compile_date = __DATE__;
-const char* dataworks_copyright = "Copyright (c) Crabware 2024\n"
-				  "              Crabware is the software-development division of\n"
-				  "              Hinode Gakuen PC-Club. Contact: <nishi@nishi.boats>";
-
-#define SUPPORTED
-#if defined(__MINGW32__)
-const char* dataworks_platform = "Windows/"
-#elif defined(__NetBSD__)
-const char* dataworks_platform = "NetBSD/"
-#elif defined(__FreeBSD__)
-const char* dataworks_platform = "FreeBSD/"
-#elif defined(__linux__)
-const char* dataworks_platform = "Linux/"
-#elif defined(__WATCOMC__)
-const char* dataworks_platform = "WatcomC/"
-#else
-#undef SUPPORTED
-const char* dataworks_platform = "Unknown/"
-#endif
-    PLATFORM_M " (" PLATFORM_P ")";
-
-extern const char* yaccver;
-
-const char* dataworks_get_version(void) { return dataworks_version; }
-const char* dataworks_get_yacc_version(void) { return yaccver; }
-const char* dataworks_get_compile_date(void) { return dataworks_compile_date; }
-const char* dataworks_get_platform(void) { return dataworks_platform; }
-char dataworks_get_endian(void) {
-	volatile unsigned short n = 1;
-	return *(char*)&n == 1 ? 'L' : 'B';
+%union {
+	char* string;
+	char* ident;
 }
 
-const char* dataworks_get_copyright(void) { return dataworks_copyright; }
+%%
 
-int yywrap() { return 1; }
+argument
+	: STRING {
+		printf("%s\n", $<string>1);
+	}
+	;
 
-int yyerror(const char* err) { return 0; }
+single_argument
+	: SPACE argument SPACE
+	| SPACE argument
+	| argument SPACE
+	| argument
+	;
 
-bool dataworks_get_if_supported(void) {
-#ifdef SUPPORTED
-	return true;
-#else
-	return false;
+arguments
+	: single_argument
+	| arguments ',' single_argument
+	;
+
+command
+	: IDENTIFIER SPACE '(' arguments ')' {
+		printf("%s\n", $<ident>1);
+	}
+	| IDENTIFIER '(' arguments ')' {
+		printf("%s\n", $<ident>1);
+	}
+	;
+
+%%
+
+#if defined(YYBISON)
+const char* yaccver = "GNU Bison " YYBISON_VERSION;
+#elif defined(YYBYACC)
+#define XSTR(x) #x
+#define STR(x) XSTR(x)
+const char* yaccver = "Berkeley Yacc " STR(YYMAJOR) "." STR(YYMINOR);
 #endif
-}

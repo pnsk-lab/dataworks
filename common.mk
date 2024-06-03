@@ -1,14 +1,15 @@
 # $Id$
 
-COMPILE_FLAGS = CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" LIB_PREFIX="$(LIB_PREFIX)" LIB_SUFFIX="$(LIB_SUFFIX)" EXEC_SUFFIX="$(EXEC_SUFFIX)" PLATFORM_M="$(PLATFORM_M)" PLATFORM_P="$(PLATFORM_P)" STATICLIB_PREFIX="$(STATICLIB_PREFIX)" STATICLIB_SUFFIX="$(STATICLIB_SUFFIX)" AR="$(AR)" RANLIB="$(RANLIB)" SHCC="$(SHCC)" LINK_LIB="$(LINK_LIB)" AR_ARGS="$(AR_ARGS)" WINDRES="$(WINDRES)"
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox
+all: ./Grammar ./Library ./Client ./Document
 
-all: ./Library ./Client ./Document
+no-doc: ./Grammar ./Library ./Client
 
-no-doc: ./Library ./Client
+./Grammar::
+	$(MAKE) -C $@ $(COMPILE_FLAGS)
 
-./Library::
+./Library:: ./Grammar
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
 
 ./Client:: ./Library
@@ -20,7 +21,7 @@ no-doc: ./Library ./Client
 FILES = `find . -name "*.c" -or -name "*.h"`
 
 replace:
-	for i in $(FILES); do \
+	for i in $(FILES) ./Grammar/dw.y ./Grammar/dw.l; do \
                 echo -n "$$i ... "; \
                 perl replace.pl < $$i > $$i.new; \
                 mv $$i.new $$i; \
@@ -32,6 +33,7 @@ format:
 
 clean:
 	rm -f *.zip *.tar.gz
+	$(MAKE) -C ./Grammar clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Library clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)

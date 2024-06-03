@@ -26,54 +26,32 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#include "dataworks.h"
+%{
+#include "dw.tab.h"
+#include "grammersym.h"
+#include <string.h>
+extern YYSTYPE yylval;
+%}
 
-#include <stdbool.h>
+%%
 
-const char* dataworks_version = "0.0.0";
-const char* dataworks_compile_date = __DATE__;
-const char* dataworks_copyright = "Copyright (c) Crabware 2024\n"
-				  "              Crabware is the software-development division of\n"
-				  "              Hinode Gakuen PC-Club. Contact: <nishi@nishi.boats>";
-
-#define SUPPORTED
-#if defined(__MINGW32__)
-const char* dataworks_platform = "Windows/"
-#elif defined(__NetBSD__)
-const char* dataworks_platform = "NetBSD/"
-#elif defined(__FreeBSD__)
-const char* dataworks_platform = "FreeBSD/"
-#elif defined(__linux__)
-const char* dataworks_platform = "Linux/"
-#elif defined(__WATCOMC__)
-const char* dataworks_platform = "WatcomC/"
-#else
-#undef SUPPORTED
-const char* dataworks_platform = "Unknown/"
-#endif
-    PLATFORM_M " (" PLATFORM_P ")";
-
-extern const char* yaccver;
-
-const char* dataworks_get_version(void) { return dataworks_version; }
-const char* dataworks_get_yacc_version(void) { return yaccver; }
-const char* dataworks_get_compile_date(void) { return dataworks_compile_date; }
-const char* dataworks_get_platform(void) { return dataworks_platform; }
-char dataworks_get_endian(void) {
-	volatile unsigned short n = 1;
-	return *(char*)&n == 1 ? 'L' : 'B';
+["][^"]*["]		{
+	yylval.string = strdup(yytext + 1);
+	yylval.string[strlen(yylval.string) - 1] = 0;
+	return (STRING);
 }
-
-const char* dataworks_get_copyright(void) { return dataworks_copyright; }
-
-int yywrap() { return 1; }
-
-int yyerror(const char* err) { return 0; }
-
-bool dataworks_get_if_supported(void) {
-#ifdef SUPPORTED
-	return true;
-#else
-	return false;
-#endif
+['][^']*[']		{
+	yylval.string = strdup(yytext + 1);
+	yylval.string[strlen(yylval.string) - 1] = 0;
+	return (STRING);
+}
+[a-zA-Z0-9_\-]+		{
+	yylval.ident = strdup(yytext);
+	return (IDENTIFIER);
+}
+[\(\),]			{
+	return (yytext[0]);
+}
+[ \t\v]*		{
+	return (SPACE);
 }
