@@ -79,7 +79,7 @@ arguments
 		for(i = 0; old_nodes[i] != NULL; i++) $<node>$.nodes[i] = old_nodes[i];
 		$<node>$.nodes[i] = &$<node>3;
 		$<node>$.nodes[i + 1] = NULL;
-		free(old_nodes);
+		free(old_nodes);	
 	}
 	| SPACE
 	| ;
@@ -87,10 +87,10 @@ arguments
 
 command
 	: IDENTIFIER SPACE '(' arguments ')' {
-		printf("%s %p\n", $<node>1.ident, $<node>1.nodes);
+		printf("%s %p\n", $<node>1.ident, $<node>4.nodes);
 	}
 	| IDENTIFIER '(' arguments ')' {
-		printf("%s %p\n", $<node>1.ident, $<node>1.nodes);
+		printf("%s %p\n", $<node>1.ident, $<node>3.nodes);
 	}
 	;
 
