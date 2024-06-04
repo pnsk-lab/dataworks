@@ -35,6 +35,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+void print_node(struct Node* node, bool top) {
+	printf("%s(", node->ident);
+	if(node->nodes != NULL) {
+		int i;
+		for(i = 0; node->nodes[i] != NULL; i++) {
+			if(i > 0) printf(", ");
+			if(node->nodes[i]->ident != NULL) {
+				print_node(node->nodes[i], false);
+			} else {
+				printf("\"%s\"", node->nodes[i]->string);
+			}
+		}
+	}
+	printf(")");
+	if(top) printf("\n");
+}
+
+void parser_process(struct Node* node, bool dolog) {
+	if(node->ident != NULL) {
+		if(dolog) print_node(node, true);
+	}
+}
+
 struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db* db, const char* code, bool dolog) {
 	struct dataworks_db_result* r = malloc(sizeof(*r));
 	r->error = false;
@@ -44,6 +67,8 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
 	if((node = __dw_parser_parse(code, dolog)) == NULL) {
 		r->error = true;
 		r->errnum = DW_ERR_PARSER_FAIL;
+	}else{
+		parser_process(node, dolog);
 	}
 
 	return r;

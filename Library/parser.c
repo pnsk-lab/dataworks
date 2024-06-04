@@ -43,30 +43,6 @@ extern int yyparse(void);
 extern void* yy_scan_string(const char* str);
 extern void yy_delete_buffer(void* buffer);
 
-void print_node(struct Node* node, bool top) {
-	printf("%s(", node->ident);
-	if(node->nodes != NULL) {
-		int i;
-		for(i = 0; node->nodes[i] != NULL; i++) {
-			if(i > 0) printf(", ");
-			if(node->nodes[i]->ident != NULL) {
-				print_node(node->nodes[i], false);
-			} else {
-				printf("\"%s\"", node->nodes[i]->string);
-			}
-		}
-	}
-	printf(")");
-	if(top) printf("\n");
-}
-
-void parser_process(struct Node* node) {
-	if(node->ident != NULL) {
-		int i;
-		print_node(node, true);
-	}
-}
-
 struct Node* __dw_parser_parse(const char* str, bool top) {
 	extern YYSTYPE yyval;
 #ifdef PARSER_DEBUG
@@ -78,7 +54,6 @@ struct Node* __dw_parser_parse(const char* str, bool top) {
 		yy_delete_buffer(buf);
 		return NULL;
 	}
-	parser_process(&yyval.node);
 	yy_delete_buffer(buf);
 
 	return &yyval.node;
