@@ -43,6 +43,11 @@ extern void yy_delete_buffer(void* buffer);
 
 int __dw_parser_parse(const char* str, bool top) {
 	void* buf = yy_scan_string(str);
-	yyparse();
+	if(yyparse() != 0){
+		yy_delete_buffer(buf);
+		return DW_ERR_PARSER_FAIL;
+	}
 	yy_delete_buffer(buf);
+
+	return DW_ERR_SUCCESS;
 }

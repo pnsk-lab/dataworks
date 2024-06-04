@@ -163,6 +163,13 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_DATABASE_NOT_SELECTED,
+
+	/**
+	 * @~english
+	 * @brief Parser fail
+	 *
+	 */
+	DW_ERR_PARSER_FAIL,
 };
 
 /**

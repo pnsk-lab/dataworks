@@ -40,7 +40,11 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
 	r->error = false;
 	r->value = NULL;	
 
-	__dw_parser_parse(code, dolog);
+	int err;
+	if((err = __dw_parser_parse(code, dolog)) != DW_ERR_SUCCESS){
+		r->error = true;
+		r->errnum = err;
+	}
 
 	return r;
 }

@@ -59,6 +59,8 @@ single_argument
 arguments
 	: single_argument
 	| arguments ',' single_argument
+	| SPACE
+	| ;
 	;
 
 command

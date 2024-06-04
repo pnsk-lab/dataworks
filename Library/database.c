@@ -38,7 +38,7 @@
 
 const char sig[3] = {0x7f, 'D', 'W'};
 
-const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method", "Insufficient arguments", "Too many arguments", "Not used", "Too many tables", "Database not selected"};
+const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method", "Insufficient arguments", "Too many arguments", "Not used", "Too many tables", "Database not selected", "Parser fail"};
 
 #ifdef M_I86
 #define BUFSIZE 128
