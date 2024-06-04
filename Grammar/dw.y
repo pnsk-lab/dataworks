@@ -46,7 +46,9 @@
 
 argument
 	: STRING {
-		printf("%s\n", $<node>1.string);
+		$<node>$.string = $<node>1.string;
+		$<node>$.nodes = $<node>1.nodes;
+		$<node>$.ident = $<node>1.ident;
 	}
 	;
 
@@ -87,10 +89,14 @@ arguments
 
 command
 	: IDENTIFIER SPACE '(' arguments ')' {
-		printf("%s %p\n", $<node>1.ident, $<node>4.nodes);
+		$<node>$.string = NULL;
+		$<node>$.ident = $<node>1.ident;
+		$<node>$.nodes = $<node>4.nodes;
 	}
 	| IDENTIFIER '(' arguments ')' {
-		printf("%s %p\n", $<node>1.ident, $<node>3.nodes);
+		$<node>$.string = NULL;
+		$<node>$.ident = $<node>1.ident;
+		$<node>$.nodes = $<node>3.nodes;
 	}
 	;
 
