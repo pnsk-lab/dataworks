@@ -71,7 +71,10 @@ const char* dataworks_get_copyright(void) { return dataworks_copyright; }
 
 int yywrap() { return 1; }
 
-int yyerror(const char* err) { fprintf(stderr, "Parser error: %s\n", err); return 0; }
+int yyerror(const char* err) {
+	fprintf(stderr, "Parser error: %s\n", err);
+	return 0;
+}
 
 bool dataworks_get_if_supported(void) {
 #ifdef SUPPORTED

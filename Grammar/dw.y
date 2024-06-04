@@ -42,6 +42,10 @@
 	} node;
 }
 
+%{
+void parser_process(struct Node* node);
+%}
+
 %%
 
 argument
@@ -49,6 +53,9 @@ argument
 		$<node>$.string = $<node>1.string;
 		$<node>$.nodes = $<node>1.nodes;
 		$<node>$.ident = $<node>1.ident;
+	}
+	| command {
+		$<node>$ = $<node>1;
 	}
 	;
 
@@ -70,7 +77,13 @@ single_argument
 arguments
 	: single_argument {
 		$<node>$.nodes = malloc(sizeof(*$<node>$.nodes) * 2);
-		$<node>$.nodes[0] = &$<node>1;
+		$<node>$.nodes[0] = malloc(sizeof($<node>$));
+		$<node>$.nodes[0]->nodes = NULL;
+		$<node>$.nodes[0]->ident = NULL;
+		$<node>$.nodes[0]->string = NULL;
+		if($<node>1.ident != NULL) $<node>$.nodes[0]->ident = strdup($<node>1.ident);
+		if($<node>1.string != NULL) $<node>$.nodes[0]->string = strdup($<node>1.string);
+		if($<node>1.nodes != NULL) $<node>$.nodes[0]->nodes = $<node>1.nodes;
 		$<node>$.nodes[1] = NULL;
 	}
 	| arguments ',' single_argument {
@@ -79,7 +92,13 @@ arguments
 		for(i = 0; old_nodes[i] != NULL; i++);
 		$<node>$.nodes = malloc(sizeof(*$<node>$.nodes) * (i + 2));
 		for(i = 0; old_nodes[i] != NULL; i++) $<node>$.nodes[i] = old_nodes[i];
-		$<node>$.nodes[i] = &$<node>3;
+		$<node>$.nodes[i] = malloc(sizeof($<node>$));
+		$<node>$.nodes[i]->nodes = NULL;
+		$<node>$.nodes[i]->ident = NULL;
+		$<node>$.nodes[i]->string = NULL;
+		if($<node>3.ident != NULL) $<node>$.nodes[i]->ident = strdup($<node>3.ident);
+		if($<node>3.string != NULL) $<node>$.nodes[i]->string = strdup($<node>3.string);
+		if($<node>3.nodes != NULL) $<node>$.nodes[i]->nodes = $<node>3.nodes;
 		$<node>$.nodes[i + 1] = NULL;
 		free(old_nodes);	
 	}
