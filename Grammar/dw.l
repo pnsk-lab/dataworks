@@ -38,15 +38,18 @@ extern YYSTYPE yylval;
 ["][^"]*["]		{
 	yylval.node.string = strdup(yytext + 1);
 	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
+	yylval.node.nodes = NULL;
 	return (STRING);
 }
 ['][^']*[']		{
 	yylval.node.string = strdup(yytext + 1);
 	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
+	yylval.node.nodes = NULL;
 	return (STRING);
 }
 [a-zA-Z0-9_\-]+		{
 	yylval.node.ident = strdup(yytext);
+	yylval.node.nodes = NULL;
 	return (IDENTIFIER);
 }
 [\(\),]			{

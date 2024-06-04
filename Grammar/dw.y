@@ -38,6 +38,7 @@
 	struct Node {
 		char* string;
 		char* ident;
+		struct Node* nodes;
 	} node;
 }
 
@@ -50,10 +51,18 @@ argument
 	;
 
 single_argument
-	: SPACE argument SPACE
-	| SPACE argument
-	| argument SPACE
-	| argument
+	: SPACE argument SPACE {
+		$<node>$ = $<node>2;
+	}
+	| SPACE argument {
+		$<node>$ = $<node>2;
+	}
+	| argument SPACE {
+		$<node>$ = $<node>1;
+	}
+	| argument {
+		$<node>$ = $<node>1;
+	}
 	;
 
 arguments
