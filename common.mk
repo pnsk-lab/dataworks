@@ -72,7 +72,7 @@ archive:
 	$(MAKE) archive-cleanup
 
 prepare-dosbox: no-doc
-	echo 'create_table("test", "string:key", "double:value");' > op.txt
+	echo 'create_table("test", "string:key", "floating:value");' > op.txt
 	echo '.tables' >> op.txt
 	echo "[cpu]" > dosbox.conf
 	echo "cycles=12000" >> dosbox.conf

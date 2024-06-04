@@ -8,7 +8,7 @@ LEX = lex
 AR_ARGS = rcs \$$@
 RANLIB = ranlib
 WINDRES = windres
-CFLAGS = -g -std=c99 -D_DEFAULT_SOURCE
+CFLAGS = -g -std=c99 -D_DEFAULT_SOURCE $(DEBUGFLAGS)
 LDFLAGS = -L`pwd`/Library
 YFLAGS = -d -t
 LFLAGS =

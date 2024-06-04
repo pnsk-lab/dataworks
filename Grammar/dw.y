@@ -38,7 +38,7 @@
 	struct Node {
 		char* string;
 		char* ident;
-		struct Node* nodes;
+		struct Node** nodes;
 	} node;
 }
 
@@ -66,18 +66,31 @@ single_argument
 	;
 
 arguments
-	: single_argument
-	| arguments ',' single_argument
+	: single_argument {
+		$<node>$.nodes = malloc(sizeof(*$<node>$.nodes) * 2);
+		$<node>$.nodes[0] = &$<node>1;
+		$<node>$.nodes[1] = NULL;
+	}
+	| arguments ',' single_argument {
+		struct Node** old_nodes = $<node>$.nodes;
+		int i;
+		for(i = 0; old_nodes[i] != NULL; i++);
+		$<node>$.nodes = malloc(sizeof(*$<node>$.nodes) * (i + 2));
+		for(i = 0; old_nodes[i] != NULL; i++) $<node>$.nodes[i] = old_nodes[i];
+		$<node>$.nodes[i] = &$<node>3;
+		$<node>$.nodes[i + 1] = NULL;
+		free(old_nodes);
+	}
 	| SPACE
 	| ;
 	;
 
 command
 	: IDENTIFIER SPACE '(' arguments ')' {
-		printf("%s\n", $<node>1.ident);
+		printf("%s %p\n", $<node>1.ident, $<node>1.nodes);
 	}
 	| IDENTIFIER '(' arguments ')' {
-		printf("%s\n", $<node>1.ident);
+		printf("%s %p\n", $<node>1.ident, $<node>1.nodes);
 	}
 	;
 

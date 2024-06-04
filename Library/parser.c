@@ -42,6 +42,10 @@ extern void* yy_scan_string(const char* str);
 extern void yy_delete_buffer(void* buffer);
 
 int __dw_parser_parse(const char* str, bool top) {
+#ifdef PARSER_DEBUG
+	yydebug = 1;
+#endif
+
 	void* buf = yy_scan_string(str);
 	if(yyparse() != 0){
 		yy_delete_buffer(buf);
