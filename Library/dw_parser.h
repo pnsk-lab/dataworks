@@ -42,7 +42,9 @@ extern "C" {
 
 #include <stdbool.h>
 
-int __dw_parser_parse(const char* str, bool top);
+#include "../Grammar/dw.tab.h"
+
+struct Node* __dw_parser_parse(const char* str, bool top);
 
 #ifdef __cplusplus
 }

@@ -44,6 +44,7 @@
 
 %{
 void parser_process(struct Node* node);
+char* __dw_strdup(const char* a);
 %}
 
 %%
@@ -81,8 +82,8 @@ arguments
 		$<node>$.nodes[0]->nodes = NULL;
 		$<node>$.nodes[0]->ident = NULL;
 		$<node>$.nodes[0]->string = NULL;
-		if($<node>1.ident != NULL) $<node>$.nodes[0]->ident = strdup($<node>1.ident);
-		if($<node>1.string != NULL) $<node>$.nodes[0]->string = strdup($<node>1.string);
+		if($<node>1.ident != NULL) $<node>$.nodes[0]->ident = __dw_strdup($<node>1.ident);
+		if($<node>1.string != NULL) $<node>$.nodes[0]->string = __dw_strdup($<node>1.string);
 		if($<node>1.nodes != NULL) $<node>$.nodes[0]->nodes = $<node>1.nodes;
 		$<node>$.nodes[1] = NULL;
 	}
@@ -96,8 +97,8 @@ arguments
 		$<node>$.nodes[i]->nodes = NULL;
 		$<node>$.nodes[i]->ident = NULL;
 		$<node>$.nodes[i]->string = NULL;
-		if($<node>3.ident != NULL) $<node>$.nodes[i]->ident = strdup($<node>3.ident);
-		if($<node>3.string != NULL) $<node>$.nodes[i]->string = strdup($<node>3.string);
+		if($<node>3.ident != NULL) $<node>$.nodes[i]->ident = __dw_strdup($<node>3.ident);
+		if($<node>3.string != NULL) $<node>$.nodes[i]->string = __dw_strdup($<node>3.string);
 		if($<node>3.nodes != NULL) $<node>$.nodes[i]->nodes = $<node>3.nodes;
 		$<node>$.nodes[i + 1] = NULL;
 		free(old_nodes);	
@@ -123,6 +124,7 @@ command
 
 #if defined(YYBISON)
 const char* yaccver = "GNU Bison " YYBISON_VERSION;
+#error "GNU Bison does not work. Use Berkeley Yacc."
 #elif defined(YYBYACC)
 #define XSTR(x) #x
 #define STR(x) XSTR(x)

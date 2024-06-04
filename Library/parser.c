@@ -67,7 +67,8 @@ void parser_process(struct Node* node) {
 	}
 }
 
-int __dw_parser_parse(const char* str, bool top) {
+struct Node* __dw_parser_parse(const char* str, bool top) {
+	extern YYSTYPE yyval;
 #ifdef PARSER_DEBUG
 	yydebug = 1;
 #endif
@@ -75,12 +76,10 @@ int __dw_parser_parse(const char* str, bool top) {
 	void* buf = yy_scan_string(str);
 	if(yyparse() != 0) {
 		yy_delete_buffer(buf);
-		return DW_ERR_PARSER_FAIL;
-	} else {
-		extern YYSTYPE yyval;
-		parser_process(&yyval.node);
+		return NULL;
 	}
+	parser_process(&yyval.node);
 	yy_delete_buffer(buf);
 
-	return DW_ERR_SUCCESS;
+	return &yyval.node;
 }

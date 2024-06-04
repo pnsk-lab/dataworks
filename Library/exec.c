@@ -40,10 +40,10 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
 	r->error = false;
 	r->value = NULL;
 
-	int err;
-	if((err = __dw_parser_parse(code, dolog)) != DW_ERR_SUCCESS) {
+	struct Node* node;
+	if((node = __dw_parser_parse(code, dolog)) == NULL) {
 		r->error = true;
-		r->errnum = err;
+		r->errnum = DW_ERR_PARSER_FAIL;
 	}
 
 	return r;
