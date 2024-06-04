@@ -36,17 +36,17 @@ extern YYSTYPE yylval;
 %%
 
 ["][^"]*["]		{
-	yylval.string = strdup(yytext + 1);
-	yylval.string[strlen(yylval.string) - 1] = 0;
+	yylval.node.string = strdup(yytext + 1);
+	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
 	return (STRING);
 }
 ['][^']*[']		{
-	yylval.string = strdup(yytext + 1);
-	yylval.string[strlen(yylval.string) - 1] = 0;
+	yylval.node.string = strdup(yytext + 1);
+	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
 	return (STRING);
 }
 [a-zA-Z0-9_\-]+		{
-	yylval.ident = strdup(yytext);
+	yylval.node.ident = strdup(yytext);
 	return (IDENTIFIER);
 }
 [\(\),]			{

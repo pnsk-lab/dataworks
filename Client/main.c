@@ -176,7 +176,7 @@ int main(int argc, char** argv) {
 	int len = 0;
 	char* buf = malloc(1);
 	buf[0] = 0;
-	char ch;
+	int ch;
 	char prompt = '.';
 	FILE* fp = stdin;
 	if(fprog != NULL) {

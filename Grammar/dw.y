@@ -35,15 +35,17 @@
 %start command
 
 %union {
-	char* string;
-	char* ident;
+	struct Node {
+		char* string;
+		char* ident;
+	} node;
 }
 
 %%
 
 argument
 	: STRING {
-		printf("%s\n", $<string>1);
+		printf("%s\n", $<node>1.string);
 	}
 	;
 
@@ -61,10 +63,10 @@ arguments
 
 command
 	: IDENTIFIER SPACE '(' arguments ')' {
-		printf("%s\n", $<ident>1);
+		printf("%s\n", $<node>1.ident);
 	}
 	| IDENTIFIER '(' arguments ')' {
-		printf("%s\n", $<ident>1);
+		printf("%s\n", $<node>1.ident);
 	}
 	;
 

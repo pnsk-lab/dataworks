@@ -42,19 +42,7 @@ extern "C" {
 
 #include <stdbool.h>
 
-enum __token { __DW_METHOD = 0, __DW_VALUE };
-
-struct __dw_token {
-	char* name;
-	int type;
-	bool error;
-	int errnum;
-	struct __dw_token** token;
-};
-
-struct __dw_token* __dw_parser_parse(const char* str, bool top);
-void __dw_parser_free(struct __dw_token* token);
-void __dw_parser_print(struct __dw_token* token, int depth);
+int __dw_parser_parse(const char* str, bool top);
 
 #ifdef __cplusplus
 }

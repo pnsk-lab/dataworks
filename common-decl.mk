@@ -10,7 +10,7 @@ RANLIB = ranlib
 WINDRES = windres
 CFLAGS = -g -std=c99 -D_DEFAULT_SOURCE
 LDFLAGS = -L`pwd`/Library
-YFLAGS = -d
+YFLAGS = -d -t
 LFLAGS =
 LIBS =
 LIB_PREFIX = lib
