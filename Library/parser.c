@@ -102,11 +102,9 @@ void __dw_print_node(struct Node* node, bool top) {
 	if(node->type == 'N') {
 		printf("%f", node->number);
 		fflush(stdout);
-		if(top) printf("\n");
 	} else if(node->string != NULL) {
 		printf("\"%s\"", node->string);
 		fflush(stdout);
-		if(top) printf("\n");
 	} else if(node->ident != NULL) {
 		printf("%s(", node->ident);
 		fflush(stdout);
@@ -122,6 +120,5 @@ void __dw_print_node(struct Node* node, bool top) {
 		}
 		printf(")");
 		fflush(stdout);
-		if(top) printf("\n");
 	}
 }

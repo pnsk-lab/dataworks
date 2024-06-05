@@ -38,12 +38,12 @@
 
 struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dolog) {
 	if(node->ident != NULL) {
-		if(dolog) __dw_print_node(node, true);
 		int i;
 		struct Node* newnode = malloc(sizeof(*newnode));
 		newnode->ident = NULL;
 		newnode->string = NULL;
 		newnode->nodes = NULL;
+		newnode->type = 0;
 		newnode->errnum = DW_ERR_SUCCESS;
 		char** fields = malloc(sizeof(*fields));
 		fields[0] = NULL;
@@ -67,7 +67,9 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 					return newnode;
 				}
 				if(__dw_strcaseequ(node->ident, "print")) {
-					if(r->string != NULL) {
+					if(r->type == 'N') {
+						printf("%f", r->number);
+					} else if(r->string != NULL) {
 						printf("%s", r->string);
 					}
 					fflush(stdout);
@@ -188,9 +190,14 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
 		r->error = true;
 		r->errnum = DW_ERR_PARSER_FAIL;
 	} else {
+		if(dolog) {
+			__dw_print_node(node, true);
+			printf("\n");
+		}
 		struct Node* ret = parser_process(db, node, dolog);
 		if(ret->errnum == DW_ERR_SUCCESS) {
 			__dw_print_node(ret, true);
+			printf("\n");
 		} else {
 			r->error = true;
 			r->errnum = ret->errnum;

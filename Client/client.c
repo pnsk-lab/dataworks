@@ -54,7 +54,7 @@ void padleft(int leftpad, const char* str) {
 	free(spaces);
 }
 
-bool option(const char* str, const char* shortopt, const char* longopt){
+bool option(const char* str, const char* shortopt, const char* longopt) {
 	char* dos_shortopt = __dw_strcat("/", shortopt);
 	char* dos_longopt = __dw_strcat("/", longopt);
 	char* nix_shortopt = __dw_strcat("-", shortopt);
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 			if(option(argv[i], "V", "version")) {
 				printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 				return 0;
-			} else if(option(argv[i], "C", "create")){
+			} else if(option(argv[i], "C", "create")) {
 				create = true;
 			} else if(option(argv[i], "NC", "noclear")) {
 				clear = false;
@@ -87,11 +87,11 @@ int main(int argc, char** argv) {
 				banner = false;
 				log = false;
 				clear = false;
-			} else if(option(argv[i], "NB", "nobanner")){
+			} else if(option(argv[i], "NB", "nobanner")) {
 				banner = false;
 			} else if(option(argv[i], "NL", "nolog")) {
 				log = false;
-			} else if(option(argv[i], "f", "file")){
+			} else if(option(argv[i], "f", "file")) {
 				fprog = argv[i + 1];
 				i++;
 			} else {
