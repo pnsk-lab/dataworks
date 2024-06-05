@@ -7,6 +7,7 @@ RANLIB = i686-w64-mingw32-ranlib
 WINDRES = i686-w64-mingw32-windres
 LIB_PREFIX =
 LIB_SUFFIX = .dll
+SERVER =
 EXEC_SUFFIX = .exe
 STATICLIB_PREFIX =
 STATICLIB_SUFFIX = .a

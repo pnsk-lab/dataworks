@@ -2,9 +2,9 @@
 
 .PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox
 
-all: ./Grammar ./Library ./Client ./Document
+all: ./Grammar ./Library ./Client $(SERVER) ./Document
 
-no-doc: ./Grammar ./Library ./Client
+no-doc: ./Grammar ./Library ./Client $(SERVER)
 
 ./Grammar::
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
@@ -13,6 +13,9 @@ no-doc: ./Grammar ./Library ./Client
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
 
 ./Client:: ./Library
+	$(MAKE) -C $@ $(COMPILE_FLAGS)
+
+./Server:: ./Library
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
 
 ./Document::
@@ -36,6 +39,7 @@ clean:
 	$(MAKE) -C ./Grammar clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Library clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
+	$(MAKE) -C ./Server clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
 
 archive-prepare: all
@@ -74,12 +78,21 @@ archive:
 prepare-dosbox: no-doc
 	echo 'create_table("test", "string:key", "floating:value");' > op.txt
 	echo '.tables' >> op.txt
-	echo "[cpu]" > dosbox.conf
+	echo "[serial]" > dosbox.conf
+	echo "serial1=modem listenport:4096" >> dosbox.conf
+	echo "[sdl]" >> dosbox.conf
+	echo "windowresolution=640x400" >> dosbox.conf
+	echo "[render]" >> dosbox.conf
+	echo "aspect=true surface" >> dosbox.conf
+	echo "aspect_ratio=16:9" >> dosbox.conf
+	echo "[cpu]" >> dosbox.conf
 	echo "cycles=12000" >> dosbox.conf
 	echo "[autoexec]" >> dosbox.conf
 	echo "mount c: ." >> dosbox.conf
 	echo "c:" >> dosbox.conf
+	echo "copy Server\*$(EXEC_SUFFIX) dwserv$(EXEC_SUFFIX)" >> dosbox.conf
 	echo "copy Client\*$(EXEC_SUFFIX) dw$(EXEC_SUFFIX)" >> dosbox.conf
+	echo "dwserv COM1" >> dosbox.conf
 	echo "dw /NC /f op.txt /create db.dwf" >> dosbox.conf
 	echo "dw /NC /f op.txt db.dwf" >> dosbox.conf
 	echo "pause" >> dosbox.conf
