@@ -98,13 +98,15 @@ void __dw_free_node2(struct Node* node, bool top) {
 	if(!top) free(node);
 }
 
-void __dw_print_node(struct Node* node, bool top) {
+bool __dw_print_node(struct Node* node, bool top) {
 	if(node->type == 'N') {
 		printf("%f", node->number);
 		fflush(stdout);
+		return true;
 	} else if(node->string != NULL) {
 		printf("\"%s\"", node->string);
 		fflush(stdout);
+		return true;
 	} else if(node->ident != NULL) {
 		printf("%s(", node->ident);
 		fflush(stdout);
@@ -120,5 +122,7 @@ void __dw_print_node(struct Node* node, bool top) {
 		}
 		printf(")");
 		fflush(stdout);
+		return true;
 	}
+	return false;
 }

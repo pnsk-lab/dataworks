@@ -191,13 +191,13 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
 		r->errnum = DW_ERR_PARSER_FAIL;
 	} else {
 		if(dolog) {
-			__dw_print_node(node, true);
-			printf("\n");
+			bool pr = __dw_print_node(node, true);
+			if(pr) printf("\n");
 		}
 		struct Node* ret = parser_process(db, node, dolog);
 		if(ret->errnum == DW_ERR_SUCCESS) {
-			__dw_print_node(ret, true);
-			printf("\n");
+			bool pr = __dw_print_node(ret, true);
+			if(pr) printf("\n");
 		} else {
 			r->error = true;
 			r->errnum = ret->errnum;

@@ -48,7 +48,7 @@ struct Node* __dw_parser_parse(const char* str, bool top);
 struct Node* __dw_duplicate_node(struct Node* node);
 void __dw_free_node(struct Node* node);
 void __dw_free_node2(struct Node* node, bool top);
-void __dw_print_node(struct Node* node, bool top);
+bool __dw_print_node(struct Node* node, bool top);
 
 #ifdef __cplusplus
 }
