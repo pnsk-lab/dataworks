@@ -28,31 +28,22 @@
 
 #include <dataworks.h>
 
+#include <dw_database.h>
 #include <dw_util.h>
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 
 int argc;
 char** argv;
-
 #ifdef __DOS__
-#include <bios.h>
-
-/* Why would you run the database server on DOS, tho ... */
-#define HAYES
-#else
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <signal.h>
-#include <sys/socket.h>
-#include <unistd.h>
-
-#define TCPIP
+sig_atomic_t signals = 0;
 #endif
+
+struct dataworks_db* db = NULL;
 
 void protocol_init(int sock);
 
@@ -68,19 +59,97 @@ bool option(const char* str, const char* shortopt, const char* longopt) {
 int server_init(void);
 void server_loop(void);
 void writeline(int sock, const char* str);
+char* readline_sock(int sock);
+void disconnect(int sock);
 
 void protocol_init(int sock) {
 	/* sock is ignored on hayes */
-	char* verstr = __dw_strcat("READY:VER=", dataworks_get_version());
+	writeline(sock, "READY");
+	char* tmp;
+	char* verstr;
+	verstr = __dw_strcat("ATTR:AUTH:VER=", dataworks_get_version());
+
+	tmp = verstr;
+	verstr = __dw_strcat(tmp, ":PLATFORM=");
+	free(tmp);
+
+	tmp = verstr;
+	verstr = __dw_strcat(tmp, dataworks_get_platform());
+	free(tmp);
+
 	writeline(sock, verstr);
-	writeline(sock, "ATTR:AUTH=YES");
+	free(verstr);
 }
+
+void protocol_loop(int sock){
+	while(1){
+		char* buf = readline_sock(sock);
+		if(buf == NULL){
+			break;
+		}
+		int i;
+		bool has_arg = false;
+		for(i = 0; buf[i] != 0; i++){
+			if(buf[i] == ':'){
+				buf[i] = 0;
+				has_arg = true;
+				break;
+			}
+		}
+		if(__dw_strcaseequ(buf, "ECHO")){
+			int start;
+			if(has_arg){
+				i++;
+				start = i;
+				for(;; i++){
+					if(buf[i] == ':' || buf[i] == 0){
+						char oldc = buf[i];
+						buf[i] = 0;
+						char* echo = __dw_strcat("ECHO:", buf + start);
+						start = i + 1;
+	
+						writeline(sock, echo);
+						free(echo);
+						if(oldc == 0) break;
+					}
+				}
+			}else{
+				writeline(sock, "ECHO");
+			}
+		}else if(__dw_strcaseequ(buf, "BYE") || __dw_strcaseequ(buf, "QUIT")){
+			writeline(sock, "QUIT:Bye");
+			disconnect(sock);
+		}else{
+			writeline(sock, "ERROR:UNKNOWN_CMD");
+		}
+		free(buf);
+	}
+}
+
+#ifdef __DOS__
+void exitnow(int sig){
+	signals++;
+}
+#endif
 
 int main(int _argc, char** _argv) {
 	argc = _argc;
 	argv = _argv;
+#ifdef __DOS__
+	signal(SIGINT, exitnow);
+#endif
 	printf("DataWorks Server  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 	int st;
 	if((st = server_init()) != 0) return st;
+	if(db != NULL){
+		if(db->error){
+			dataworks_database_close(db);
+			db = NULL;
+		}
+	}
+	if(db == NULL){
+		fprintf(stderr, "Failed to open databse\n");
+		return 1;
+	}
 	server_loop();
 }

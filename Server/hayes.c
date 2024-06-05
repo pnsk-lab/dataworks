@@ -28,23 +28,46 @@
 
 #include <dataworks.h>
 
+#include <dw_database.h>
 #include <dw_util.h>
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 
 extern int argc;
 extern char** argv;
 
 #include <bios.h>
+#include <i86.h>
+#include <conio.h>
 
 void protocol_init(int sock);
+void protocol_loop(int sock);
+void disconnect(int sock);
 
 bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = -1;
+
+int get_ioport(){
+#ifdef PC98
+	if(port == 0) return 0x30;
+#else
+	if(port == 0){
+		return 0x3f8;
+	}else if(port == 1){
+		return 0x2f8;
+	}else if(port == 2){
+		return 0x3e8;
+	}else if(port == 3){
+		return 0x2e8;
+	}
+#endif
+	return 0;
+}
 
 void write_serial(const char* str) {
 	const char* ptr = str;
@@ -57,21 +80,36 @@ void write_serial(const char* str) {
 	}
 }
 
+bool connected;
+
+extern sig_atomic_t signals;
+extern struct dataworks_db* db;
+
 char* modem_response(void) {
-	char* buf = malloc(513);
+	char* buf = malloc(1);
 	buf[0] = 0;
-	int count = 0;
+	char cbuf[2];
+	cbuf[1] = 0;
 	while(1) {
 		if(_bios_serialcom(_COM_STATUS, port, 0) & 0x0100) {
 			unsigned short b = _bios_serialcom(_COM_RECEIVE, port, 0);
 			char ch = b & 0xff;
 			if(ch != '\r' && ch != '\n' && ch != 0) {
-				buf[count] = ch;
-				buf[count + 1] = 0;
-				count++;
+				cbuf[0] = ch;
+				char* tmp = buf;
+				buf = __dw_strcat(tmp, cbuf);
+				free(tmp);
 			} else if(ch == '\r') {
 				if(strlen(buf) != 0) break;
 			}
+		}
+		printf("\r");
+		if(signals > 0){
+			free(buf);
+			if(connected){
+				disconnect(0);
+			}
+			return NULL;
 		}
 	}
 	return buf;
@@ -79,19 +117,22 @@ char* modem_response(void) {
 
 int server_init(void) {
 	printf("Using Hayes Modem\n");
+	connected = false;
 	int i;
 	for(i = 1; i < argc; i++) {
 		if(argv[i][0] == '/' || argv[i][0] == '-'){
 			if(option(argv[i], "p", "port")){
 				i++;
 				if(__dw_strcaseequ(argv[i], "COM1")) {
-					port = 0;
+					port = 0;	
+#ifndef PC98
 				} else if(__dw_strcaseequ(argv[i], "COM2")) {
 					port = 1;
 				} else if(__dw_strcaseequ(argv[i], "COM3")) {
 					port = 2;
 				} else if(__dw_strcaseequ(argv[i], "COM4")) {
 					port = 3;
+#endif
 				} else {
 					fprintf(stderr, "Invalid port: %s\n", argv[i]);
 					return 1;
@@ -100,16 +141,23 @@ int server_init(void) {
 				fprintf(stderr, "Invalid option: %s\n", argv[i]);
 				return 1;
 			}
+		}else{
+			db = dataworks_database_open(argv[i]);
 		}
 	}
 	if(port == -1) {
 		fprintf(stderr, "Specify serial port\n");
 		return 1;
 	}
+	printf("Serial port is at I/O 0x%4.4x\n", get_ioport());
 	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
 	write_serial("AT&FE0F1\r");
-	free(modem_response()); /* Kill echo */
 	char* resp = modem_response();
+	bool echo = __dw_strcaseequ(resp, "AT&FE0F1");
+	if(resp != NULL && echo) free(resp); /* Kill echo */
+	if(resp == NULL) return 0;
+	if(echo) resp = modem_response();
+	if(resp == NULL) return 0;
 	if(__dw_strcaseequ(resp, "OK")) {
 		fprintf(stderr, "Modem initialization successful\n");
 	} else {
@@ -122,9 +170,10 @@ int server_init(void) {
 }
 
 void server_loop(void) {
-	bool connected = false;
+	connected = false;
 	while(1) {
 		char* resp = modem_response();
+		if(resp == NULL) break;
 		if(__dw_strcaseequ(resp, "NO CARRIER")) {
 			free(resp);
 			printf("Disconnected\n");
@@ -152,14 +201,24 @@ void server_loop(void) {
 				printf("Entering connected state\n");
 				connected = true;
 				protocol_init(0);
+				protocol_loop(0);
 			}
 		}
 		free(resp);
 	}
 }
 
+char* readline_sock(int sock){
+	return connected ? modem_response() : NULL;
+}
+
 void writeline(int sock, const char* str) {
 	char* snd = __dw_strcat(str, "\r\n");
 	write_serial(snd);
 	free(snd);
+}
+
+void disconnect(int sock){
+	while(inp(get_ioport() + 6) & (1 << 7)) outp(get_ioport() + 4, 0);
+	connected = false;
 }

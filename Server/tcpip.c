@@ -28,6 +28,7 @@
 
 #include <dataworks.h>
 
+#include <dw_database.h>
 #include <dw_util.h>
 
 #include <stdbool.h>
@@ -46,12 +47,15 @@ extern char** argv;
 #include <unistd.h>
 
 void protocol_init(int sock);
+void protocol_loop(int sock);
 
 bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = 4096;
 int server_socket;
 struct sockaddr_in6 server_address;
+
+extern struct dataworks_db* db;
 
 int server_init(void) {
 	printf("Using BSD TCP/IP\n");
@@ -62,6 +66,8 @@ int server_init(void) {
 				i++;
 				port = atoi(argv[i]);
 			}
+		}else{
+			db = dataworks_database_open(argv[i]);
 		}
 	}
 	if((server_socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0) {
@@ -112,11 +118,37 @@ void server_loop(void) {
 		pid_t p = fork();
 		if(p == 0) {
 			protocol_init(sock);
+			protocol_loop(sock);
 			_exit(0);
 		} else {
 			close(sock);
 		}
 	}
+}
+
+char* readline_sock(int sock){
+	char cbuf[2];
+	cbuf[1] = 0;
+	char* buf = malloc(1);
+	buf[0] = 0;
+	while(1){
+		int l = recv(sock, cbuf, 1, 0);
+		if(l <= 0){
+			free(buf);
+			return NULL;
+		}else if(cbuf[0] == '\n'){
+			break;
+		}else if(cbuf[0] != '\r'){
+			char* tmp = buf;
+			buf = __dw_strcat(tmp, cbuf);
+			free(tmp);
+		}
+	}
+	return buf;
+}
+
+void disconnect(int sock){
+	close(sock);
 }
 
 void writeline(int sock, const char* str) {
