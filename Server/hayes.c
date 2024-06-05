@@ -47,6 +47,7 @@ extern char** argv;
 void protocol_init(int sock);
 void protocol_loop(int sock);
 void disconnect(int sock);
+void writeline(int sock, const char* str);
 
 bool option(const char* str, const char* shortopt, const char* longopt);
 
@@ -107,6 +108,7 @@ char* modem_response(void) {
 		if(signals > 0){
 			free(buf);
 			if(connected){
+				writeline(0, "QUIT:Bye");
 				disconnect(0);
 			}
 			return NULL;
@@ -153,7 +155,7 @@ int server_init(void) {
 	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
 	write_serial("AT&FE0F1\r");
 	char* resp = modem_response();
-	bool echo = __dw_strcaseequ(resp, "AT&FE0F1");
+	bool echo = __dw_strcaseequ(resp, "AT&FE0F1") || __dw_strcaseequ(resp, "NO CARRIER");
 	if(resp != NULL && echo) free(resp); /* Kill echo */
 	if(resp == NULL) return 0;
 	if(echo) resp = modem_response();
