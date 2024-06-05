@@ -31,7 +31,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-const char* dataworks_version = "0.0.0";
+const char* dataworks_version = "0.1.0";
 const char* dataworks_compile_date = __DATE__;
 const char* dataworks_copyright = "Copyright (c) Crabware 2024\n"
 				  "              Crabware is the software-development division of\n"
