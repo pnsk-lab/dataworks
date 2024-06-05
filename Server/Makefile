@@ -3,7 +3,7 @@
 .PHONY: all clean
 .SUFFIXES: .c .o
 
-OBJS = server.o
+OBJS = server.o $(SERVER_MODULE)
 
 all: dataworks_server$(EXEC_SUFFIX)
 

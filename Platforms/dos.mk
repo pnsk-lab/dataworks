@@ -5,3 +5,4 @@ include Platforms/watcom.mk
 EXEC_SUFFIX=.exe
 CFLAGS += -march=i86
 LDFLAGS += -march=i86
+SERVER_MODULE = hayes.o

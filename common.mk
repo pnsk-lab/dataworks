@@ -83,8 +83,8 @@ prepare-dosbox: no-doc
 	echo "[sdl]" >> dosbox.conf
 	echo "windowresolution=640x400" >> dosbox.conf
 	echo "[render]" >> dosbox.conf
-	echo "aspect=true surface" >> dosbox.conf
-	echo "aspect_ratio=16:9" >> dosbox.conf
+	echo "aspect=true" >> dosbox.conf
+	echo "aspect_ratio=16:10" >> dosbox.conf
 	echo "[cpu]" >> dosbox.conf
 	echo "cycles=12000" >> dosbox.conf
 	echo "[autoexec]" >> dosbox.conf
@@ -92,7 +92,7 @@ prepare-dosbox: no-doc
 	echo "c:" >> dosbox.conf
 	echo "copy Server\*$(EXEC_SUFFIX) dwserv$(EXEC_SUFFIX)" >> dosbox.conf
 	echo "copy Client\*$(EXEC_SUFFIX) dw$(EXEC_SUFFIX)" >> dosbox.conf
-	echo "dwserv COM1" >> dosbox.conf
+	echo "dwserv -p COM1" >> dosbox.conf
 	echo "dw /NC /f op.txt /create db.dwf" >> dosbox.conf
 	echo "dw /NC /f op.txt db.dwf" >> dosbox.conf
 	echo "pause" >> dosbox.conf
