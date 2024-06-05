@@ -31,31 +31,45 @@
 #include "grammersym.h"
 #include <string.h>
 extern YYSTYPE yylval;
+
+double __dw_atof(const char* str);
 %}
 
 %%
 
-["][^"]*["]		{
+["][^"]*["]			{
 	yylval.node.string = strdup(yytext + 1);
 	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
 	yylval.node.nodes = NULL;
 	yylval.node.ident = NULL;
+	yylval.node.number = 123123;
+	yylval.node.type = 'S';
 	return (STRING);
 }
-['][^']*[']		{
+['][^']*[']			{
 	yylval.node.string = strdup(yytext + 1);
 	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
 	yylval.node.nodes = NULL;
 	yylval.node.ident = NULL;
+	yylval.node.type = 'S';
 	return (STRING);
 }
-[a-zA-Z0-9_\-]+		{
+[a-zA-Z_][a-zA-Z0-9_\-]*	{
 	yylval.node.ident = strdup(yytext);
 	yylval.node.nodes = NULL;
 	yylval.node.string = NULL;
+	yylval.node.type = 'I';
 	return (IDENTIFIER);
 }
-[\(\),]			{
+-?[0-9]+(\.[0-9]+)?		{
+	yylval.node.ident = NULL;
+	yylval.node.nodes = NULL;
+	yylval.node.string = NULL;
+	yylval.node.number = __dw_atof(yytext);
+	yylval.node.type = 'N';
+	return (NUMBER);
+}
+[\(\),]				{
 	return (yytext[0]);
 }
 [ \t\v]*		{

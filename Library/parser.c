@@ -67,6 +67,8 @@ struct Node* __dw_duplicate_node(struct Node* node) {
 	r->ident = NULL;
 	r->string = NULL;
 	r->nodes = NULL;
+	r->number = node->number;
+	r->type = node->type;
 	if(node->ident != NULL) r->ident = __dw_strdup(node->ident);
 	if(node->string != NULL) r->string = __dw_strdup(node->string);
 	if(node->nodes != NULL) {
@@ -97,7 +99,11 @@ void __dw_free_node2(struct Node* node, bool top) {
 }
 
 void __dw_print_node(struct Node* node, bool top) {
-	if(node->string != NULL) {
+	if(node->type == 'N') {
+		printf("%f", node->number);
+		fflush(stdout);
+		if(top) printf("\n");
+	} else if(node->string != NULL) {
 		printf("\"%s\"", node->string);
 		fflush(stdout);
 		if(top) printf("\n");
