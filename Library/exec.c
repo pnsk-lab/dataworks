@@ -28,6 +28,7 @@
 
 #include "dw_database.h"
 
+#include "dataworks.h"
 #include "dw_parser.h"
 #include "dw_util.h"
 
@@ -35,26 +36,145 @@
 #include <stdlib.h>
 #include <string.h>
 
-void print_node(struct Node* node, bool top) {
-	printf("%s(", node->ident);
-	if(node->nodes != NULL) {
+struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dolog) {
+	if(node->ident != NULL) {
+		if(dolog) __dw_print_node(node, true);
 		int i;
-		for(i = 0; node->nodes[i] != NULL; i++) {
-			if(i > 0) printf(", ");
-			if(node->nodes[i]->ident != NULL) {
-				print_node(node->nodes[i], false);
-			} else {
-				printf("\"%s\"", node->nodes[i]->string);
+		struct Node* newnode = malloc(sizeof(*newnode));
+		newnode->ident = NULL;
+		newnode->string = NULL;
+		newnode->nodes = NULL;
+		newnode->errnum = DW_ERR_SUCCESS;
+		char** fields = malloc(sizeof(*fields));
+		fields[0] = NULL;
+		char* fieldtypes = malloc(1);
+		fieldtypes[0] = 0;
+		char* name = NULL;
+		if(__dw_strcaseequ(node->ident, "version")) {
+			newnode->string = __dw_strdup(dataworks_get_version());
+		}
+		if(node->nodes != NULL) {
+			for(i = 0; node->nodes[i] != NULL; i++) {
+				struct Node* r = parser_process(db, node->nodes[i], false);
+				if(r->errnum != DW_ERR_SUCCESS) {
+					newnode->errnum = r->errnum;
+					__dw_free_node(r);
+					int j;
+					for(j = 0; fields[j] != NULL; j++) free(fields[j]);
+					free(fields);
+					free(fieldtypes);
+					if(name != NULL) free(name);
+					return newnode;
+				}
+				if(__dw_strcaseequ(node->ident, "print")) {
+					if(r->string != NULL) {
+						printf("%s", r->string);
+					}
+					fflush(stdout);
+				} else if(__dw_strcaseequ(node->ident, "concat")) {
+					if(r->string != NULL) {
+						if(newnode->string == NULL) {
+							newnode->string = malloc(1);
+							newnode->string[0] = 0;
+						}
+						char* tmp = newnode->string;
+						newnode->string = __dw_strcat(tmp, r->string);
+						free(tmp);
+					}
+				} else if(__dw_strcaseequ(node->ident, "use")) {
+					if(name != NULL) {
+						newnode->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
+						__dw_free_node(r);
+						int j;
+						for(j = 0; fields[j] != NULL; j++) free(fields[j]);
+						free(fields);
+						free(fieldtypes);
+						if(name != NULL) free(name);
+						return newnode;
+					}
+					if(name == NULL) {
+						name = __dw_strdup(r->string);
+					}
+				} else if(__dw_strcaseequ(node->ident, "create_table")) {
+					if(name == NULL) {
+						name = __dw_strdup(r->string);
+					} else {
+						char* val = __dw_strdup(r->string);
+						int j;
+						char cbuf[2];
+						cbuf[1] = 0;
+						for(j = 0; val[j] != 0; j++) {
+							if(val[j] == ':') {
+								val[j] = 0;
+								cbuf[0] = 0;
+								if(__dw_strcaseequ(val, "string")) {
+									cbuf[0] = DW_RECORD_STRING;
+								} else if(__dw_strcaseequ(val, "integer")) {
+									cbuf[0] = DW_RECORD_INTEGER;
+								} else if(__dw_strcaseequ(val, "floating")) {
+									cbuf[0] = DW_RECORD_FLOATING;
+								} else if(__dw_strcaseequ(val, "logical")) {
+									cbuf[0] = DW_RECORD_LOGICAL;
+								} else if(__dw_strcaseequ(val, "help")) {
+									cbuf[0] = DW_RECORD_HELP;
+								}
+								char* tmp = fieldtypes;
+								fieldtypes = __dw_strcat(tmp, cbuf);
+								free(tmp);
+
+								char** oldfields = fields;
+								int k;
+								for(k = 0; oldfields[k] != NULL; k++)
+									;
+								fields = malloc(sizeof(*fields) * (k + 2));
+								for(k = 0; oldfields[k] != NULL; k++) {
+									fields[k] = oldfields[k];
+								}
+								fields[k] = __dw_strdup(val + j + 1);
+								fields[k + 1] = NULL;
+								break;
+							}
+						}
+						free(val);
+					}
+				} else {
+					int j;
+					for(i = 0; fields[i] != NULL; i++) free(fields[i]);
+					free(fields);
+					free(fieldtypes);
+					if(name != NULL) free(name);
+					newnode->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
+					__dw_free_node(r);
+					return newnode;
+				}
+				__dw_free_node(r);
 			}
 		}
-	}
-	printf(")");
-	if(top) printf("\n");
-}
-
-void parser_process(struct Node* node, bool dolog) {
-	if(node->ident != NULL) {
-		if(dolog) print_node(node, true);
+		if(__dw_strcaseequ(node->ident, "create_table")) {
+			if(name != NULL) {
+				newnode->errnum = dataworks_database_create_table(db, name, fields, fieldtypes);
+			} else {
+				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+			}
+		} else if(__dw_strcaseequ(node->ident, "print")) {
+			printf("\n");
+		} else if(__dw_strcaseequ(node->ident, "use")) {
+			if(name != NULL) {
+				newnode->errnum = dataworks_database_use_table(db, name);
+				if(dolog) printf("Using table `%s`.\n", name);
+			} else {
+				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+			}
+		}
+		if(name != NULL) free(name);
+		for(i = 0; fields[i] != NULL; i++) free(fields[i]);
+		free(fields);
+		free(fieldtypes);
+		return newnode;
+	} else {
+		struct Node* n = __dw_duplicate_node(node);
+		n->errnum = DW_ERR_SUCCESS;
+		return n;
 	}
 }
 
@@ -67,8 +187,16 @@ struct dataworks_db_result* dataworks_database_execute_code(struct dataworks_db*
 	if((node = __dw_parser_parse(code, dolog)) == NULL) {
 		r->error = true;
 		r->errnum = DW_ERR_PARSER_FAIL;
-	}else{
-		parser_process(node, dolog);
+	} else {
+		struct Node* ret = parser_process(db, node, dolog);
+		if(ret->errnum == DW_ERR_SUCCESS) {
+			__dw_print_node(ret, true);
+		} else {
+			r->error = true;
+			r->errnum = ret->errnum;
+		}
+		__dw_free_node(ret);
+		__dw_free_node(node);
 	}
 
 	return r;

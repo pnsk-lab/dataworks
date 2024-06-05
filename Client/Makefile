@@ -3,7 +3,7 @@
 .PHONY: all clean
 .SUFFIXES: .c .o
 
-OBJS = main.o
+OBJS = client.o
 
 all: dataworks$(EXEC_SUFFIX)
 

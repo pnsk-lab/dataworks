@@ -38,6 +38,7 @@
 	struct Node {
 		char* string;
 		char* ident;
+		int errnum;
 		struct Node** nodes;
 	} node;
 }

@@ -49,12 +49,73 @@ struct Node* __dw_parser_parse(const char* str, bool top) {
 	yydebug = 1;
 #endif
 
+	struct Node* rnode;
 	void* buf = yy_scan_string(str);
 	if(yyparse() != 0) {
 		yy_delete_buffer(buf);
 		return NULL;
 	}
+	rnode = __dw_duplicate_node(&yyval.node);
+	__dw_free_node2(&yyval.node, true);
 	yy_delete_buffer(buf);
 
-	return &yyval.node;
+	return rnode;
+}
+
+struct Node* __dw_duplicate_node(struct Node* node) {
+	struct Node* r = malloc(sizeof(*r));
+	r->ident = NULL;
+	r->string = NULL;
+	r->nodes = NULL;
+	if(node->ident != NULL) r->ident = __dw_strdup(node->ident);
+	if(node->string != NULL) r->string = __dw_strdup(node->string);
+	if(node->nodes != NULL) {
+		int i;
+		for(i = 0; node->nodes[i] != NULL; i++)
+			;
+		r->nodes = malloc(sizeof(*r->nodes) * (i + 1));
+		for(i = 0; node->nodes[i] != NULL; i++) {
+			r->nodes[i] = __dw_duplicate_node(node->nodes[i]);
+		}
+		r->nodes[i] = NULL;
+	}
+	return r;
+}
+
+void __dw_free_node(struct Node* node) { __dw_free_node2(node, false); }
+
+void __dw_free_node2(struct Node* node, bool top) {
+	if(node->ident != NULL) free(node->ident);
+	if(node->string != NULL) free(node->string);
+	if(node->nodes != NULL) {
+		int i;
+		for(i = 0; node->nodes[i] != NULL; i++) {
+			__dw_free_node2(node->nodes[i], false);
+		}
+	}
+	if(!top) free(node);
+}
+
+void __dw_print_node(struct Node* node, bool top) {
+	if(node->string != NULL) {
+		printf("\"%s\"", node->string);
+		fflush(stdout);
+		if(top) printf("\n");
+	} else if(node->ident != NULL) {
+		printf("%s(", node->ident);
+		fflush(stdout);
+		if(node->nodes != NULL) {
+			int i;
+			for(i = 0; node->nodes[i] != NULL; i++) {
+				if(i > 0) {
+					printf(", ");
+					fflush(stdout);
+				}
+				__dw_print_node(node->nodes[i], false);
+			}
+		}
+		printf(")");
+		fflush(stdout);
+		if(top) printf("\n");
+	}
 }
