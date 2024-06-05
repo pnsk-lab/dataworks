@@ -113,4 +113,4 @@ dosbox-x: prepare-dosbox
 	$(MAKE) cleanup-dosbox
 
 cleanup-dosbox:
-	rm -f op.txt dosbox.conf
+	rm -f op.txt dosbox.conf DW.* DWSERV.* dw.* dwserv.* dosbox.core
