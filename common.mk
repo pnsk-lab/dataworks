@@ -46,12 +46,15 @@ archive-prepare: all
 	rm -f *.zip *.tar.gz
 	rm -rf dataworks-dist
 	mkdir -p dataworks-dist
+	mkdir -p dataworks-dist/Server
 	mkdir -p dataworks-dist/Client
 	mkdir -p dataworks-dist/Library
 	mkdir -p dataworks-dist/Document
 	-cp Library/*$(LIB_SUFFIX) dataworks-dist/Library/
 	-cp Library/*$(STATICLIB_SUFFIX) dataworks-dist/Library/
 	-cp Library/*.lib dataworks-dist/Library/
+	-cp Server/dataworks_server$(EXEC_SUFFIX) dataworks-dist/Server/
+	-rmdir dataworks-dist/Server
 	cp Library/*.h dataworks-dist/Library/
 	cp Client/dataworks$(EXEC_SUFFIX) dataworks-dist/Client/
 	cp -rf Document/doc/html dataworks-dist/Document/html
