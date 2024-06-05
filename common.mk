@@ -84,10 +84,10 @@ prepare-dosbox: no-doc
 	echo "[serial]" > dosbox.conf
 	echo "serial1=modem listenport:4096" >> dosbox.conf
 	echo "[sdl]" >> dosbox.conf
-	echo "windowresolution=640x400" >> dosbox.conf
+	echo "windowresolution=720x500" >> dosbox.conf
 	echo "[render]" >> dosbox.conf
 	echo "aspect=true" >> dosbox.conf
-	echo "aspect_ratio=16:10" >> dosbox.conf
+	echo "aspect_ratio=9:5" >> dosbox.conf
 	echo "[cpu]" >> dosbox.conf
 	echo "cycles=12000" >> dosbox.conf
 	echo "[autoexec]" >> dosbox.conf
