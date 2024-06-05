@@ -46,22 +46,21 @@
 HANDLE winstdout;
 #endif
 
-#if defined(__WATCOMC__) || defined(__MINGW32__)
-#define LONGOPT_PREFIX "/"
-#define SHORTOPT_PREFIX "/"
-#define OPT_CHAR '/'
-#else
-#define LONGOPT_PREFIX "--"
-#define SHORTOPT_PREFIX "-"
-#define OPT_CHAR '-'
-#endif
-
 void padleft(int leftpad, const char* str) {
 	char* spaces = malloc(leftpad - strlen(str) + 1);
 	memset(spaces, ' ', leftpad - strlen(str));
 	spaces[leftpad - strlen(str)] = 0;
 	printf("%s%s", str, spaces);
 	free(spaces);
+}
+
+bool option(const char* str, const char* shortopt, const char* longopt){
+	char* dos_shortopt = __dw_strcat("/", shortopt);
+	char* dos_longopt = __dw_strcat("/", longopt);
+	char* nix_shortopt = __dw_strcat("-", shortopt);
+	char* nix_longopt = __dw_strcat("--", longopt);
+	if(__dw_strcaseequ(str, dos_longopt) || __dw_strcaseequ(str, nix_longopt) || strcmp(str, dos_shortopt) == 0 || strcmp(str, nix_shortopt) == 0) return true;
+	return false;
 }
 
 int main(int argc, char** argv) {
@@ -76,22 +75,23 @@ int main(int argc, char** argv) {
 	const char* fname = NULL;
 	const char* fprog = NULL;
 	for(i = 1; i < argc; i++) {
-		if(argv[i][0] == OPT_CHAR) {
-			if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "version") || strcmp(argv[i], SHORTOPT_PREFIX "V") == 0) {
+		if(argv[i][0] == '-' || argv[i][0] == '/') {
+			if(option(argv[i], "V", "version")) {
 				printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 				return 0;
-			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "create") || strcmp(argv[i], SHORTOPT_PREFIX "C") == 0) {
+			} else if(option(argv[i], "C", "create")){
 				create = true;
-			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "noclear") || strcmp(argv[i], SHORTOPT_PREFIX "NC") == 0) {
+			} else if(option(argv[i], "NC", "noclear")) {
 				clear = false;
-			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "quiet") || strcmp(argv[i], SHORTOPT_PREFIX "q") == 0) {
+			} else if(option(argv[i], "q", "quiet")) {
 				banner = false;
 				log = false;
-			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "nobanner") || strcmp(argv[i], SHORTOPT_PREFIX "NB") == 0) {
+				clear = false;
+			} else if(option(argv[i], "NB", "nobanner")){
 				banner = false;
-			} else if(__dw_strcaseequ(argv[i], LONGOPT_PREFIX "nolog") || strcmp(argv[i], SHORTOPT_PREFIX "NL") == 0) {
+			} else if(option(argv[i], "NL", "nolog")) {
 				log = false;
-			} else if(strcmp(argv[i], SHORTOPT_PREFIX "f") == 0) {
+			} else if(option(argv[i], "f", "file")){
 				fprog = argv[i + 1];
 				i++;
 			} else {
@@ -261,7 +261,7 @@ int main(int argc, char** argv) {
 							line[i] = 0;
 							memcpy(line, linebuf, i);
 
-							struct dataworks_db_result* r = dataworks_database_execute_code(db, line, true);
+							struct dataworks_db_result* r = dataworks_database_execute_code(db, line, log);
 							if(r->error) {
 								printf("%s.\n", dataworks_database_strerror(r->errnum));
 							}
