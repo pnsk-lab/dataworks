@@ -101,6 +101,7 @@ prepare-dosbox: no-doc
 	echo "pause" >> dosbox.conf
 	echo "del db.dwf" >> dosbox.conf
 	echo "del dw.exe" >> dosbox.conf
+	echo "del dwserv.exe" >> dosbox.conf
 	echo "exit" >> dosbox.conf
 	if [ ! -e "dos4gw.exe" ]; then wget "https://github.com/yetmorecode/dos32a-ng/releases/download/9.1.2/DOS32ANG.EXE" -O dos4gw.exe ; fi
 
