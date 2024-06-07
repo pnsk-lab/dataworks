@@ -194,6 +194,15 @@ int main(int _argc, char** _argv) {
 					}
 				}
 				if(has_pass) {
+					int shift = i;
+					struct auth_entry** old_entries = entries;
+					for(i = 0; old_entries[i] != NULL; i++);
+					entries = malloc(sizeof(*entries) * (i + 2));
+					for(i = 0; old_entries[i] != NULL; i++) entries[i] = old_entries[i];
+					free(old_entries);
+					entries[i] = malloc(sizeof(**entries));
+					entries[i]->user = __dw_strdup(str);
+					entries[i]->pass = __dw_strdup(str + shift + 1);
 					printf("User %s is allowed to access the database now\n", str);
 				}
 				free(str);
