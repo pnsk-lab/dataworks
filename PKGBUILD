@@ -7,7 +7,7 @@ arch=('i686' 'x86_64')
 license=('BSD')
 pkgrel='1'
 makedepends=('byacc')
-source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision=169')
+source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision=170')
 sha256sums=('SKIP')
 
 build() {

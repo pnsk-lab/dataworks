@@ -1,6 +1,6 @@
 # $Id$
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar ./PKGBUILD PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version
 
 all: ./Grammar ./Library ./Client $(SERVER) ./Document
 
@@ -116,11 +116,14 @@ dosbox-x: prepare-dosbox
 cleanup-dosbox:
 	rm -f op.txt dosbox.conf DW.* DWSERV.* dw.* dwserv.* dosbox.core
 
+get-version:
+	echo $(VERSION)
+
 ./PKGBUILD:
 	echo "# \$$Id\$$" > $@
 	echo >> $@
 	echo "pkgname='dataworks'" >> $@
-	echo "pkgver='"`cat Library/dataworks.c | grep " dataworks_version " | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?'`"'" >> $@
+	echo "pkgver='"$(VERSION)"'" >> $@
 	echo "pkgdesc='Database System'" >> $@
 	echo "arch=('i686' 'x86_64')" >> $@
 	echo "license=('BSD')" >> $@
@@ -147,3 +150,5 @@ cleanup-dosbox:
 	echo "	ln -sf dataworks_server \$$pkgdir/usr/bin/dwserv" >> $@
 	echo "	ln -sf dataworks \$$pkgdir/usr/bin/dw" >> $@
 	echo "}" >> $@
+
+PKGBUILD: ./PKGBUILD
