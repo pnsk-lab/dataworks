@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 extern int argc;
 extern char** argv;
@@ -84,9 +85,14 @@ void write_serial(const char* str) {
 }
 
 bool connected;
+bool fancy = false;
 
 extern sig_atomic_t signals;
 extern struct dataworks_db* db;
+
+char** commands = NULL;
+
+void render_commands(void);
 
 char* modem_response(void) {
 	char* buf = malloc(1);
@@ -108,6 +114,7 @@ char* modem_response(void) {
 		}
 		printf("\r");
 		if(signals > 0) {
+			printf("\x1b[2J\x1b[1;1H");
 			free(buf);
 			if(connected) {
 				writeline(0, "QUIT:Bye");
@@ -116,8 +123,97 @@ char* modem_response(void) {
 			return NULL;
 		}
 	}
-	if(!connected) printf("-> %s\n", buf);
+	if(connected && fancy && commands != NULL){
+		char** oldcmds = commands;
+		int i;
+		for(i = 0; oldcmds[i] != NULL; i++);
+		commands = malloc(sizeof(*commands) * (i + 2));
+		for(i = 0; oldcmds[i] != NULL; i++) commands[i] = oldcmds[i];
+
+		time_t mtime = (time_t)time(NULL);
+		struct tm* tm = localtime(&mtime);
+		char mtimestr[256];
+		strftime(mtimestr, 255, "%a %b %d %H:%M:%S %Z %Y", tm);
+
+		char* tmp = __dw_strcat(mtimestr, ": ");
+		commands[i] = __dw_strcat(tmp, buf);
+		free(tmp);
+		commands[i + 1] = NULL;
+		free(oldcmds);
+
+		oldcmds = commands;
+		for(i = 0; oldcmds[i] != NULL; i++);
+		if(i > 24 - 10){
+			for(i = 0; oldcmds[i] != NULL; i++);
+			commands = malloc(sizeof(*commands) * (i + 1));
+			free(oldcmds[0]);
+			for(i = 1; oldcmds[i] != NULL; i++) commands[i - 1] = oldcmds[i];
+			commands[i - 1] = NULL;
+			free(oldcmds);
+		}
+
+		render_commands();
+	}
+	if(!connected && !fancy) printf("-> %s\n", buf);
 	return buf;
+}
+
+void update_message(const char* str){
+	int i;
+	printf("\x1b[5;2H\x1b[1m\x1b[34m");
+	printf("%s", str);
+	for(i = 0; i < 24 - strlen(str); i++) printf(" ");
+	printf("\x1b[m");
+	fflush(stdout);
+}
+
+void fancy_ready(void);
+
+void render_commands(void){
+	int i;
+	for(i = 0; commands[i] != NULL; i++);
+	for(; i >= 0; i--){
+		printf("\x1b[%d;2H\x1b[K%s", 24 - i, commands[i]);
+	}
+}
+
+void fancy_init(void) {
+	if(commands == NULL){
+		commands = malloc(sizeof(*commands));
+		commands[0] = NULL;
+	}
+	int i;
+	printf("\x1b[2J\x1b[1;1H\x1b[47m");
+	for(i = 0; i < 80; i++){
+		printf(" ");
+	}
+	printf("\x1b[1;2H\x1b[1m\x1b[30mDataWorks Server %s   Copyr. 2024 Crabware\x1b[m", dataworks_get_version());
+	printf("\x1b[2;1H\x1b[47m\x1b[1m\x1b[30m");
+	for(i = 0; i < 80; i++){
+		printf("\xdc");
+	}
+	printf("\x1b[7;1H\x1b[40m\x1b[1m\x1b[37m");
+	for(i = 0; i < 80; i++){
+		printf("\xdc");
+	}
+	printf("\x1b[8;1H\x1b[47m\x1b[1m\x1b[30m");
+	for(i = 0; i < 80; i++){
+		printf(" ");
+	}
+	printf("\x1b[8;2H\x1b[1m\x1b[30mRecent commands\x1b[m");
+	printf("\x1b[9;1H\x1b[47m\x1b[1m\x1b[30m");
+	for(i = 0; i < 80; i++){
+		printf("\xdc");
+	}
+	printf("\x1b[m");
+	printf("\x1b[4;2HStatus");
+	fflush(stdout);
+	fancy_ready();
+	render_commands();
+}
+
+void fancy_ready(void){
+	update_message("Ready for call");
 }
 
 int server_init(void) {
@@ -152,8 +248,11 @@ int server_init(void) {
 				printf("You can use double-dash or slash for long-format flag, and single-dash or slash for short-foramt flag.\n");
 				printf("Options:\n");
 				printf("\t-p --port [comport]   Specify the modem port\n");
+				printf("\t-f --fancy            Enable the fancy manager ;)\n");
 				printf("\t-l --login [path]     Specify the authentication file\n");
 				exit(0);
+			} else if(option(argv[i], "f", "fancy")){
+				fancy = true;
 			} else {
 				fprintf(stderr, "Invalid option: %s\n", argv[i]);
 				return 1;
@@ -166,10 +265,15 @@ int server_init(void) {
 		fprintf(stderr, "Specify serial port\n");
 		return 1;
 	}
-	printf("Serial port is at I/O 0x%4.4x\n", get_ioport());
+	if(fancy){
+		fancy_init();
+		update_message("Modem init");
+	}else{
+		printf("Serial port is at I/O 0x%4.4x\n", get_ioport());
+	}
 	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
 	write_serial("AT&FE0F1\r");
-	printf("<- AT&FE0F1\n");
+	if(!fancy) printf("<- AT&FE0F1\n");
 	char* resp = modem_response();
 	bool echo = __dw_strcaseequ(resp, "AT&FE0F1") || __dw_strcaseequ(resp, "NO CARRIER");
 	if(resp != NULL && echo) free(resp); /* Kill echo */
@@ -177,13 +281,19 @@ int server_init(void) {
 	if(echo) resp = modem_response();
 	if(resp == NULL) return 0;
 	if(__dw_strcaseequ(resp, "OK")) {
-		fprintf(stderr, "Modem initialization successful\n");
+		if(fancy){
+			fancy_ready();
+		}else{
+			printf("Modem initialization successful\n");
+		}
 	} else {
+		if(fancy) printf("\x1b[2J\x1b[1;1H");
 		fprintf(stderr, "Modem initialization fail\n");
 		free(resp);
 		return 1;
 	}
 	free(resp);
+
 	return 0;
 }
 
@@ -194,7 +304,11 @@ void server_loop(void) {
 		if(resp == NULL) break;
 		if(__dw_strcaseequ(resp, "NO CARRIER")) {
 			free(resp);
-			printf("Disconnected\n");
+			if(fancy){
+				fancy_ready();
+			}else{
+				printf("Disconnected\n");
+			}
 			connected = false;
 			continue;
 		}
@@ -210,14 +324,33 @@ void server_loop(void) {
 		if(connected) {
 		} else {
 			if(__dw_strcaseequ(resp, "RING")) {
-				printf("Got a call, answering\n");
+				if(fancy){
+					update_message("RING RING");
+				}else{
+					printf("Got a call, answering\n");
+				}
 				write_serial("ATA\r");
-				printf("<- ATA\n");
+				if(fancy){
+				}else{
+					printf("<- ATA\n");
+				}
 			} else if(__dw_strcaseequ(resp, "CONNECT")) {
-				printf("Connection successful");
-				if(has_arg) printf(", %s BPS", resp + i + 1);
-				printf("\n");
-				printf("Entering connected state\n");
+				if(fancy){
+					char* bps = __dw_strdup("CONNECTED!");
+					if(has_arg){
+						free(bps);
+						char* tmp = __dw_strcat("CONNECTED @ ", resp + i + 1);
+						bps = __dw_strcat(tmp, " BPS!");
+						free(tmp);
+					}
+					update_message(bps);
+					free(bps);
+				}else{
+					printf("Connection successful");
+					if(has_arg) printf(", %s BPS", resp + i + 1);
+					printf("\n");
+					printf("Entering connected state\n");
+				}
 				connected = true;
 				protocol_init(0);
 				protocol_loop(0);
@@ -231,7 +364,11 @@ char* readline_sock(int sock) {
 	char* resp = modem_response();
 	if(__dw_strcaseequ(resp, "NO CARRIER")) {
 		free(resp);
-		printf("Disconnected\n");
+		if(fancy){
+			fancy_ready();
+		}else{
+			printf("Disconnected\n");
+		}
 		connected = false;
 	}
 	return connected ? resp : NULL;
