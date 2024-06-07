@@ -35,7 +35,7 @@ format:
 	clang-format -i $(FILES)
 
 clean:
-	rm -f *.zip *.tar.gz PKGBUILD
+	rm -f *.zip *.tar.gz
 	$(MAKE) -C ./Grammar clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Library clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
