@@ -196,7 +196,8 @@ int main(int _argc, char** _argv) {
 				if(has_pass) {
 					int shift = i;
 					struct auth_entry** old_entries = entries;
-					for(i = 0; old_entries[i] != NULL; i++);
+					for(i = 0; old_entries[i] != NULL; i++)
+						;
 					entries = malloc(sizeof(*entries) * (i + 2));
 					for(i = 0; old_entries[i] != NULL; i++) entries[i] = old_entries[i];
 					free(old_entries);
