@@ -234,7 +234,7 @@ char* readline_sock(int sock) {
 		printf("Disconnected\n");
 		connected = false;
 	}
-	return connected ? modem_response() : NULL;
+	return connected ? resp : NULL;
 }
 
 void writeline(int sock, const char* str) {
