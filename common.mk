@@ -127,7 +127,7 @@ get-version:
 	echo "pkgdesc='Database System'" >> $@
 	echo "arch=('i686' 'x86_64')" >> $@
 	echo "license=('BSD')" >> $@
-	echo "pkgrel='1'" >> $@
+	echo "pkgrel='`cat increment-PKGBUILD`'" >> $@
 	echo "makedepends=('byacc')" >> $@
 	echo "source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision="`svn info | grep "Revision" | grep -Eo "[0-9]+"`"')" >> $@
 	echo "sha256sums=('SKIP')" >> $@
@@ -150,5 +150,4 @@ get-version:
 	echo "	ln -sf dataworks_server \$$pkgdir/usr/bin/dwserv" >> $@
 	echo "	ln -sf dataworks \$$pkgdir/usr/bin/dw" >> $@
 	echo "}" >> $@
-
-PKGBUILD: ./PKGBUILD
+	expr `cat increment-PKGBUILD` + 1 > increment-PKGBUILD
