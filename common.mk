@@ -129,7 +129,7 @@ get-version:
 	echo "license=('BSD')" >> $@
 	echo "pkgrel='`cat increment-PKGBUILD`'" >> $@
 	echo "makedepends=('byacc')" >> $@
-	echo "source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision="`svn info -r HEAD | grep "Revision" | grep -Eo "[0-9]+"`"')" >> $@
+	echo "source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision="`svn info -r HEAD | grep "Revision" | grep -Eo "[0-9]+" | xargs expr 1 +`"')" >> $@
 	echo "sha256sums=('SKIP')" >> $@
 	echo >> $@
 	echo "build() {" >> $@
