@@ -94,6 +94,19 @@ int main(int argc, char** argv) {
 			} else if(option(argv[i], "f", "file")) {
 				fprog = argv[i + 1];
 				i++;
+			} else if(option(argv[i], "h", "help")) {
+				printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+				printf("\n");
+				printf("Usage: %s [options] database\n", argv[0]);
+				printf("You can use double-dash or slash for long-format flag, and single-dash or slash for short-foramt flag.\n");
+				printf("Options:\n");
+				printf("\t-V  --version      Show the version\n");
+				printf("\t-NC --noclear      Do not clear the screen on the startup\n");
+				printf("\t-NB --nobanner     Do not show the banner on the startup\n");
+				printf("\t-NL --nolog        Do not show the log\n");
+				printf("\t-q  --quiet        Same with -NC -NB -NL\n");
+				printf("\t-f --file [path]   Run the [path] as the script file\n");
+				return 0;
 			} else {
 				fprintf(stderr, "%s: %s: invalid option\n", argv[0], argv[i]);
 				return 1;
