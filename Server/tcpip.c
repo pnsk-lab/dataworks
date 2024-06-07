@@ -38,6 +38,8 @@
 
 extern int argc;
 extern char** argv;
+extern bool auth;
+extern char* authfile;
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -61,12 +63,19 @@ int server_init(void) {
 	printf("Using BSD TCP/IP\n");
 	int i;
 	for(i = 1; i < argc; i++) {
-		if(argv[i][0] == '/' || argv[i][0] == '-'){
-			if(option(argv[i], "p", "port")){
+		if(argv[i][0] == '/' || argv[i][0] == '-') {
+			if(option(argv[i], "p", "port")) {
 				i++;
 				port = atoi(argv[i]);
+			} else if(option(argv[i], "l", "login")) {
+				i++;
+				authfile = argv[i];
+				auth = true;
+			} else {
+				fprintf(stderr, "Invalid option: %s\n", argv[i]);
+				return 1;
 			}
-		}else{
+		} else {
 			db = dataworks_database_open(argv[i]);
 		}
 	}
@@ -126,19 +135,19 @@ void server_loop(void) {
 	}
 }
 
-char* readline_sock(int sock){
+char* readline_sock(int sock) {
 	char cbuf[2];
 	cbuf[1] = 0;
 	char* buf = malloc(1);
 	buf[0] = 0;
-	while(1){
+	while(1) {
 		int l = recv(sock, cbuf, 1, 0);
-		if(l <= 0){
+		if(l <= 0) {
 			free(buf);
 			return NULL;
-		}else if(cbuf[0] == '\n'){
+		} else if(cbuf[0] == '\n') {
 			break;
-		}else if(cbuf[0] != '\r'){
+		} else if(cbuf[0] != '\r') {
 			char* tmp = buf;
 			buf = __dw_strcat(tmp, cbuf);
 			free(tmp);
@@ -147,9 +156,7 @@ char* readline_sock(int sock){
 	return buf;
 }
 
-void disconnect(int sock){
-	close(sock);
-}
+void disconnect(int sock) { close(sock); }
 
 void writeline(int sock, const char* str) {
 	char* snd = __dw_strcat(str, "\r\n");

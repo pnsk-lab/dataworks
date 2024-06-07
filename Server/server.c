@@ -31,14 +31,22 @@
 #include <dw_database.h>
 #include <dw_util.h>
 
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
 
 int argc;
 char** argv;
+bool auth = false;
+char* authfile = NULL;
+FILE* authdb;
+struct auth_entry {
+	char* user;
+	char* pass;
+};
+struct auth_entry** entries;
 #ifdef __DOS__
 sig_atomic_t signals = 0;
 #endif
@@ -64,10 +72,17 @@ void disconnect(int sock);
 
 void protocol_init(int sock) {
 	/* sock is ignored on hayes */
-	writeline(sock, "READY");
 	char* tmp;
 	char* verstr;
-	verstr = __dw_strcat("ATTR:AUTH:VER=", dataworks_get_version());
+	verstr = __dw_strcat("ATTR", auth ? ":AUTH" : "");
+
+	tmp = verstr;
+	verstr = __dw_strcat(tmp, ":VER=");
+	free(tmp);
+
+	tmp = verstr;
+	verstr = __dw_strcat(tmp, dataworks_get_version());
+	free(tmp);
 
 	tmp = verstr;
 	verstr = __dw_strcat(tmp, ":PLATFORM=");
@@ -79,75 +94,126 @@ void protocol_init(int sock) {
 
 	writeline(sock, verstr);
 	free(verstr);
+
+	writeline(sock, "READY");
 }
 
-void protocol_loop(int sock){
-	while(1){
+void protocol_loop(int sock) {
+	while(1) {
 		char* buf = readline_sock(sock);
-		if(buf == NULL){
+		if(buf == NULL) {
 			break;
 		}
 		int i;
 		bool has_arg = false;
-		for(i = 0; buf[i] != 0; i++){
-			if(buf[i] == ':'){
+		for(i = 0; buf[i] != 0; i++) {
+			if(buf[i] == ':') {
 				buf[i] = 0;
 				has_arg = true;
 				break;
 			}
 		}
-		if(__dw_strcaseequ(buf, "ECHO")){
+		if(__dw_strcaseequ(buf, "ECHO")) {
 			int start;
-			if(has_arg){
+			if(has_arg) {
 				i++;
 				start = i;
-				for(;; i++){
-					if(buf[i] == ':' || buf[i] == 0){
+				for(;; i++) {
+					if(buf[i] == ':' || buf[i] == 0) {
 						char oldc = buf[i];
 						buf[i] = 0;
 						char* echo = __dw_strcat("ECHO:", buf + start);
 						start = i + 1;
-	
+
 						writeline(sock, echo);
 						free(echo);
 						if(oldc == 0) break;
 					}
 				}
-			}else{
+			} else {
 				writeline(sock, "ECHO");
 			}
-		}else if(__dw_strcaseequ(buf, "BYE") || __dw_strcaseequ(buf, "QUIT")){
+		} else if(__dw_strcaseequ(buf, "BYE") || __dw_strcaseequ(buf, "QUIT")) {
 			writeline(sock, "QUIT:Bye");
 			disconnect(sock);
-		}else{
+		} else if(__dw_strcaseequ(buf, "USER")) {
+			if(auth) {
+			} else {
+				writeline(sock, "ERROR:NO_AUTH");
+			}
+		} else if(__dw_strcaseequ(buf, "PASS")) {
+			if(auth) {
+			} else {
+				writeline(sock, "ERROR:NO_AUTH");
+			}
+		} else {
 			writeline(sock, "ERROR:UNKNOWN_CMD");
 		}
 		free(buf);
 	}
 }
 
+void exitnow(int sig) {
 #ifdef __DOS__
-void exitnow(int sig){
-	signals++;
-}
+	if(sig != -1) signals++;
+#else
+	if(sig != -1) exit(0);
 #endif
+}
 
 int main(int _argc, char** _argv) {
 	argc = _argc;
 	argv = _argv;
-#ifdef __DOS__
+	entries = malloc(sizeof(*entries));
+	entries[0] = NULL;
 	signal(SIGINT, exitnow);
-#endif
+	signal(SIGTERM, exitnow);
 	printf("DataWorks Server  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 	int st;
 	if((st = server_init()) != 0) return st;
-	if(db != NULL){
-		if(db->error){
+	if(auth) {
+		authdb = fopen(authfile, "r");
+		if(authdb == NULL) {
+			fprintf(stderr, "Failed to open authfile\n");
+			return 1;
+		}
+		char cbuf[2];
+		cbuf[1] = 0;
+		char* str = malloc(1);
+		str[0] = 0;
+		while(true) {
+			if(fread(cbuf, 1, 1, authdb) <= 0) break;
+			if(cbuf[0] == '\n') {
+				int i;
+				bool has_pass = false;
+				for(i = 0; str[i] != 0; i++) {
+					if(str[i] == ':') {
+						str[i] = 0;
+						has_pass = true;
+						break;
+					}
+				}
+				if(has_pass) {
+					printf("User %s is allowed to access the database now\n", str);
+				}
+				free(str);
+				str = malloc(1);
+				str[0] = 0;
+			} else if(cbuf[0] != '\r') {
+				char* tmp = str;
+				str = __dw_strcat(tmp, cbuf);
+				free(tmp);
+			}
+		}
+		free(str);
+	}
+	if(db != NULL) {
+		if(db->error) {
 			dataworks_database_close(db);
 			db = NULL;
 		}
 	}
-	if(db == NULL){
+	if(db == NULL) {
 		fprintf(stderr, "Failed to open databse\n");
 		return 1;
 	}

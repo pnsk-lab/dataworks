@@ -31,18 +31,20 @@
 #include <dw_database.h>
 #include <dw_util.h>
 
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
 
 extern int argc;
 extern char** argv;
+extern bool auth;
+extern char* authfile;
 
 #include <bios.h>
-#include <i86.h>
 #include <conio.h>
+#include <i86.h>
 
 void protocol_init(int sock);
 void protocol_loop(int sock);
@@ -53,17 +55,17 @@ bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = -1;
 
-int get_ioport(){
+int get_ioport() {
 #ifdef PC98
 	if(port == 0) return 0x30;
 #else
-	if(port == 0){
+	if(port == 0) {
 		return 0x3f8;
-	}else if(port == 1){
+	} else if(port == 1) {
 		return 0x2f8;
-	}else if(port == 2){
+	} else if(port == 2) {
 		return 0x3e8;
-	}else if(port == 3){
+	} else if(port == 3) {
 		return 0x2e8;
 	}
 #endif
@@ -105,9 +107,9 @@ char* modem_response(void) {
 			}
 		}
 		printf("\r");
-		if(signals > 0){
+		if(signals > 0) {
 			free(buf);
-			if(connected){
+			if(connected) {
 				writeline(0, "QUIT:Bye");
 				disconnect(0);
 			}
@@ -122,11 +124,11 @@ int server_init(void) {
 	connected = false;
 	int i;
 	for(i = 1; i < argc; i++) {
-		if(argv[i][0] == '/' || argv[i][0] == '-'){
-			if(option(argv[i], "p", "port")){
+		if(argv[i][0] == '/' || argv[i][0] == '-') {
+			if(option(argv[i], "p", "port")) {
 				i++;
 				if(__dw_strcaseequ(argv[i], "COM1")) {
-					port = 0;	
+					port = 0;
 #ifndef PC98
 				} else if(__dw_strcaseequ(argv[i], "COM2")) {
 					port = 1;
@@ -139,11 +141,15 @@ int server_init(void) {
 					fprintf(stderr, "Invalid port: %s\n", argv[i]);
 					return 1;
 				}
-			}else{
+			} else if(option(argv[i], "l", "login")) {
+				i++;
+				authfile = argv[i];
+				auth = true;
+			} else {
 				fprintf(stderr, "Invalid option: %s\n", argv[i]);
 				return 1;
 			}
-		}else{
+		} else {
 			db = dataworks_database_open(argv[i]);
 		}
 	}
@@ -210,9 +216,7 @@ void server_loop(void) {
 	}
 }
 
-char* readline_sock(int sock){
-	return connected ? modem_response() : NULL;
-}
+char* readline_sock(int sock) { return connected ? modem_response() : NULL; }
 
 void writeline(int sock, const char* str) {
 	char* snd = __dw_strcat(str, "\r\n");
@@ -220,7 +224,7 @@ void writeline(int sock, const char* str) {
 	free(snd);
 }
 
-void disconnect(int sock){
+void disconnect(int sock) {
 	while(inp(get_ioport() + 6) & (1 << 7)) outp(get_ioport() + 4, 0);
 	connected = false;
 }
