@@ -35,7 +35,7 @@ format:
 	clang-format -i $(FILES)
 
 clean:
-	rm -f *.zip *.tar.gz
+	rm -f *.zip *.tar.gz PKGBUILD
 	$(MAKE) -C ./Grammar clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Library clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
@@ -115,3 +115,35 @@ dosbox-x: prepare-dosbox
 
 cleanup-dosbox:
 	rm -f op.txt dosbox.conf DW.* DWSERV.* dw.* dwserv.* dosbox.core
+
+./PKGBUILD:
+	echo "# \$$Id\$$" > $@
+	echo >> $@
+	echo "pkgname='dataworks'" >> $@
+	echo "pkgver='"`cat Library/dataworks.c | grep " dataworks_version " | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?'`"'" >> $@
+	echo "pkgdesc='Database System'" >> $@
+	echo "arch=('i686' 'x86_64')" >> $@
+	echo "license=('BSD')" >> $@
+	echo "pkgrel='1'" >> $@
+	echo "makedepends=('byacc')" >> $@
+	echo "source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision="`svn info | grep "Revision" | grep -Eo "[0-9]+"`"')" >> $@
+	echo "sha256sums=('SKIP')" >> $@
+	echo >> $@
+	echo "build() {" >> $@
+	echo "	cd dataworks" >> $@
+	echo "	make no-doc YACC=byacc" >> $@
+	echo "}" >> $@
+	echo >> $@
+	echo "package() {" >> $@
+	echo "	cd dataworks" >> $@
+	echo "	mkdir -p \$$pkgdir/usr/include" >> $@
+	echo "	mkdir -p \$$pkgdir/usr/lib" >> $@
+	echo "	mkdir -p \$$pkgdir/usr/bin" >> $@
+	echo "	cp -rf Library/*.h \$$pkgdir/usr/include/" >> $@
+	echo "	cp -rf Library/*.a \$$pkgdir/usr/lib/" >> $@
+	echo "	cp -rf Library/*.so \$$pkgdir/usr/lib/" >> $@
+	echo "	cp -rf Server/dataworks_server \$$pkgdir/usr/bin/" >> $@
+	echo "	cp -rf Client/dataworks \$$pkgdir/usr/bin/" >> $@
+	echo "	ln -sf dataworks_server \$$pkgdir/usr/bin/dwserv" >> $@
+	echo "	ln -sf dataworks \$$pkgdir/usr/bin/dw" >> $@
+	echo "}" >> $@
