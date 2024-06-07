@@ -116,6 +116,7 @@ char* modem_response(void) {
 			return NULL;
 		}
 	}
+	if(!connected) printf("-> %s\n", buf);
 	return buf;
 }
 
@@ -168,6 +169,7 @@ int server_init(void) {
 	printf("Serial port is at I/O 0x%4.4x\n", get_ioport());
 	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
 	write_serial("AT&FE0F1\r");
+	printf("<- AT&FE0F1\n");
 	char* resp = modem_response();
 	bool echo = __dw_strcaseequ(resp, "AT&FE0F1") || __dw_strcaseequ(resp, "NO CARRIER");
 	if(resp != NULL && echo) free(resp); /* Kill echo */
@@ -210,6 +212,7 @@ void server_loop(void) {
 			if(__dw_strcaseequ(resp, "RING")) {
 				printf("Got a call, answering\n");
 				write_serial("ATA\r");
+				printf("<- ATA\n");
 			} else if(__dw_strcaseequ(resp, "CONNECT")) {
 				printf("Connection successful");
 				if(has_arg) printf(", %s BPS", resp + i + 1);
