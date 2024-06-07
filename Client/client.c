@@ -100,6 +100,7 @@ int main(int argc, char** argv) {
 				printf("Usage: %s [options] database\n", argv[0]);
 				printf("You can use double-dash or slash for long-format flag, and single-dash or slash for short-foramt flag.\n");
 				printf("Options:\n");
+				printf("\t-C  --create        Create the database\n");
 				printf("\t-V  --version       Show the version\n");
 				printf("\t-NC --noclear       Do not clear the screen on the startup\n");
 				printf("\t-NB --nobanner      Do not show the banner on the startup\n");
