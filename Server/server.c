@@ -136,6 +136,7 @@ void protocol_loop(int sock) {
 		} else if(__dw_strcaseequ(buf, "BYE") || __dw_strcaseequ(buf, "QUIT")) {
 			writeline(sock, "QUIT:Bye");
 			disconnect(sock);
+			break;
 		} else if(__dw_strcaseequ(buf, "USER")) {
 			if(auth) {
 			} else {

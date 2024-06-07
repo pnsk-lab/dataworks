@@ -227,7 +227,15 @@ void server_loop(void) {
 	}
 }
 
-char* readline_sock(int sock) { return connected ? modem_response() : NULL; }
+char* readline_sock(int sock) {
+	char* resp = modem_response();
+	if(__dw_strcaseequ(resp, "NO CARRIER")) {
+		free(resp);
+		printf("Disconnected\n");
+		connected = false;
+	}
+	return connected ? modem_response() : NULL;
+}
 
 void writeline(int sock, const char* str) {
 	char* snd = __dw_strcat(str, "\r\n");
