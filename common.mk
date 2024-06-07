@@ -134,6 +134,7 @@ get-version:
 	echo >> $@
 	echo "build() {" >> $@
 	echo "	cd dataworks" >> $@
+	echo "	make clean" >> $@
 	echo "	make no-doc YACC=byacc" >> $@
 	echo "}" >> $@
 	echo >> $@
