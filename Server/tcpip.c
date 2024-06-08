@@ -41,11 +41,17 @@ extern char** argv;
 extern bool auth;
 extern char* authfile;
 
+#ifdef __MINGW32__
+#include <winsock2.h>
+#include <windows.h>
+#include <process.h>
+#else
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <signal.h>
 #include <sys/socket.h>
+#endif
 #include <unistd.h>
 
 void protocol_init(int sock);
@@ -55,7 +61,11 @@ bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = 4096;
 int server_socket;
+#ifdef __MINGW32__
+struct sockaddr_in server_address;
+#else
 struct sockaddr_in6 server_address;
+#endif
 
 extern struct dataworks_db* db;
 
@@ -87,44 +97,79 @@ int server_init(void) {
 			db = dataworks_database_open(argv[i]);
 		}
 	}
+#ifdef __MINGW32__
+	WSADATA wsa;
+	WSAStartup(MAKEWORD(2, 0), &wsa);
+#endif
+#ifdef __MINGW32__
+	if((server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
+#else
 	if((server_socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0) {
-		fprintf(stderr, "BSD TCP/IP initialization fail\n");
+#endif
+		fprintf(stderr, "BSD TCP/IP initialization fail (socket)\n");
 		return 1;
 	}
 	int yes = 1;
-	if(setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0) {
-		fprintf(stderr, "BSD TCP/IP initialization fail\n");
+	if(setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, (void*)&yes, sizeof(yes)) < 0) {
+		fprintf(stderr, "BSD TCP/IP initialization fail (setsockopt)\n");
 		close(server_socket);
 		return 1;
 	}
-	if(setsockopt(server_socket, IPPROTO_TCP, TCP_NODELAY, &yes, sizeof(yes)) < 0) {
-		fprintf(stderr, "BSD TCP/IP initialization fail\n");
+	if(setsockopt(server_socket, IPPROTO_TCP, TCP_NODELAY, (void*)&yes, sizeof(yes)) < 0) {
+		fprintf(stderr, "BSD TCP/IP initialization fail (setsockopt)\n");
 		close(server_socket);
 		return 1;
 	}
+#ifdef __MINGW32__
+#else
 	int no = 0;
 	if(setsockopt(server_socket, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)) < 0) {
-		fprintf(stderr, "BSD TCP/IP initialization fail\n");
+		fprintf(stderr, "BSD TCP/IP initialization fail (setsockopt)\n");
 		close(server_socket);
 		return 1;
 	}
+#endif
 	memset(&server_address, 0, sizeof(server_address));
+#ifdef __MINGW32__
+	server_address.sin_family = AF_INET;
+	server_address.sin_addr.S_un.S_addr = INADDR_ANY;
+	server_address.sin_port = htons(port);
+#else
 	server_address.sin6_family = AF_INET6;
 	server_address.sin6_addr = in6addr_any;
 	server_address.sin6_port = htons(port);
+#endif
 	if(bind(server_socket, (struct sockaddr*)&server_address, sizeof(server_address)) < 0) {
-		fprintf(stderr, "BSD TCP/IP initialization fail\n");
+		fprintf(stderr, "BSD TCP/IP initialization fail (bind)\n");
 		close(server_socket);
 		return 1;
 	}
 	if(listen(server_socket, 128) < 0) {
-		fprintf(stderr, "BSD TCP/IP initialization fail\n");
+		fprintf(stderr, "BSD TCP/IP initialization fail (listen)\n");
 		close(server_socket);
 		return 1;
 	}
+#ifdef __MINGW32__
+#else
 	signal(SIGCHLD, SIG_IGN);
+#endif
 	fprintf(stderr, "BSD TCP/IP initialization successful\n");
 	return 0;
+}
+
+#ifdef __MINGW32__
+unsigned int WINAPI pass_sock(LPVOID sockptr){
+	int sock = *(int*)sockptr;
+#else
+void pass_sock(int sock){
+#endif
+	protocol_init(sock);
+	protocol_loop(sock);
+#ifdef __MINGW32__
+	closesocket(sock);
+#else
+	close(sock);
+#endif
 }
 
 void server_loop(void) {
@@ -132,14 +177,18 @@ void server_loop(void) {
 		struct sockaddr_in claddr;
 		int clen = sizeof(claddr);
 		int sock = accept(server_socket, (struct sockaddr*)&claddr, &clen);
+#ifdef __MINGW32__
+		HANDLE thread;
+		thread = (HANDLE)_beginthreadex(NULL, 0, pass_sock, &sock, 0, NULL);
+#else
 		pid_t p = fork();
 		if(p == 0) {
-			protocol_init(sock);
-			protocol_loop(sock);
+			pass_sock(sock);
 			_exit(0);
 		} else {
 			close(sock);
 		}
+#endif
 	}
 }
 
