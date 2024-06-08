@@ -7,11 +7,11 @@ OBJS = server.o $(SERVER_MODULE)
 
 all: dataworks_server$(EXEC_SUFFIX)
 
-dataworks.res: ../Client/dataworks.res
-	cp ../Client/dataworks.res ./
-
 dataworks_server$(EXEC_SUFFIX): $(OBJS) $(LINK_LIB)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS) $(LINK_LIB) $(SERVLINK_LIB)
+
+dataworks.res: ../Client/dataworks.rc ../dataworks.ico
+	$(WINDRES) ../Client/dataworks.rc -O coff -o ./dataworks.res
 
 .c.o:
 	$(CC) $(CFLAGS) -I../Library -c -o $@ $<
