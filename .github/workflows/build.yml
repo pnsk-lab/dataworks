@@ -1,0 +1,17 @@
+name: Build DataWorks
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt-get install zip
+    - name: make
+      run: make
