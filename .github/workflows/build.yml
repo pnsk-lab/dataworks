@@ -18,9 +18,11 @@ jobs:
     - uses: actions/cache@v4
       with:
         save-always: true
-        path: /var/cache/apt
-        key: pkgcache-${{ github.sha }}
-        restore-keys: pkgcache-
+        path: |
+	  /var/cache/apt
+	  /usr/watcom
+        key: cache-${{ github.sha }}
+        restore-keys: cache-
     - name: Install packages
       run: sudo apt-get install zip byacc flex doxygen mingw-w64 graphviz
     - name: Create /usr/watcom
