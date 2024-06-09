@@ -19,8 +19,8 @@ jobs:
       with:
         save-always: true
         path: |
-	  /var/cache/apt
-	  /usr/watcom
+          /var/cache/apt
+          /usr/watcom
         key: cache-${{ github.sha }}
         restore-keys: cache-
     - name: Install packages
