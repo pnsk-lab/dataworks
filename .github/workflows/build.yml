@@ -14,4 +14,8 @@ jobs:
     - name: Install packages
       run: sudo apt-get install zip byacc flex doxygen
     - name: make
-      run: make YACC=byacc
+      run: make YACC=byacc archive
+    - name: rename
+      run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz
+    - name: release
+      run: gh release create -t \"Release $(date +\"%a %b %e %H:%M:%S %Z %Y\")\" --generate-notes dataworks-linux64.tar.gz
