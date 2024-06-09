@@ -22,16 +22,22 @@ jobs:
         restore-keys: pkgcache-
     - name: Install packages
       run: sudo apt-get install zip byacc flex doxygen mingw-w64 graphviz
+    - name: make sure it is clean (linux64)
+      run: make clean
     - name: make for linux64
-      run: make YACC=byacc -j3 clean archive
+      run: make YACC=byacc -j3 archive
     - name: rename to -linux64
       run: mv dataworks.tar.gz dataworks-linux64.tar.gz
+    - name: make sure it is clean (win32)
+      run: make clean
     - name: make for win32
-      run: make YACC=byacc PLATFORM=win32 -j3 clean archive
+      run: make YACC=byacc PLATFORM=win32 -j3 archive
     - name: rename to -win32
       run: mv dataworks.tar.gz dataworks-win32.tar.gz
+    - name: make sure it is clean (win64)
+      run: make clean
     - name: make for win64
-      run: make YACC=byacc PLATFORM=win64 -j3 clean archive
+      run: make YACC=byacc PLATFORM=win64 -j3 archive
     - name: rename to -win64
       run: mv dataworks.tar.gz dataworks-win64.tar.gz
     - name: release

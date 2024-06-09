@@ -35,7 +35,6 @@ format:
 	clang-format -i $(FILES)
 
 clean:
-	rm -f *.zip *.tar.gz
 	$(MAKE) -C ./Grammar clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Library clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
@@ -43,7 +42,7 @@ clean:
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
 
 archive-prepare: all
-	rm -f *.zip *.tar.gz
+	rm -f dataworks.zip dataworks.tar.gz
 	rm -rf dataworks-dist
 	mkdir -p dataworks-dist
 	mkdir -p dataworks-dist/Server
