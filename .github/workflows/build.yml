@@ -27,20 +27,20 @@ jobs:
     - name: make for linux64
       run: make YACC=byacc -j3 archive
     - name: rename to -linux64
-      run: mv dataworks.tar.gz dataworks-linux64.tar.gz
+      run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz
     - name: make sure it is clean (win32)
       run: make clean
     - name: make for win32
       run: make YACC=byacc PLATFORM=win32 -j3 archive
     - name: rename to -win32
-      run: mv dataworks.tar.gz dataworks-win32.tar.gz
+      run: mv dataworks.zip dataworks-win32.zip && mv dataworks.tar.gz dataworks-win32.tar.gz
     - name: make sure it is clean (win64)
       run: make clean
     - name: make for win64
       run: make YACC=byacc PLATFORM=win64 -j3 archive
     - name: rename to -win64
-      run: mv dataworks.tar.gz dataworks-win64.tar.gz
+      run: mv dataworks.zip dataworks-win64.zip && mv dataworks.tar.gz dataworks-win64.tar.gz
     - name: release
-      run: gh release create -t "Release $(date +"%a %b %e %H:%M:%S %Z %Y")" "$(date +%Y%m%d%H%M%S)" dataworks-linux64.tar.gz dataworks-win32.tar.gz dataworks-win64.tar.gz --generate-notes
+      run: gh release create -t "Release $(date +"%a %b %e %H:%M:%S %Z %Y")" "$(date +%Y%m%d%H%M%S)" dataworks-linux64.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

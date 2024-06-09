@@ -117,7 +117,7 @@ cleanup-dosbox:
 	rm -f op.txt dosbox.conf DW.* DWSERV.* dw.* dwserv.* dosbox.core
 
 get-version:
-	echo $(VERSION)
+	@echo $(VERSION)
 
 ./PKGBUILD:
 	echo "# \$$Id\$$" > $@
