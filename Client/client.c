@@ -206,9 +206,11 @@ int main(int argc, char** argv) {
 	}
 	char* linebuf = malloc(1);
 	linebuf[0] = 0;
+	bool until_end = false;
 	while(1) {
 		if((ch = fgetc(fp)) == EOF) break;
 		if(ch == '\n') {
+			until_end = false;
 			if(buf[0] == '.') {
 				if(__dw_strcaseequ(buf, ".bye") || __dw_strcaseequ(buf, ".quit")) {
 					printf("Bye.\n");
@@ -274,6 +276,16 @@ int main(int argc, char** argv) {
 							char* line = malloc(i + 1);
 							line[i] = 0;
 							memcpy(line, linebuf, i);
+							bool comment = false;
+							int j;
+							for(j = 0; line[j] != 0; j++){
+								if(!(line[j] == ' ' || line[j] == '\t')){
+									char* newline = __dw_strdup(line + j);
+									free(line);
+									line = newline;
+									break;
+								}
+							}
 
 							struct dataworks_db_result* r = dataworks_database_execute_code(db, line, log);
 							if(r->error) {
@@ -303,6 +315,9 @@ int main(int argc, char** argv) {
 			buf = malloc(1);
 			buf[0] = 0;
 			len = 0;
+		}else if(until_end){
+		}else if(ch == '#'){
+			until_end = true;
 		} else if(ch != '\r') {
 			char* newbuf = malloc(len + 2);
 			for(i = 0; i < len; i++) {
