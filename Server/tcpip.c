@@ -42,9 +42,9 @@ extern bool auth;
 extern char* authfile;
 
 #ifdef __MINGW32__
-#include <winsock2.h>
-#include <windows.h>
 #include <process.h>
+#include <windows.h>
+#include <winsock2.h>
 #else
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -158,10 +158,10 @@ int server_init(void) {
 }
 
 #ifdef __MINGW32__
-unsigned int WINAPI pass_sock(LPVOID sockptr){
+unsigned int WINAPI pass_sock(LPVOID sockptr) {
 	int sock = *(int*)sockptr;
 #else
-void pass_sock(int sock){
+void pass_sock(int sock) {
 #endif
 	protocol_init(sock);
 	protocol_loop(sock);

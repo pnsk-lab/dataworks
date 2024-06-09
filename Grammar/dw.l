@@ -37,8 +37,6 @@ double __dw_atof(const char* str);
 
 %%
 
-#.*				{ return (COMMENT); }
-
 ["][^"]*["]			{
 	yylval.node.string = strdup(yytext + 1);
 	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
@@ -56,6 +54,7 @@ double __dw_atof(const char* str);
 	yylval.node.type = 'S';
 	return (STRING);
 }
+[ \t]*#.*			{ return (COMMENT); }
 [a-zA-Z_][a-zA-Z0-9_\-]*	{
 	yylval.node.ident = strdup(yytext);
 	yylval.node.nodes = NULL;

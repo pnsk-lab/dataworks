@@ -123,10 +123,11 @@ char* modem_response(void) {
 			return NULL;
 		}
 	}
-	if(connected && fancy && commands != NULL){
+	if(connected && fancy && commands != NULL) {
 		char** oldcmds = commands;
 		int i;
-		for(i = 0; oldcmds[i] != NULL; i++);
+		for(i = 0; oldcmds[i] != NULL; i++)
+			;
 		commands = malloc(sizeof(*commands) * (i + 2));
 		for(i = 0; oldcmds[i] != NULL; i++) commands[i] = oldcmds[i];
 
@@ -142,9 +143,11 @@ char* modem_response(void) {
 		free(oldcmds);
 
 		oldcmds = commands;
-		for(i = 0; oldcmds[i] != NULL; i++);
-		if(i > 24 - 10){
-			for(i = 0; oldcmds[i] != NULL; i++);
+		for(i = 0; oldcmds[i] != NULL; i++)
+			;
+		if(i > 24 - 10) {
+			for(i = 0; oldcmds[i] != NULL; i++)
+				;
 			commands = malloc(sizeof(*commands) * (i + 1));
 			free(oldcmds[0]);
 			for(i = 1; oldcmds[i] != NULL; i++) commands[i - 1] = oldcmds[i];
@@ -158,7 +161,7 @@ char* modem_response(void) {
 	return buf;
 }
 
-void update_message(const char* str){
+void update_message(const char* str) {
 	int i;
 	printf("\x1b[5;2H\x1b[1m\x1b[34m");
 	printf("%s", str);
@@ -169,40 +172,41 @@ void update_message(const char* str){
 
 void fancy_ready(void);
 
-void render_commands(void){
+void render_commands(void) {
 	int i;
-	for(i = 0; commands[i] != NULL; i++);
-	for(; i >= 0; i--){
+	for(i = 0; commands[i] != NULL; i++)
+		;
+	for(; i >= 0; i--) {
 		printf("\x1b[%d;2H\x1b[K%s", 24 - i, commands[i]);
 	}
 }
 
 void fancy_init(void) {
-	if(commands == NULL){
+	if(commands == NULL) {
 		commands = malloc(sizeof(*commands));
 		commands[0] = NULL;
 	}
 	int i;
 	printf("\x1b[2J\x1b[1;1H\x1b[47m");
-	for(i = 0; i < 80; i++){
+	for(i = 0; i < 80; i++) {
 		printf(" ");
 	}
 	printf("\x1b[1;2H\x1b[1m\x1b[30mDataWorks Server %s   Copyr. 2024 Crabware\x1b[m", dataworks_get_version());
 	printf("\x1b[2;1H\x1b[47m\x1b[1m\x1b[30m");
-	for(i = 0; i < 80; i++){
+	for(i = 0; i < 80; i++) {
 		printf("\xdc");
 	}
 	printf("\x1b[7;1H\x1b[40m\x1b[1m\x1b[37m");
-	for(i = 0; i < 80; i++){
+	for(i = 0; i < 80; i++) {
 		printf("\xdc");
 	}
 	printf("\x1b[8;1H\x1b[47m\x1b[1m\x1b[30m");
-	for(i = 0; i < 80; i++){
+	for(i = 0; i < 80; i++) {
 		printf(" ");
 	}
 	printf("\x1b[8;2H\x1b[1m\x1b[30mRecent commands\x1b[m");
 	printf("\x1b[9;1H\x1b[47m\x1b[1m\x1b[30m");
-	for(i = 0; i < 80; i++){
+	for(i = 0; i < 80; i++) {
 		printf("\xdc");
 	}
 	printf("\x1b[m");
@@ -212,9 +216,7 @@ void fancy_init(void) {
 	render_commands();
 }
 
-void fancy_ready(void){
-	update_message("Ready for call");
-}
+void fancy_ready(void) { update_message("Ready for call"); }
 
 int server_init(void) {
 	printf("Using Hayes Modem\n");
@@ -251,7 +253,7 @@ int server_init(void) {
 				printf("\t-f --fancy            Enable the fancy manager ;)\n");
 				printf("\t-l --login [path]     Specify the authentication file\n");
 				exit(0);
-			} else if(option(argv[i], "f", "fancy")){
+			} else if(option(argv[i], "f", "fancy")) {
 				fancy = true;
 			} else {
 				fprintf(stderr, "Invalid option: %s\n", argv[i]);
@@ -265,10 +267,10 @@ int server_init(void) {
 		fprintf(stderr, "Specify serial port\n");
 		return 1;
 	}
-	if(fancy){
+	if(fancy) {
 		fancy_init();
 		update_message("Modem init");
-	}else{
+	} else {
 		printf("Serial port is at I/O 0x%4.4x\n", get_ioport());
 	}
 	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
@@ -281,9 +283,9 @@ int server_init(void) {
 	if(echo) resp = modem_response();
 	if(resp == NULL) return 0;
 	if(__dw_strcaseequ(resp, "OK")) {
-		if(fancy){
+		if(fancy) {
 			fancy_ready();
-		}else{
+		} else {
 			printf("Modem initialization successful\n");
 		}
 	} else {
@@ -304,9 +306,9 @@ void server_loop(void) {
 		if(resp == NULL) break;
 		if(__dw_strcaseequ(resp, "NO CARRIER")) {
 			free(resp);
-			if(fancy){
+			if(fancy) {
 				fancy_ready();
-			}else{
+			} else {
 				printf("Disconnected\n");
 			}
 			connected = false;
@@ -324,20 +326,20 @@ void server_loop(void) {
 		if(connected) {
 		} else {
 			if(__dw_strcaseequ(resp, "RING")) {
-				if(fancy){
+				if(fancy) {
 					update_message("RING RING");
-				}else{
+				} else {
 					printf("Got a call, answering\n");
 				}
 				write_serial("ATA\r");
-				if(fancy){
-				}else{
+				if(fancy) {
+				} else {
 					printf("<- ATA\n");
 				}
 			} else if(__dw_strcaseequ(resp, "CONNECT")) {
-				if(fancy){
+				if(fancy) {
 					char* bps = __dw_strdup("CONNECTED!");
-					if(has_arg){
+					if(has_arg) {
 						free(bps);
 						char* tmp = __dw_strcat("CONNECTED @ ", resp + i + 1);
 						bps = __dw_strcat(tmp, " BPS!");
@@ -345,7 +347,7 @@ void server_loop(void) {
 					}
 					update_message(bps);
 					free(bps);
-				}else{
+				} else {
 					printf("Connection successful");
 					if(has_arg) printf(", %s BPS", resp + i + 1);
 					printf("\n");
@@ -364,9 +366,9 @@ char* readline_sock(int sock) {
 	char* resp = modem_response();
 	if(__dw_strcaseequ(resp, "NO CARRIER")) {
 		free(resp);
-		if(fancy){
+		if(fancy) {
 			fancy_ready();
-		}else{
+		} else {
 			printf("Disconnected\n");
 		}
 		connected = false;
