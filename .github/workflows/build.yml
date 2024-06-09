@@ -18,4 +18,4 @@ jobs:
     - name: rename
       run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz
     - name: release
-      run: gh release create -t \"Release $(date +\"%a %b %e %H:%M:%S %Z %Y\")\" --generate-notes dataworks-linux64.tar.gz
+      run: gh release create -t "Release $(date +"%a %b %e %H:%M:%S %Z %Y")" --generate-notes dataworks-linux64.tar.gz
