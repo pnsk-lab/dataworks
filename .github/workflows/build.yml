@@ -1,8 +1,8 @@
 name: Build DataWorks
 
 on:
-  push:
-    branches: [ "master" ]
+  workflow_dispatch:
+  cron: "0 */6 * * *"
 
 jobs:
   build:
