@@ -278,8 +278,8 @@ int main(int argc, char** argv) {
 							memcpy(line, linebuf, i);
 							bool comment = false;
 							int j;
-							for(j = 0; line[j] != 0; j++){
-								if(!(line[j] == ' ' || line[j] == '\t')){
+							for(j = 0; line[j] != 0; j++) {
+								if(!(line[j] == ' ' || line[j] == '\t')) {
 									char* newline = __dw_strdup(line + j);
 									free(line);
 									line = newline;
@@ -315,8 +315,8 @@ int main(int argc, char** argv) {
 			buf = malloc(1);
 			buf[0] = 0;
 			len = 0;
-		}else if(until_end){
-		}else if(ch == '#'){
+		} else if(until_end) {
+		} else if(ch == '#') {
 			until_end = true;
 		} else if(ch != '\r') {
 			char* newbuf = malloc(len + 2);
