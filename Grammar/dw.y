@@ -31,7 +31,7 @@
 #include <stdio.h>
 %}
 
-%token IDENTIFIER STRING NUMBER SPACE
+%token IDENTIFIER STRING NUMBER SPACE COMMENT
 %start command
 
 %union {
@@ -151,6 +151,12 @@ command
 		$<node>$.ident = $<node>1.ident;
 		$<node>$.nodes = $<node>3.nodes;
 		$<node>$.type = $<node>1.type;
+	}
+	| COMMENT {
+		$<node>$.string = NULL;
+		$<node>$.ident = NULL;
+		$<node>$.nodes = NULL;
+		$<node>$.type = 'C';
 	}
 	;
 

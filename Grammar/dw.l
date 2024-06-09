@@ -37,6 +37,8 @@ double __dw_atof(const char* str);
 
 %%
 
+#.*				{ return (COMMENT); }
+
 ["][^"]*["]			{
 	yylval.node.string = strdup(yytext + 1);
 	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
