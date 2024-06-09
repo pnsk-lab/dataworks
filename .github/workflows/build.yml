@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install packages
-      run: sudo apt-get install zip byacc flex doxygenmingw-w64
+      run: sudo apt-get install zip byacc flex doxygen mingw-w64
     - name: make for linux64
       run: make YACC=byacc -j3 archive
     - name: rename to -linux64
