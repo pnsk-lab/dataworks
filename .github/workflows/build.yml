@@ -2,7 +2,8 @@ name: Build DataWorks
 
 on:
   workflow_dispatch:
-  cron: "0 */6 * * *"
+  schedule:
+  - cron: "0 */6 * * *"
 
 jobs:
   build:
