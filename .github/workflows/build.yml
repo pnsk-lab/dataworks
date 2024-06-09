@@ -12,6 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install packages
-      run: sudo apt-get install zip byacc flex
+      run: sudo apt-get install zip byacc flex doxygen
     - name: make
       run: make YACC=byacc
