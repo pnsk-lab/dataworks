@@ -14,4 +14,4 @@ jobs:
     - name: Install packages
       run: sudo apt-get install zip byacc flex
     - name: make
-      run: make YACC=byac
+      run: make YACC=byacc
