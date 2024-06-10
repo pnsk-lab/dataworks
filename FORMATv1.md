@@ -60,6 +60,7 @@ Info entry (`infoentry`) MUST be in this format:
 | ---- | ---- | ---- | ---- |
 | version | 2 bytes | uint16\_t | MUST be 1 for 1.0 |
 | mtime | 8 bytes | int64\_t | Last modified time of the database |
+
 `infoentry` IS the only thing which SHOULD be compatible in later format.
 
 File MUST look like this:
