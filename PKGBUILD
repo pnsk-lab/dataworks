@@ -5,9 +5,9 @@ pkgver='0.1.0'
 pkgdesc='Database System'
 arch=('i686' 'x86_64')
 license=('BSD')
-pkgrel='35'
+pkgrel='36'
 makedepends=('byacc')
-source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision=199')
+source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision=239')
 sha256sums=('SKIP')
 
 build() {

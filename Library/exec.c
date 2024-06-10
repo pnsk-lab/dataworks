@@ -167,6 +167,8 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 			} else {
 				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 			}
+		} else {
+			newnode->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
 		}
 		if(name != NULL) free(name);
 		for(i = 0; fields[i] != NULL; i++) free(fields[i]);
