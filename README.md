@@ -28,3 +28,8 @@ DataWorks is a simple DBMS written in C.
 ## Mailing list
 1. [dataworks-users](https://mail-index.nishi.boats/mailman/listinfo/dataworks-users)
 2. [dataworks-commits](https://mail-index.nishi.boats/mailman/listinfo/dataworks-commits)
+
+## Mirrors
+Original: http://sw.nishi.boats/svn/nishi-dataworks
+1. [Nishi](https://git-mirror.nishi.boats/?p=dataworks.git)
+2. [GitHub](https://github.com/pnsk-lab/dataworks)
