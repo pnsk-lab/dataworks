@@ -49,6 +49,7 @@
 void parser_process(struct Node* node);
 char* __dw_strdup(const char* a);
 double __dw_atof(const char* str);
+extern const char* yytext;
 %}
 
 %%
