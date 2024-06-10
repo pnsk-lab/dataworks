@@ -39,7 +39,7 @@ jobs:
     - name: Make for linux64
       run: make YACC=byacc -j3 archive
     - name: Rename to -linux64
-      run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz && mv Client/dataworks.exe dataworks-linux64 && mv Server/dataworks_server.exe dataworks-server-linux64
+      run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz && mv Client/dataworks dataworks-linux64 && mv Server/dataworks_server dataworks-server-linux64
     - name: Make sure it is clean (win32)
       run: make clean PLATFORM=win32
     - name: Make for win32
