@@ -6,6 +6,13 @@
 
 DataWorks is a simple DBMS written in C.
 
+## Features
+1. File database
+2. Can be run as a server
+3. Works even on your 80286 machine
+4. Server can be run over modem if you are on DOS
+5. Cross-platform database
+
 ## Platform support
 1. DOS (16-bit)
 
@@ -22,7 +29,7 @@ DataWorks is a simple DBMS written in C.
 5. Linux
 
 ## Server support
-1. DOS with Modem
+1. DOS with modem
 2. Windows or NetBSD/Linux with TCP/IP socket support
 
 ## Mailing list
