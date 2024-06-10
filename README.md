@@ -1,6 +1,6 @@
 # DataWorks
 
-[![Build DataWorks](https://github.com/pnsk-lab/dataworks/actions/workflows/build.yml/badge.svg)](https://github.com/pnsk-lab/dataworks/actions/workflows/build.yml)
+[![Build DataWorks](https://github.com/pnsk-lab/dataworks/actions/workflows/build.yml/badge.svg)](https://github.com/pnsk-lab/dataworks/actions/workflows/build.yml) [![Jenkins](https://jenkins.nishi.boats/job/dataworks/badge/icon?subject=Jenkins&color=%23800)](https://jenkins.nishi.boats/job/dataworks)
 
 ![Logo](dataworks-white.png)
 
