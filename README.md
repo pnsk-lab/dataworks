@@ -15,8 +15,16 @@ DataWorks is a simple DBMS written in C.
 	Works on 80386 with 2MB RAM.
 3. Windows 32-bit/64-bit
 	
-	Works on Windows 7.
+	Works on Windows 7 or later.
 4. NetBSD
 
 	Works on amd64 10.0, and macppc 9.3.
 5. Linux
+
+## Server support
+1. DOS with Modem
+2. Windows or NetBSD/Linux with TCP/IP socket support
+
+## Mailing list
+1. [dataworks-users](https://mail-index.nishi.boats/mailman/listinfo/dataworks-users)
+2. [dataworks-commits](https://mail-index.nishi.boats/mailman/listinfo/dataworks-commits)
