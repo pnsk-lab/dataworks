@@ -27,7 +27,7 @@ jobs:
     - name: Create /usr/watcom
       run: sudo mkdir /usr/watcom
     - name: Install Open Watcom
-      run: curl -L https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.xz | sudo tar xvJf - -C /usr/watcom
+      run: curl -L https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | sudo tar xvJf - -C /usr/watcom
     - name: Add PATH
       run: echo "/usr/watcom/binl64" >> $GITHUB_PATH
     - name: Add WATCOM env
