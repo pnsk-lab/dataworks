@@ -21,13 +21,14 @@ jobs:
       with:
         save-always: true
         path: |
+          /var/cache/apt
           /usr/watcom
         key: cache-${{ github.sha }}
         restore-keys: cache-
     - name: Install packages
       run: sudo apt-get install zip byacc flex doxygen mingw-w64 graphviz
     - name: Create /usr/watcom
-      run: sudo mkdir /usr/watcom
+      run: sudo mkdir -p /usr/watcom
     - name: Install Open Watcom
       run: curl -L https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | sudo tar xvJf - -C /usr/watcom
     - name: Add PATH
