@@ -26,7 +26,7 @@ FILES = `find . -name "*.c" -or -name "*.h"`
 replace:
 	for i in $(FILES) ./Grammar/dw.y ./Grammar/dw.l; do \
                 echo -n "$$i ... "; \
-                perl replace.pl < $$i > $$i.new; \
+                perl ./Tool/replace.pl < $$i > $$i.new; \
                 mv $$i.new $$i; \
                 echo "done"; \
         done
