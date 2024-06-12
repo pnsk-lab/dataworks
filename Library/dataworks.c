@@ -48,6 +48,8 @@ const char* dataworks_platform = "FreeBSD/"
 const char* dataworks_platform = "Linux/"
 #elif defined(__WATCOMC__)
 const char* dataworks_platform = "WatcomC/"
+#elif defined(__OSX__)
+const char* dataworks_platform = "MacOSX/"
 #else
 #undef SUPPORTED
 const char* dataworks_platform = "Unknown/"
