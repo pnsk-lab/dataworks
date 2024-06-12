@@ -134,10 +134,10 @@ jobs:
       uses: actions/checkout@v4
     - name: Download from build-generic
       uses: actions/download-artifact@v4
-    - name: Extract the build-generic.zip
-      run: unzip build-generic.zip
-    - name: Extract the build-macos.zip
-      run: unzip build-macos.zip
+    - name: Extract the build-generic
+      run: unzip build-generic
+    - name: Extract the build-macos
+      run: unzip build-macos
     - name: Release
       run: gh release create -t "Release $(date +"%a %b %e %H:%M:%S %Z %Y")" "$(date +%Y%m%d%H%M%S)" dataworks-linux64.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-dos.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-server-win32.exe dataworks-server-win64.exe dataworks-server-dos.exe dataworks-server-dos4g.exe dataworks-win32.exe dataworks-win64.exe dataworks-dos.exe dataworks-dos4g.exe dataworks-linux64 dataworks-server-linux64 -n "Version \`$(make get-version)\` was built in this release"
       env:
