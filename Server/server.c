@@ -99,6 +99,8 @@ void protocol_init(int sock) {
 }
 
 void protocol_loop(int sock) {
+	bool login = false;
+	char* user = NULL;
 	while(1) {
 		char* buf = readline_sock(sock);
 		if(buf == NULL) {
@@ -139,11 +141,38 @@ void protocol_loop(int sock) {
 			break;
 		} else if(__dw_strcaseequ(buf, "USER")) {
 			if(auth) {
+				if(login){
+					writeline(sock, "ERROR:ALREADY_IN");
+				}else{
+					if(has_arg){
+						writeline(sock, "REQPASS");
+						if(user != NULL){
+							free(user);
+						}
+						user = __dw_strdup(buf + i + 1);
+					}else{
+						writeline(sock, "ERROR:NEED_MORE_ARGS");
+					}
+				}
 			} else {
 				writeline(sock, "ERROR:NO_AUTH");
 			}
 		} else if(__dw_strcaseequ(buf, "PASS")) {
 			if(auth) {
+				if(login){
+					writeline(sock, "ERROR:ALREADY_IN");
+				}else if(user == NULL){
+					writeline(sock, "ERROR:NEED_USERNAME");
+				}else{
+					if(has_arg){
+						int j;
+						for(j = 0; entries[j] != NULL; j++){
+							printf("%s\n", entries[j]->pass);
+						}
+					}else{
+						writeline(sock, "ERROR:NEED_MORE_ARGS");
+					}
+				}
 			} else {
 				writeline(sock, "ERROR:NO_AUTH");
 			}
@@ -205,6 +234,7 @@ int main(int _argc, char** _argv) {
 					entries[i] = malloc(sizeof(**entries));
 					entries[i]->user = __dw_strdup(str);
 					entries[i]->pass = __dw_strdup(str + shift + 1);
+					entries[i + 1] = NULL;
 					printf("User %s is allowed to access the database now\n", str);
 				}
 				free(str);
