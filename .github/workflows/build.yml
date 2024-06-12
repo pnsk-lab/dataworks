@@ -76,21 +76,21 @@ jobs:
       with:
         name: build-generic
         path: |
-	dataworks-linux64.{tar.gz,zip}
-	dataworks-win32.{tar.gz,zip}
-	dataworks-dos4g.{tar.gz,zip}
-	dataworks-dos.{tar.gz,zip}
-	dataworks-win64.{tar.gz,zip}
-	dataworks-server-win32.exe
-	dataworks-server-win64.exe
-	dataworks-server-dos.exe
-	dataworks-server-dos4g.exe
-	dataworks-win32.exe
-	dataworks-win64.exe
-	dataworks-dos.exe
-	dataworks-dos4g.exe
-	dataworks-linux64
-	dataworks-server-linux64
+        dataworks-linux64.{tar.gz,zip}
+        dataworks-win32.{tar.gz,zip}
+        dataworks-dos4g.{tar.gz,zip}
+        dataworks-dos.{tar.gz,zip}
+        dataworks-win64.{tar.gz,zip}
+        dataworks-server-win32.exe
+        dataworks-server-win64.exe
+        dataworks-server-dos.exe
+        dataworks-server-dos4g.exe
+        dataworks-win32.exe
+        dataworks-win64.exe
+        dataworks-dos.exe
+        dataworks-dos4g.exe
+        dataworks-linux64
+        dataworks-server-linux64
     - name: Kill apt-get
       run: sudo killall apt-get || true
   build-mac:
