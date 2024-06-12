@@ -27,10 +27,11 @@ DataWorks is a simple DBMS written in C.
  
 	Works on amd64 10.0, and macppc 9.3.
 5. Linux
+6. MacOSX
 
 ## Server support
 1. DOS with modem
-2. Windows or NetBSD/Linux with TCP/IP socket support
+2. Windows or NetBSD/Linux/MacOSX with TCP/IP socket support
 
 ## Mailing list
 1. [dataworks-users](https://mail-index.nishi.boats/mailman/listinfo/dataworks-users)
