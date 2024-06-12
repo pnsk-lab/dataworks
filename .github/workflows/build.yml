@@ -71,23 +71,13 @@ jobs:
       run: make YACC=byacc PLATFORM=dos4g -j3 archive
     - name: Rename to -dos4g
       run: mv dataworks.zip dataworks-dos4g.zip && mv dataworks.tar.gz dataworks-dos4g.tar.gz && mv Client/dataworks.exe dataworks-dos4g.exe && mv Server/dataworks_server.exe dataworks-server-dos4g.exe
+    - name: Create artifact
+      run: zip -rv build-generic.zip dataworks-*.tar.gz dataworks-*.zip dataworks-server-win32.exe dataworks-server-win64.exe dataworks-server-dos.exe dataworks-server-dos4g.exe dataworks-win32.exe dataworks-win64.exe dataworks-dos.exe dataworks-dos4g.exe dataworks-linux64 dataworks-server-linux64
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: build-generic
-        path: |
-          dataworks-*.tar.gz
-          dataworks-*.zip
-          dataworks-server-win32.exe
-          dataworks-server-win64.exe
-          dataworks-server-dos.exe
-          dataworks-server-dos4g.exe
-          dataworks-win32.exe
-          dataworks-win64.exe
-          dataworks-dos.exe
-          dataworks-dos4g.exe
-          dataworks-linux64
-          dataworks-server-linux64
+        path: build-generic.zip
     - name: Kill apt-get
       run: sudo killall apt-get || true
   build-mac:
@@ -108,15 +98,13 @@ jobs:
       run: make -j3 YACC=byacc archive
     - name: Rename
       run: mv dataworks.tar.gz dataworks-macos-arm64.tar.gz && mv dataworks.zip dataworks-macos-arm64.zip && mv Client/dataworks dataworks-macos-arm64 && mv Server/dataworks_server dataworks-server-macos-arm64
+    - name: Create artifact
+      run: zip -rv build-macos.zip dataworks-*.tar.gz dataworks-*.zip dataworks-server-macos-arm64 dataworks-macos-arm64
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: build-macos
-        path: |
-          dataworks-*.tar.gz
-          dataworks-*.zip
-          dataworks-server-macos-arm64
-          dataworks-macos-arm64
+	path: build-macos.zip
 
   release:
     
