@@ -76,11 +76,8 @@ jobs:
       with:
         name: build-generic
         path: |
-        dataworks-linux64.{tar.gz,zip}
-        dataworks-win32.{tar.gz,zip}
-        dataworks-dos4g.{tar.gz,zip}
-        dataworks-dos.{tar.gz,zip}
-        dataworks-win64.{tar.gz,zip}
+        dataworks-*.tar.gz
+        dataworks-*.zip
         dataworks-server-win32.exe
         dataworks-server-win64.exe
         dataworks-server-dos.exe
