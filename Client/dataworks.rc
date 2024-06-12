@@ -1,4 +1,4 @@
-id ICON "../dataworks.ico"
+id ICON "../Binary/dataworks.ico"
 VS_VERSION_INFO VERSIONINFO
 BEGIN
 	BLOCK "StringFileInfo"

@@ -10,7 +10,7 @@ all: dataworks_server$(EXEC_SUFFIX)
 dataworks_server$(EXEC_SUFFIX): $(OBJS) $(LINK_LIB)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS) $(LINK_LIB) $(SERVLINK_LIB)
 
-dataworks.res: ../Client/dataworks.rc ../dataworks.ico
+dataworks.res: ../Client/dataworks.rc ../Binary/dataworks.ico
 	$(WINDRES) ../Client/dataworks.rc -O coff -o ./dataworks.res
 
 .c.o:
