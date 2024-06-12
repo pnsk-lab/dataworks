@@ -103,9 +103,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install packages
-      run: brew install flex byacc make doxygen
+      run: brew install flex byacc make doxygen graphviz
     - name: Make
-      run: make -j3
+      run: make -j3 YACC=byacc
 
   release:
     
