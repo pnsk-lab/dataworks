@@ -1,6 +1,6 @@
 # $Id$
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar ./PKGBUILD PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version
 
 all: ./Grammar ./Library ./Client $(SERVER) ./Document
 
@@ -119,7 +119,7 @@ cleanup-dosbox:
 get-version:
 	@echo $(VERSION)
 
-./PKGBUILD:
+./Package/PKGBUILD:
 	echo "# \$$Id\$$" > $@
 	echo >> $@
 	echo "pkgname='dataworks'" >> $@
@@ -127,7 +127,7 @@ get-version:
 	echo "pkgdesc='Database System'" >> $@
 	echo "arch=('i686' 'x86_64')" >> $@
 	echo "license=('BSD')" >> $@
-	echo "pkgrel='`cat increment-PKGBUILD`'" >> $@
+	echo "pkgrel='`cat ./Package/increment-PKGBUILD`'" >> $@
 	echo "makedepends=('byacc')" >> $@
 	echo "source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision="`svn info -r HEAD | grep "Revision" | grep -Eo "[0-9]+" | xargs expr 1 +`"')" >> $@
 	echo "sha256sums=('SKIP')" >> $@
@@ -151,4 +151,4 @@ get-version:
 	echo "	ln -sf dataworks_server \$$pkgdir/usr/bin/dwserv" >> $@
 	echo "	ln -sf dataworks \$$pkgdir/usr/bin/dw" >> $@
 	echo "}" >> $@
-	expr `cat increment-PKGBUILD` + 1 > increment-PKGBUILD
+	expr `cat ./Package/increment-PKGBUILD` + 1 > ./Package/increment-PKGBUILD
