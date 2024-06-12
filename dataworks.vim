@@ -14,11 +14,13 @@ syn match dataworksNumber /\v[+-]?[0-9]+(\.[0-9]+)?/ display
 syn match dataworksComment /\v#.*$/ display
 syn region dataworksArgument start='(' end=')' fold transparent
 syn match dataworksIdent /\v\c(create_table|use|insert|print|version|select|index|concat)/ display
+syn match dataworksLogical /\v[TFYN]/ display
 
 hi def link dataworksString String
 hi def link dataworksNumber Number
 hi def link dataworksComment Comment
 hi def link dataworksIdent Identifier
+hi def link dataworksLogical Constant
 
 syn sync minlines=512
 let b:current_syntax = "dataworks"
