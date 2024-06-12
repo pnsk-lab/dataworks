@@ -6,7 +6,9 @@ on:
   - cron: "0 */6 * * *"
 
 jobs:
-  build:
+  build-generic:
+
+    name: "Build for Linux/Windows/DOS"
 
     runs-on: ubuntu-latest
 
@@ -16,8 +18,10 @@ jobs:
     steps:
     - name: Give tar root suid
       run: sudo chown root /usr/bin/tar && sudo chmod u+s /usr/bin/tar
-    - uses: actions/checkout@v4
-    - uses: actions/cache@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Restore cache
+      uses: actions/cache@v4
       with:
         save-always: true
         path: |
@@ -67,9 +71,56 @@ jobs:
       run: make YACC=byacc PLATFORM=dos4g -j3 archive
     - name: Rename to -dos4g
       run: mv dataworks.zip dataworks-dos4g.zip && mv dataworks.tar.gz dataworks-dos4g.tar.gz && mv Client/dataworks.exe dataworks-dos4g.exe && mv Server/dataworks_server.exe dataworks-server-dos4g.exe
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-generic
+        path: |
+	dataworks-linux64.{tar.gz,zip}
+	dataworks-win32.{tar.gz,zip}
+	dataworks-dos4g.{tar.gz,zip}
+	dataworks-dos.{tar.gz,zip}
+	dataworks-win64.{tar.gz,zip}
+	dataworks-server-win32.exe
+	dataworks-server-win64.exe
+	dataworks-server-dos.exe
+	dataworks-server-dos4g.exe
+	dataworks-win32.exe
+	dataworks-win64.exe
+	dataworks-dos.exe
+	dataworks-dos4g.exe
+	dataworks-linux64
+	dataworks-server-linux64
+    - name: Kill apt-get
+      run: sudo killall apt-get || true
+  build-mac:
+
+    name: "Build for MacOS"
+
+    runs-on: macos-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+  release:
+    
+    name: "Release"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    needs: [build-generic, build-mac]
+
+    steps:
+    - name: Download from build-generic
+      uses: actions/download-artifact@v4
     - name: Release
       run: gh release create -t "Release $(date +"%a %b %e %H:%M:%S %Z %Y")" "$(date +%Y%m%d%H%M%S)" dataworks-linux64.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-dos.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-server-win32.exe dataworks-server-win64.exe dataworks-server-dos.exe dataworks-server-dos4g.exe dataworks-win32.exe dataworks-win64.exe dataworks-dos.exe dataworks-dos4g.exe dataworks-linux64 dataworks-server-linux64 -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Kill apt-get
-      run: sudo killall apt-get || true
