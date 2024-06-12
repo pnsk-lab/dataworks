@@ -9,3 +9,4 @@
 Crabware is a software-development division of Hinode Gakuen PC-Club. Contact: Nishi &lt;nishi@nishi.boats&gt;
 
 @example client.c
+@example server.c

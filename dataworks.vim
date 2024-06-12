@@ -13,7 +13,7 @@ syn match dataworksString /\v'[^']+'/ display
 syn match dataworksNumber /\v[+-]?[0-9]+(\.[0-9]+)?/ display
 syn match dataworksComment /\v#.*$/ display
 syn region dataworksArgument start='(' end=')' fold transparent
-syn match dataworksIdent /\v\c(create_table|use|insert|print|version|select|index)/ display
+syn match dataworksIdent /\v\c(create_table|use|insert|print|version|select|index|concat)/ display
 
 hi def link dataworksString String
 hi def link dataworksNumber Number

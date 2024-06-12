@@ -50,8 +50,10 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 		char* fieldtypes = malloc(1);
 		fieldtypes[0] = 0;
 		char* name = NULL;
+		bool used = false;
 		if(__dw_strcaseequ(node->ident, "version")) {
 			newnode->string = __dw_strdup(dataworks_get_version());
+			used = true;
 		}
 		if(node->nodes != NULL) {
 			for(i = 0; node->nodes[i] != NULL; i++) {
@@ -73,6 +75,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 						printf("%s", r->string);
 					}
 					fflush(stdout);
+					used = true;
 				} else if(__dw_strcaseequ(node->ident, "concat")) {
 					if(r->string != NULL) {
 						if(newnode->string == NULL) {
@@ -83,6 +86,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 						newnode->string = __dw_strcat(tmp, r->string);
 						free(tmp);
 					}
+					used = true;
 				} else if(__dw_strcaseequ(node->ident, "use")) {
 					if(name != NULL) {
 						newnode->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
@@ -97,6 +101,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 					if(name == NULL) {
 						name = __dw_strdup(r->string);
 					}
+					used = true;
 				} else if(__dw_strcaseequ(node->ident, "create_table")) {
 					if(name == NULL) {
 						name = __dw_strdup(r->string);
@@ -139,6 +144,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 						}
 						free(val);
 					}
+					used = true;
 				} else {
 					int j;
 					for(i = 0; fields[i] != NULL; i++) free(fields[i]);
@@ -167,7 +173,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 			} else {
 				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 			}
-		} else {
+		} else if(!used) {
 			newnode->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
 		}
 		if(name != NULL) free(name);

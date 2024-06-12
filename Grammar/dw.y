@@ -31,7 +31,7 @@
 #include <stdio.h>
 %}
 
-%token IDENTIFIER STRING NUMBER SPACE COMMENT
+%token IDENTIFIER STRING NUMBER SPACE COMMENT LOGICAL
 %start command
 
 %union {
@@ -41,6 +41,7 @@
 			int errnum;
 		char type;
 		double number;
+		unsigned char logical;
 		struct Node** nodes;
 	} node;
 }
@@ -59,7 +60,9 @@ argument
 		$<node>$.string = $<node>1.string;
 		$<node>$.nodes = $<node>1.nodes;
 		$<node>$.ident = $<node>1.ident;
+		$<node>$.number = $<node>1.number;
 		$<node>$.type = $<node>1.type;
+		$<node>$.logical = $<node>1.logical;
 	}
 	| NUMBER {
 		$<node>$.string = $<node>1.string;
@@ -67,6 +70,15 @@ argument
 		$<node>$.ident = $<node>1.ident;
 		$<node>$.number = $<node>1.number;
 		$<node>$.type = $<node>1.type;
+		$<node>$.logical = $<node>1.logical;
+	}
+	| LOGICAL {
+		$<node>$.string = $<node>1.string;
+		$<node>$.nodes = $<node>1.nodes;
+		$<node>$.ident = $<node>1.ident;
+		$<node>$.number = $<node>1.number;
+		$<node>$.type = $<node>1.type;
+		$<node>$.logical = $<node>1.logical;
 	}
 	| command {
 		$<node>$ = $<node>1;
@@ -80,6 +92,7 @@ single_argument
 		$<node>$.ident = $<node>2.ident;
 		$<node>$.number = $<node>2.number;
 		$<node>$.type = $<node>2.type;
+		$<node>$.logical = $<node>2.logical;
 	}
 	| SPACE argument {
 		$<node>$.string = $<node>2.string;
@@ -87,6 +100,7 @@ single_argument
 		$<node>$.ident = $<node>2.ident;
 		$<node>$.number = $<node>2.number;
 		$<node>$.type = $<node>2.type;
+		$<node>$.logical = $<node>2.logical;
 	}
 	| argument SPACE {
 		$<node>$.string = $<node>1.string;
@@ -94,6 +108,7 @@ single_argument
 		$<node>$.ident = $<node>1.ident;
 		$<node>$.number = $<node>1.number;
 		$<node>$.type = $<node>1.type;
+		$<node>$.logical = $<node>1.logical;
 	}
 	| argument {
 		$<node>$.string = $<node>1.string;
@@ -101,6 +116,7 @@ single_argument
 		$<node>$.ident = $<node>1.ident;
 		$<node>$.number = $<node>1.number;
 		$<node>$.type = $<node>1.type;
+		$<node>$.logical = $<node>1.logical;
 	}
 	;
 
@@ -111,6 +127,7 @@ arguments
 		$<node>$.nodes[0]->nodes = NULL;
 		$<node>$.nodes[0]->ident = NULL;
 		$<node>$.nodes[0]->string = NULL;
+		$<node>$.nodes[0]->logical = $<node>1.logical;
 		$<node>$.nodes[0]->number = $<node>1.number;
 		$<node>$.nodes[0]->type = $<node>1.type;
 		if($<node>1.ident != NULL) $<node>$.nodes[0]->ident = __dw_strdup($<node>1.ident);
@@ -128,6 +145,7 @@ arguments
 		$<node>$.nodes[i]->nodes = NULL;
 		$<node>$.nodes[i]->ident = NULL;
 		$<node>$.nodes[i]->string = NULL;
+		$<node>$.nodes[i]->logical = $<node>3.logical;
 		$<node>$.nodes[i]->number = $<node>3.number;
 		$<node>$.nodes[i]->type = $<node>3.type;
 		if($<node>3.ident != NULL) $<node>$.nodes[i]->ident = __dw_strdup($<node>3.ident);

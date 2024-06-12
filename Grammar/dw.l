@@ -55,14 +55,22 @@ double __dw_atof(const char* str);
 	return (STRING);
 }
 [ \t]*#.*			{ return (COMMENT); }
-[a-zA-Z_][a-zA-Z0-9_\-]*	{
+[a-zA-Z_][a-zA-Z0-9_\-]+	{
 	yylval.node.ident = strdup(yytext);
 	yylval.node.nodes = NULL;
 	yylval.node.string = NULL;
 	yylval.node.type = 'I';
 	return (IDENTIFIER);
 }
--?[0-9]+(\.[0-9]+)?		{
+[YTNF]				{
+	yylval.node.ident = NULL;
+	yylval.node.nodes = NULL;
+	yylval.node.string = NULL;
+	yylval.node.logical = (yytext[0] == 'Y' || yytext[0] == 'T') ? 0xff : 0;
+	yylval.node.type = 'L';
+	return (LOGICAL);
+}
+[\+-]?[0-9]+(\.[0-9]+)?		{
 	yylval.node.ident = NULL;
 	yylval.node.nodes = NULL;
 	yylval.node.string = NULL;
