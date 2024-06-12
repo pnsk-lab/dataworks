@@ -1,9 +1,9 @@
 # $Id$
 
-include common-decl.mk
+include Makefiles/common-decl.mk
 
 ifneq ("$(PLATFORM)", "")
-include Platforms/$(PLATFORM).mk
+include Makefiles/Platforms/$(PLATFORM).mk
 endif
 
-include common.mk
+include Makefiles/common.mk
