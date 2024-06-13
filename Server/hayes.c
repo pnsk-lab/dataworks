@@ -54,6 +54,8 @@ void protocol_loop(int sock);
 void disconnect(int sock);
 void writeline(int sock, const char* str);
 
+#define INIT_MODEM "AT&FE0F1"
+
 bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = -1;
@@ -78,8 +80,8 @@ int get_ioport() {
 void write_serial(const char* str) {
 	const char* ptr = str;
 	while(1) {
-		if(_bios_serialcom(_COM_STATUS, port, 0) & 0x10) {
-			_bios_serialcom(_COM_SEND, port, *ptr);
+		if(inp(get_ioport() + 5) & 0x20) {
+			outp(get_ioport(), *ptr);
 			ptr++;
 			if(*ptr == 0) break;
 		}
@@ -102,8 +104,8 @@ char* modem_response(void) {
 	char cbuf[2];
 	cbuf[1] = 0;
 	while(1) {
-		if(_bios_serialcom(_COM_STATUS, port, 0) & 0x0100) {
-			unsigned short b = _bios_serialcom(_COM_RECEIVE, port, 0);
+		if(inp(get_ioport() + 5) & 1) {
+			unsigned short b = inp(get_ioport());
 			char ch = b & 0xff;
 			if(ch != '\r' && ch != '\n' && ch != 0) {
 				cbuf[0] = ch;
@@ -276,10 +278,10 @@ int server_init(void) {
 		printf("Serial port is at I/O 0x%4.4x\n", get_ioport());
 	}
 	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
-	write_serial("AT&FE0F1\r");
-	if(!fancy) printf("<- AT&FE0F1\n");
+	write_serial(INIT_MODEM "\r");
+	if(!fancy) printf("<- " INIT_MODEM "\n");
 	char* resp = modem_response();
-	bool echo = __dw_strcaseequ(resp, "AT&FE0F1") || __dw_strcaseequ(resp, "NO CARRIER");
+	bool echo = __dw_strcaseequ(resp, INIT_MODEM) || __dw_strcaseequ(resp, "NO CARRIER");
 	if(resp != NULL && echo) free(resp); /* Kill echo */
 	if(resp == NULL) return 0;
 	if(echo) resp = modem_response();
@@ -289,6 +291,7 @@ int server_init(void) {
 			fancy_ready();
 		} else {
 			printf("Modem initialization successful\n");
+			outp(get_ioport() + 4, 1);
 		}
 	} else {
 		if(fancy) printf("\x1b[2J\x1b[1;1H");
@@ -314,6 +317,7 @@ void server_loop(void) {
 				printf("Disconnected\n");
 			}
 			connected = false;
+			outp(get_ioport() + 4, 1);
 			continue;
 		}
 		int i;
@@ -385,6 +389,8 @@ void writeline(int sock, const char* str) {
 }
 
 void disconnect(int sock) {
+	while((inp(get_ioport() + 5) & 0x20) == 0);
+	delay(100);
 	while(inp(get_ioport() + 6) & (1 << 7)) outp(get_ioport() + 4, 0);
 	connected = false;
 }

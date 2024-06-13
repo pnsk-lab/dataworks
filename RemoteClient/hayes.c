@@ -28,7 +28,140 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <dw_util.h>
+
+#include <bios.h>
+#include <conio.h>
+#include <i86.h>
+
 extern int argc;
 extern char** argv;
 
-int rcli_init(void) {}
+int port = -1;
+bool connected;
+
+bool option(const char* str, const char* shortopt, const char* longopt);
+
+int get_ioport() {
+#ifdef PC98
+	if(port == 0) return 0x30;
+#else
+	if(port == 0) {
+		return 0x3f8;
+	} else if(port == 1) {
+		return 0x2f8;
+	} else if(port == 2) {
+		return 0x3e8;
+	} else if(port == 3) {
+		return 0x2e8;
+	}
+#endif
+	return 0;
+}
+
+
+void write_serial(const char* str) {
+	const char* ptr = str;
+	while(1) {
+		if(inp(get_ioport() + 5) & 0x20) {
+			outp(get_ioport(), *ptr);
+			ptr++;
+			if(*ptr == 0) break;
+		}
+	}
+}
+
+char* modem_response(void) {
+	char* buf = malloc(1);
+	buf[0] = 0;
+	char cbuf[2];
+	cbuf[1] = 0;
+	while(1) {
+		if(inp(get_ioport() + 5) & 1) {
+			unsigned short b = inp(get_ioport());
+			char ch = b & 0xff;
+			if(ch != '\r' && ch != '\n' && ch != 0) {
+				cbuf[0] = ch;
+				char* tmp = buf;
+				buf = __dw_strcat(tmp, cbuf);
+				free(tmp);
+			} else if(ch == '\r') {
+				if(strlen(buf) != 0) break;
+			}
+		}
+	}
+	return buf;
+}
+
+int rcli_init(void) {
+	printf("Using Hayes Modem\n");
+	connected = false;
+	int i;
+	char* dial = NULL;
+	for(i = 1; i < argc; i++) {
+		if(argv[i][0] == '/' || argv[i][0] == '-') {
+			if(option(argv[i], "p", "port")) {
+				i++;
+				if(__dw_strcaseequ(argv[i], "COM1")) {
+					port = 0;
+#ifndef PC98
+				} else if(__dw_strcaseequ(argv[i], "COM2")) {
+					port = 1;
+				} else if(__dw_strcaseequ(argv[i], "COM3")) {
+					port = 2;
+				} else if(__dw_strcaseequ(argv[i], "COM4")) {
+					port = 3;
+#endif
+				} else {
+					fprintf(stderr, "Invalid port: %s\n", argv[i]);
+					return 1;
+				}
+			} else if(option(argv[i], "h", "help")) {
+				printf("\n");
+				printf("Usage: %s [options] dial\n", argv[0]);
+				printf("You can use double-dash or slash for long-format flag, and single-dash or slash for short-foramt flag.\n");
+				printf("Options:\n");
+				printf("\t-p --port [comport]   Specify the modem port\n");
+				exit(0);
+			} else {
+				fprintf(stderr, "Invalid option: %s\n", argv[i]);
+				return 1;
+			}
+		} else {
+			if(dial != NULL) free(dial);
+			dial = __dw_strdup(argv[i]);
+		}
+	}
+	if(port == -1) {
+		fprintf(stderr, "Specify serial port\n");
+		return 1;
+	}
+	if(dial == NULL){
+		fprintf(stderr, "Specify where to dial\n");
+		return 1;
+	}
+	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
+	write_serial("AT&FE0F1\r");
+	char* resp = modem_response();
+	bool echo = __dw_strcaseequ(resp, "AT&FE0F1") || __dw_strcaseequ(resp, "NO CARRIER");
+	if(resp != NULL && echo) free(resp); /* Kill echo */
+	if(resp == NULL) return 1;
+	if(echo) resp = modem_response();
+	if(resp == NULL) return 1;
+	if(__dw_strcaseequ(resp, "OK")) {
+		printf("Modem ready\n");
+		printf("Dialing\n");
+		write_serial("ATDT");
+		write_serial(dial);
+		write_serial("\r");
+		printf("%s\n", modem_response());
+		printf("%s\n", modem_response());
+		return 0;
+	}
+	return 1;
+}
