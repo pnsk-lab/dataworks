@@ -1,6 +1,8 @@
 /* $Id$ */
 /* --- START LICENSE --- */
 /* -------------------------------------------------------------------------- */
+/*                                                   DataWorks - Simple DBMS  */
+/* -------------------------------------------------------------------------- */
 /* Copyright (c) 2024 Crabware.                                               */
 /* Redistribution and use in source and binary forms, with or without modific */
 /* ation, are permitted provided that the following conditions are met:       */
@@ -25,3 +27,37 @@
 /* OF SUCH DAMAGE.                                                            */
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
+
+#include <stdbool.h>
+#include <stdio.h>
+
+extern int argc;
+extern char** argv;
+
+int port;
+
+bool option(const char* str, const char* shortopt, const char* longopt);
+
+int rcli_init(void) {
+	printf("Using BSD TCP/IP\n");
+	int i;
+	for(i = 1; i < argc; i++) {
+		if(argv[i][0] == '/' || argv[i][0] == '-') {
+			if(option(argv[i], "p", "port")) {
+				i++;
+				port = atoi(argv[i]);
+			} else if(option(argv[i], "h", "help")) {
+				printf("\n");
+				printf("Usage: %s [options] database\n", argv[0]);
+				printf("You can use double-dash or slash for long-format flag, and single-dash or slash for short-foramt flag.\n");
+				printf("Options:\n");
+				printf("\t-p --port [port]   Specify the port to be listened on\n");
+				exit(0);
+			} else {
+				fprintf(stderr, "Invalid option: %s\n", argv[i]);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}

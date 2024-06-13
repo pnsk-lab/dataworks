@@ -1,6 +1,8 @@
 /* $Id$ */
 /* --- START LICENSE --- */
 /* -------------------------------------------------------------------------- */
+/*                                                   DataWorks - Simple DBMS  */
+/* -------------------------------------------------------------------------- */
 /* Copyright (c) 2024 Crabware.                                               */
 /* Redistribution and use in source and binary forms, with or without modific */
 /* ation, are permitted provided that the following conditions are met:       */

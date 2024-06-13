@@ -1,6 +1,8 @@
 /* $Id$ */
 /* --- START LICENSE --- */
 /* -------------------------------------------------------------------------- */
+/*                                                   DataWorks - Simple DBMS  */
+/* -------------------------------------------------------------------------- */
 /* Copyright (c) 2024 Crabware.                                               */
 /* Redistribution and use in source and binary forms, with or without modific */
 /* ation, are permitted provided that the following conditions are met:       */
@@ -25,3 +27,8 @@
 /* OF SUCH DAMAGE.                                                            */
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
+
+extern int argc;
+extern char** argv;
+
+int rcli_init(void) {}
