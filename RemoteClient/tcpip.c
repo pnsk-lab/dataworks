@@ -31,17 +31,48 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#ifdef __MINGW32__
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2def.h>
+#include <ws2tcpip.h>
+#else
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#endif
+
+#include <unistd.h>
+
+#ifndef __MINGW32__
+#define ADDRINFO struct addrinfo
+#endif
+
+#ifdef __FreeBSD__
+#include <netinet/in.h>
+#endif
+
+#include <dw_util.h>
 
 extern int argc;
 extern char** argv;
 
-int port;
+int port = 4096;
+int sock;
 
 bool option(const char* str, const char* shortopt, const char* longopt);
 
 int rcli_init(void) {
 	printf("Using BSD TCP/IP\n");
+#ifdef __MINGW32__
+	WSADATA wsa;
+	WSAStartup(MAKEWORD(2, 0), &wsa);
+#endif
 	int i;
+	char* host = NULL;
 	for(i = 1; i < argc; i++) {
 		if(argv[i][0] == '/' || argv[i][0] == '-') {
 			if(option(argv[i], "p", "port")) {
@@ -58,13 +89,95 @@ int rcli_init(void) {
 				fprintf(stderr, "Invalid option: %s\n", argv[i]);
 				return 1;
 			}
+		} else {
+			if(host != NULL) free(host);
+			host = __dw_strdup(argv[i]);
 		}
 	}
+	if(host == NULL) {
+		fprintf(stderr, "Specify host\n");
+		return 1;
+	}
+	ADDRINFO hints;
+	ADDRINFO* result;
+	ADDRINFO* rp;
+	int s;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = 0;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	char* strport = malloc(6);
+	memset(strport, 0, 6);
+	sprintf(strport, "%d", port);
+	s = getaddrinfo(host, strport, &hints, &result);
+	if(s != 0) {
+		free(strport);
+		fprintf(stderr, "Failed to resolve\n");
+		return 1;
+	}
+
+	for(rp = result; rp != NULL; rp = rp->ai_next) {
+		sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+		if(sock == -1) continue;
+		int nbyt = 65535;
+		setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char*)&nbyt, sizeof(nbyt));
+		nbyt = 65535;
+		setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char*)&nbyt, sizeof(nbyt));
+		int yes = 1;
+		setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&yes, sizeof(yes));
+		if(connect(sock, rp->ai_addr, rp->ai_addrlen) != -1) break;
+#ifdef __MINGW32__
+		closesocket(sock);
+#else
+		close(sock);
+#endif
+	}
+	freeaddrinfo(result);
+	free(strport);
+	if(rp == NULL) {
+		printf("%d\n", WSAGetLastError());
+		fprintf(stderr, "Failed to connect\n");
+		return 1;
+	}
+
 	return 0;
 }
 
-void disconnect(void) {}
+void disconnect(void) {
+#ifdef __MINGW32__
+	closesocket(sock);
+#else
+	close(sock);
+#endif
+}
 
-char* readline_sock(void) { return NULL; }
+char* readline_sock(void) {
+	char* str = malloc(1);
+	str[0] = 0;
+	char cbuf[2];
+	cbuf[1] = 0;
+	while(1) {
+		int s = recv(sock, cbuf, 1, 0);
+		if(s <= 0) {
+			free(str);
+			return NULL;
+		}
+		if(cbuf[0] == '\n') {
+			break;
+		} else if(cbuf[0] != '\r') {
+			char* tmp = str;
+			str = __dw_strcat(tmp, cbuf);
+			free(tmp);
+		}
+	}
+	return str;
+}
 
-void writeline(const char* str) {}
+void writeline(const char* str) {
+	char* w = __dw_strcat(str, "\r\n");
+	send(sock, w, strlen(str) + 2, 0);
+	free(w);
+}

@@ -28,6 +28,7 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,6 +36,10 @@
 
 #include <dataworks.h>
 #include <dw_util.h>
+
+#ifdef __WATCOMC__
+#include <conio.h>
+#endif
 
 int argc;
 char** argv;
@@ -53,10 +58,20 @@ bool option(const char* str, const char* shortopt, const char* longopt) {
 	return false;
 }
 
+void discon(int sig) {
+	writeline("QUIT");
+	while(true) {
+		char* resp = readline_sock();
+		if(resp == NULL) break;
+		free(resp);
+	}
+}
+
 int main(int _argc, char** _argv) {
 	printf("DataWorks Remote Client  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 	argc = _argc;
 	argv = _argv;
+	bool auth = false;
 	int st = rcli_init();
 	bool ready = false;
 	if(st != 0) return st;
@@ -87,20 +102,31 @@ int main(int _argc, char** _argv) {
 					arg[i] = 0;
 					int j;
 					char* curarg = arg + start;
+					char* key = curarg;
+					char* value = NULL;
 					for(j = 0; curarg[j] != 0; j++) {
 						if(curarg[j] == '=') {
 							curarg[j] = 0;
-							if(__dw_strcaseequ(curarg, "VER")) {
-								printf("Server version : ");
-							} else if(__dw_strcaseequ(curarg, "PLATFORM")) {
-								printf("Server Platform: ");
-							} else {
-								printf("%s: ", curarg);
-							}
-							fflush(stdout);
-							printf("%s\n", curarg + j + 1);
+							value = curarg + j + 1;
 							break;
 						}
+					}
+					if(__dw_strcaseequ(curarg, "VER")) {
+						printf("Server version");
+					} else if(__dw_strcaseequ(curarg, "PLATFORM")) {
+						printf("Server platform");
+					} else if(__dw_strcaseequ(curarg, "AUTH")) {
+						printf("Authentication needed");
+						auth = true;
+					} else {
+						printf("%s", curarg);
+					}
+					if(value != NULL) {
+						printf(": ");
+						fflush(stdout);
+						printf("%s\n", curarg + j + 1);
+					} else {
+						printf("\n");
 					}
 					start = i + 1;
 					if(brk) break;
@@ -109,11 +135,94 @@ int main(int _argc, char** _argv) {
 		}
 		free(resp);
 	}
+	signal(SIGINT, discon);
 	if(ready) {
 		char cbuf[2];
 		cbuf[1] = 0;
 		char* str = malloc(1);
 		str[0] = 0;
+		if(auth) {
+			char* username = malloc(1);
+			char* password = malloc(1);
+			username[0] = 0;
+			password[0] = 0;
+			printf("Username: ");
+			fflush(stdout);
+#ifdef __WATCOMC__
+			int match = '\r';
+#else
+			int match = '\n';
+#endif
+			while(true) {
+#ifdef __WATCOMC__
+				int ch = getche();
+#else
+				int ch = getchar();
+#endif
+				if(ch == EOF || ch == match) {
+					break;
+				} else if(ch != '\r') {
+					cbuf[0] = ch;
+					char* tmp = username;
+					username = __dw_strcat(tmp, cbuf);
+					free(tmp);
+				}
+			}
+			char* seq;
+			int i;
+			bool bad;
+			seq = __dw_strcat("USER:", username);
+			writeline(seq);
+			free(seq);
+			char* resp = readline_sock();
+			bad = false;
+			for(i = 0;; i++) {
+				if(resp[i] == ':' || resp[i] == 0) {
+					if(resp[i] != 0) printf("%s\n", resp + i + 1);
+					resp[i] = 0;
+					bad = __dw_strcaseequ(resp, "ERROR");
+					break;
+				}
+			}
+			if(bad) goto go_quit;
+			printf("Password: ");
+			fflush(stdout);
+			while(true) {
+#ifdef __WATCOMC__
+				int ch = getch();
+#else
+				int ch = getchar();
+#endif
+				if(ch == EOF || ch == match) {
+					break;
+				} else if(ch != '\r') {
+					cbuf[0] = ch;
+					char* tmp = password;
+					password = __dw_strcat(tmp, cbuf);
+					free(tmp);
+				}
+			}
+#ifdef __WATCOMC__
+			printf("\n");
+#endif
+			seq = __dw_strcat("PASS:", password);
+			writeline(seq);
+			free(seq);
+			resp = readline_sock();
+			bad = false;
+			for(i = 0;; i++) {
+				if(resp[i] == ':' || resp[i] == 0) {
+					if(resp[i] != 0) printf("%s\n", resp + i + 1);
+					resp[i] = 0;
+					bad = __dw_strcaseequ(resp, "ERROR");
+					break;
+				}
+			}
+			if(bad) goto go_quit;
+			free(username);
+			free(password);
+			printf("Authentication successful\n");
+		}
 		printf(". ");
 		fflush(stdout);
 		while(true) {
@@ -135,6 +244,7 @@ int main(int _argc, char** _argv) {
 			}
 		}
 		free(str);
+	go_quit:
 		writeline("QUIT");
 		while(true) {
 			char* resp = readline_sock();

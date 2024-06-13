@@ -3,10 +3,10 @@
 .PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar ./RemoteClient ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version thanks-banner
 
 all: ./Grammar ./Library ./Client $(SERVER) $(RCLI) ./Document
-	$(MAKE) thanks-banner
+	@$(MAKE) thanks-banner
 
 no-doc: ./Grammar ./Library ./Client $(SERVER) $(RCLI)
-	$(MAKE) thanks-banner
+	@$(MAKE) thanks-banner
 
 thanks-banner:
 	@echo "************************************"
