@@ -216,6 +216,16 @@ void protocol_loop(int sock) {
 			} else {
 				writeline(sock, "ERROR:NO_AUTH");
 			}
+		} else if(__dw_strcaseequ(buf, "EXEC")){
+			if(auth ? login : 1){
+				if(has_arg){
+					dataworks_database_execute_code(db, buf + i + 1, false);
+				}else{
+					writeline(sock, "ERROR:NEED_MORE_ARGS");
+				}
+			}else{
+				writeline(sock, "ERROR:NOT_IN");
+			}
 		} else {
 			writeline(sock, "ERROR:UNKNOWN_CMD");
 		}
