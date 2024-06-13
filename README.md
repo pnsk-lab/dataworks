@@ -68,6 +68,9 @@ Original: http://sw.nishi.boats/svn/nishi-dataworks
  - `Package`
  
 	Contains files related to package manager
+ - `RemoteClient`
+ 
+	Contains remote client source code
  - `Server`
  
 	Contains server source code

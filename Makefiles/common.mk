@@ -1,10 +1,10 @@
 # $Id$
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar ./RemoteClient ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version
 
-all: ./Grammar ./Library ./Client $(SERVER) ./Document
+all: ./Grammar ./Library ./Client $(SERVER) $(RCLI) ./Document
 
-no-doc: ./Grammar ./Library ./Client $(SERVER)
+no-doc: ./Grammar ./Library ./Client $(SERVER) $(RCLI)
 
 ./Grammar::
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
@@ -16,6 +16,9 @@ no-doc: ./Grammar ./Library ./Client $(SERVER)
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
 
 ./Server:: ./Library
+	$(MAKE) -C $@ $(COMPILE_FLAGS)
+
+./RemoteClient:: ./Library
 	$(MAKE) -C $@ $(COMPILE_FLAGS)
 
 ./Document::
@@ -45,6 +48,7 @@ archive-prepare: all
 	rm -f dataworks.zip dataworks.tar.gz
 	rm -rf dataworks-dist
 	mkdir -p dataworks-dist
+	mkdir -p dataworks-dist/RemoteClient
 	mkdir -p dataworks-dist/Server
 	mkdir -p dataworks-dist/Client
 	mkdir -p dataworks-dist/Library
@@ -54,6 +58,8 @@ archive-prepare: all
 	-cp Library/*.lib dataworks-dist/Library/
 	-cp Server/dataworks_server$(EXEC_SUFFIX) dataworks-dist/Server/
 	-rmdir dataworks-dist/Server
+	-cp RemoteClient/dataworks_remote_client$(EXEC_SUFFIX) dataworks-dist/RemoteClient/
+	-rmdir dataworks-dist/RemoteClient
 	cp Library/*.h dataworks-dist/Library/
 	cp Client/dataworks$(EXEC_SUFFIX) dataworks-dist/Client/
 	cp -rf Document/doc/html dataworks-dist/Document/html

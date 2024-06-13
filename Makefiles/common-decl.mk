@@ -22,6 +22,7 @@ PLATFORM_M = `uname -m`
 PLATFORM_P = `uname -p | sed -E "s/[ \\(\\)]/-/g"`
 LINK_LIB = ../Library/$(STATICLIB_PREFIX)dataworks$(STATICLIB_SUFFIX)
 SERVER = ./Server
+RCLI = ./RemoteClient
 SERVER_MODULE = tcpip.o
 RCLI_MODULE = tcpip.o
 VERSION = `cat Library/dataworks.c | grep " dataworks_version " | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?'`

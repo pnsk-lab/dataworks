@@ -41,7 +41,11 @@ extern char** argv;
 extern bool auth;
 extern char* authfile;
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__)
+#define USE_WINSOCK
+#endif
+
+#ifdef USE_WINSOCK
 #include <process.h>
 #include <windows.h>
 #include <winsock2.h>
@@ -61,7 +65,7 @@ bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = 4096;
 int server_socket;
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 struct sockaddr_in server_address;
 #else
 struct sockaddr_in6 server_address;
@@ -97,11 +101,11 @@ int server_init(void) {
 			db = dataworks_database_open(argv[i]);
 		}
 	}
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 0), &wsa);
 #endif
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 	if((server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
 #else
 	if((server_socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0) {
@@ -120,7 +124,7 @@ int server_init(void) {
 		close(server_socket);
 		return 1;
 	}
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 #else
 	int no = 0;
 	if(setsockopt(server_socket, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)) < 0) {
@@ -130,7 +134,7 @@ int server_init(void) {
 	}
 #endif
 	memset(&server_address, 0, sizeof(server_address));
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 	server_address.sin_family = AF_INET;
 	server_address.sin_addr.S_un.S_addr = INADDR_ANY;
 	server_address.sin_port = htons(port);
@@ -149,7 +153,7 @@ int server_init(void) {
 		close(server_socket);
 		return 1;
 	}
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 #else
 	signal(SIGCHLD, SIG_IGN);
 #endif
@@ -157,7 +161,7 @@ int server_init(void) {
 	return 0;
 }
 
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 unsigned int WINAPI pass_sock(LPVOID sockptr) {
 	int sock = *(int*)sockptr;
 #else
@@ -165,7 +169,7 @@ void pass_sock(int sock) {
 #endif
 	protocol_init(sock);
 	protocol_loop(sock);
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 	closesocket(sock);
 #else
 	close(sock);
@@ -177,7 +181,7 @@ void server_loop(void) {
 		struct sockaddr_in claddr;
 		int clen = sizeof(claddr);
 		int sock = accept(server_socket, (struct sockaddr*)&claddr, &clen);
-#ifdef __MINGW32__
+#ifdef USE_WINSOCK
 		HANDLE thread;
 		thread = (HANDLE)_beginthreadex(NULL, 0, pass_sock, &sock, 0, NULL);
 #else

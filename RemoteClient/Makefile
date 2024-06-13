@@ -5,7 +5,7 @@
 
 OBJS = rcli.o $(RCLI_MODULE)
 
-all: dataworks_server$(EXEC_SUFFIX)
+all: dataworks_remote_client$(EXEC_SUFFIX)
 
 dataworks_remote_client$(EXEC_SUFFIX): $(OBJS) $(LINK_LIB)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS) $(LINK_LIB) $(RCLILINK_LIB)
