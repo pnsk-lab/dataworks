@@ -138,7 +138,6 @@ int rcli_init(void) {
 	freeaddrinfo(result);
 	free(strport);
 	if(rp == NULL) {
-		printf("%d\n", WSAGetLastError());
 		fprintf(stderr, "Failed to connect\n");
 		return 1;
 	}
