@@ -141,35 +141,75 @@ void protocol_loop(int sock) {
 			break;
 		} else if(__dw_strcaseequ(buf, "USER")) {
 			if(auth) {
-				if(login){
+				if(login) {
 					writeline(sock, "ERROR:ALREADY_IN");
-				}else{
-					if(has_arg){
-						writeline(sock, "REQPASS");
-						if(user != NULL){
-							free(user);
+				} else {
+					if(has_arg) {
+						int j;
+						bool found_user = false;
+						for(j = 0; entries[j] != NULL; j++) {
+							if(strcmp(entries[j]->user, buf + i + 1) == 0) {
+								writeline(sock, "REQPASS");
+								if(user != NULL) {
+									free(user);
+								}
+								user = __dw_strdup(buf + i + 1);
+								found_user = true;
+								break;
+							}
 						}
-						user = __dw_strdup(buf + i + 1);
-					}else{
+						if(!found_user) {
+							writeline(sock, "ERROR:NO_SUCH_USER");
+						}
+					} else {
 						writeline(sock, "ERROR:NEED_MORE_ARGS");
 					}
 				}
 			} else {
 				writeline(sock, "ERROR:NO_AUTH");
 			}
+		} else if(__dw_strcaseequ(buf, "LOGOUT")) {
+			if(auth) {
+				if(login) {
+					login = false;
+					free(user);
+					user = NULL;
+					writeline(sock, "LOGOUT");
+				} else {
+					writeline(sock, "ERROR:NOT_IN");
+				}
+			} else {
+				writeline(sock, "ERROR:NO_AUTH");
+			}
 		} else if(__dw_strcaseequ(buf, "PASS")) {
 			if(auth) {
-				if(login){
+				if(login) {
 					writeline(sock, "ERROR:ALREADY_IN");
-				}else if(user == NULL){
+				} else if(user == NULL) {
 					writeline(sock, "ERROR:NEED_USERNAME");
-				}else{
-					if(has_arg){
+				} else {
+					if(has_arg) {
 						int j;
-						for(j = 0; entries[j] != NULL; j++){
-							printf("%s\n", entries[j]->pass);
+						bool found_user = false;
+						for(j = 0; entries[j] != NULL; j++) {
+							if(strcmp(entries[j]->user, user) == 0) {
+								found_user = true;
+								if(strcmp(entries[j]->pass, buf + i + 1) == 0) {
+									writeline(sock, "LOGIN");
+									login = true;
+									break;
+								} else {
+									writeline(sock, "ERROR:INVALID_PASSWORD");
+									free(user);
+									user = NULL;
+									break;
+								}
+							}
 						}
-					}else{
+						if(!found_user) {
+							writeline(sock, "ERROR:NO_SUCH_USER");
+						}
+					} else {
 						writeline(sock, "ERROR:NEED_MORE_ARGS");
 					}
 				}
