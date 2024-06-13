@@ -30,8 +30,8 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <dataworks.h>
 #include <dw_util.h>
@@ -63,7 +63,46 @@ int main(int _argc, char** _argv) {
 		if(resp == NULL) {
 			break;
 		}
-		printf("!%s!\n", resp);
+		int i;
+		bool has_arg = false;
+		for(i = 0; resp[i] != 0; i++) {
+			if(resp[i] == ':') {
+				resp[i] = 0;
+				has_arg = true;
+				break;
+			}
+		}
+		char* arg = has_arg ? resp + i + 1 : NULL;
+		if(__dw_strcaseequ(resp, "READY")) {
+			printf("Connection is ready\n");
+		} else if(__dw_strcaseequ(resp, "ATTR") && has_arg) {
+			int start = 0;
+			for(i = 0;; i++) {
+				if(arg[i] == ':' || arg[i] == 0) {
+					bool brk = arg[i] == 0;
+					arg[i] = 0;
+					int j;
+					char* curarg = arg + start;
+					for(j = 0; curarg[j] != 0; j++) {
+						if(curarg[j] == '=') {
+							curarg[j] = 0;
+							if(__dw_strcaseequ(curarg, "VER")) {
+								printf("Server version : ");
+							} else if(__dw_strcaseequ(curarg, "PLATFORM")) {
+								printf("Server Platform: ");
+							} else {
+								printf("%s: ", curarg);
+							}
+							fflush(stdout);
+							printf("%s\n", curarg + j + 1);
+							break;
+						}
+					}
+					start = i + 1;
+					if(brk) break;
+				}
+			}
+		}
 		free(resp);
 	}
 	return 0;

@@ -63,12 +63,8 @@ int rcli_init(void) {
 	return 0;
 }
 
-void disconnect(int sock) {
-}
+void disconnect(int sock) {}
 
-char* readline_sock(void) {
-	return NULL;
-}
+char* readline_sock(void) { return NULL; }
 
-void writeline(const char* str) {
-}
+void writeline(const char* str) {}
