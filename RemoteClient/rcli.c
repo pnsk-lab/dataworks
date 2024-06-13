@@ -109,9 +109,34 @@ int main(int _argc, char** _argv) {
 		}
 		free(resp);
 	}
-	if(ready){
+	if(ready) {
+		char cbuf[2];
+		cbuf[1] = 0;
+		char* str = malloc(1);
+		str[0] = 0;
+		printf(". ");
+		fflush(stdout);
+		while(true) {
+			int len = fread(cbuf, 1, 1, stdin);
+			if(len <= 0) break;
+			if(cbuf[0] == '\n') {
+				if(__dw_strcaseequ(str, ".quit")) {
+					break;
+				}
+				free(str);
+				str = malloc(1);
+				str[0] = 0;
+				printf(". ");
+				fflush(stdout);
+			} else if(cbuf[0] != '\r') {
+				char* tmp = str;
+				str = __dw_strcat(tmp, cbuf);
+				free(tmp);
+			}
+		}
+		free(str);
 		writeline("QUIT");
-		while(true){
+		while(true) {
 			char* resp = readline_sock();
 			if(resp == NULL) break;
 			free(resp);
