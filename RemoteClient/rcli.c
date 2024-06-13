@@ -160,6 +160,11 @@ int main(int _argc, char** _argv) {
 				int ch = getchar();
 #endif
 				if(ch == EOF || ch == match) {
+					if(ch == EOF){
+						free(username);
+						free(password);
+						goto go_quit;
+					}
 					break;
 				} else if(ch != '\r') {
 					cbuf[0] = ch;
@@ -194,6 +199,11 @@ int main(int _argc, char** _argv) {
 				int ch = getchar();
 #endif
 				if(ch == EOF || ch == match) {
+					if(ch == EOF){
+						free(username);
+						free(password);
+						goto go_quit;
+					}
 					break;
 				} else if(ch != '\r') {
 					cbuf[0] = ch;
