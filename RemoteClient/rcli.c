@@ -39,6 +39,8 @@ int argc;
 char** argv;
 
 int rcli_init(void);
+char* readline_sock(void);
+void writeline(const char*);
 
 bool option(const char* str, const char* shortopt, const char* longopt) {
 	char* dos_shortopt = __dw_strcat("/", shortopt);
@@ -55,4 +57,13 @@ int main(int _argc, char** _argv) {
 	argv = _argv;
 	int st = rcli_init();
 	if(st != 0) return st;
+	while(1) {
+		char* resp = readline_sock();
+		if(resp == NULL) {
+			break;
+		}
+		printf("!%s!\n", resp);
+		free(resp);
+	}
+	return 0;
 }

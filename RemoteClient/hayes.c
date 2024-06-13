@@ -43,7 +43,7 @@ extern int argc;
 extern char** argv;
 
 int port = -1;
-bool connected;
+bool connected = false;
 
 bool option(const char* str, const char* shortopt, const char* longopt);
 
@@ -171,13 +171,13 @@ int rcli_init(void) {
 			}
 			if(__dw_strcaseequ(resp, "CONNECT")) {
 				printf("Connected\n");
+				connected = true;
 				break;
 			}
 		}
 		return 0;
 	}
-	disconnect(0);
-	return 1;
+	return 0;
 }
 
 void disconnect(int sock) {
@@ -186,4 +186,19 @@ void disconnect(int sock) {
 	delay(100);
 	while(inp(get_ioport() + 6) & (1 << 7)) outp(get_ioport() + 4, 0);
 	connected = false;
+}
+
+char* readline_sock(void) {
+	char* resp = modem_response();
+	if(__dw_strcaseequ(resp, "NO CARRIER")) {
+		connected = false;
+		free(resp);
+	}
+	return connected ? resp : NULL;
+}
+
+void writeline(const char* str) {
+	char* w = __dw_strcat(str, "\r\n");
+	write_serial(w);
+	free(w);
 }
