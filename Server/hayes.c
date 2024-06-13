@@ -389,7 +389,8 @@ void writeline(int sock, const char* str) {
 }
 
 void disconnect(int sock) {
-	while((inp(get_ioport() + 5) & 0x20) == 0);
+	while((inp(get_ioport() + 5) & 0x20) == 0)
+		;
 	delay(100);
 	while(inp(get_ioport() + 6) & (1 << 7)) outp(get_ioport() + 4, 0);
 	connected = false;

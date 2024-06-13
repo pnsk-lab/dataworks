@@ -28,8 +28,8 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -47,6 +47,8 @@ bool connected;
 
 bool option(const char* str, const char* shortopt, const char* longopt);
 
+void disconnect(int sock);
+
 int get_ioport() {
 #ifdef PC98
 	if(port == 0) return 0x30;
@@ -63,7 +65,6 @@ int get_ioport() {
 #endif
 	return 0;
 }
-
 
 void write_serial(const char* str) {
 	const char* ptr = str;
@@ -141,7 +142,7 @@ int rcli_init(void) {
 		fprintf(stderr, "Specify serial port\n");
 		return 1;
 	}
-	if(dial == NULL){
+	if(dial == NULL) {
 		fprintf(stderr, "Specify where to dial\n");
 		return 1;
 	}
@@ -159,9 +160,30 @@ int rcli_init(void) {
 		write_serial("ATDT");
 		write_serial(dial);
 		write_serial("\r");
-		printf("%s\n", modem_response());
-		printf("%s\n", modem_response());
+		while(true) {
+			resp = modem_response();
+			int i;
+			for(i = 0; resp[i] != 0; i++) {
+				if(resp[i] == ' ') {
+					resp[i] = 0;
+					break;
+				}
+			}
+			if(__dw_strcaseequ(resp, "CONNECT")) {
+				printf("Connected\n");
+				break;
+			}
+		}
 		return 0;
 	}
+	disconnect(0);
 	return 1;
+}
+
+void disconnect(int sock) {
+	while((inp(get_ioport() + 5) & 0x20) == 0)
+		;
+	delay(100);
+	while(inp(get_ioport() + 6) & (1 << 7)) outp(get_ioport() + 4, 0);
+	connected = false;
 }
