@@ -42,6 +42,7 @@ clean:
 	$(MAKE) -C ./Library clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Server clean $(COMPILE_FLAGS)
+	$(MAKE) -C ./RemoteClient clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
 
 archive-prepare: all
