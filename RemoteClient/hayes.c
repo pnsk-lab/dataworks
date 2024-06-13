@@ -47,7 +47,7 @@ bool connected = false;
 
 bool option(const char* str, const char* shortopt, const char* longopt);
 
-void disconnect(int sock);
+void disconnect(void);
 
 int get_ioport() {
 #ifdef PC98
@@ -180,7 +180,7 @@ int rcli_init(void) {
 	return 0;
 }
 
-void disconnect(int sock) {
+void disconnect(void) {
 	while((inp(get_ioport() + 5) & 0x20) == 0)
 		;
 	delay(100);

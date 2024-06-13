@@ -42,6 +42,7 @@ char** argv;
 int rcli_init(void);
 char* readline_sock(void);
 void writeline(const char*);
+void disconnect(void);
 
 bool option(const char* str, const char* shortopt, const char* longopt) {
 	char* dos_shortopt = __dw_strcat("/", shortopt);
@@ -57,6 +58,7 @@ int main(int _argc, char** _argv) {
 	argc = _argc;
 	argv = _argv;
 	int st = rcli_init();
+	bool ready = false;
 	if(st != 0) return st;
 	while(1) {
 		char* resp = readline_sock();
@@ -75,6 +77,8 @@ int main(int _argc, char** _argv) {
 		char* arg = has_arg ? resp + i + 1 : NULL;
 		if(__dw_strcaseequ(resp, "READY")) {
 			printf("Connection is ready\n");
+			ready = true;
+			break;
 		} else if(__dw_strcaseequ(resp, "ATTR") && has_arg) {
 			int start = 0;
 			for(i = 0;; i++) {
@@ -104,6 +108,14 @@ int main(int _argc, char** _argv) {
 			}
 		}
 		free(resp);
+	}
+	if(ready){
+		writeline("QUIT");
+		while(true){
+			char* resp = readline_sock();
+			if(resp == NULL) break;
+			free(resp);
+		}
 	}
 	return 0;
 }
