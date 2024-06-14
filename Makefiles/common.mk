@@ -9,12 +9,12 @@ no-doc: ./Grammar ./Library ./Client $(SERVER) $(RCLI)
 	@$(MAKE) thanks-banner
 
 thanks-banner:
-	@echo "************************************"
-	@echo "*                                  *"
-	@echo "*  Thanks for choosing DataWorks.  *"
-	@echo "*     - Nishi <nishi@nishi.boats>  *"
-	@echo "*                                  *"
-	@echo "************************************"
+	@echo "+-----------------------------------------+"
+	@echo "|                                         |"
+	@echo "|  Thanks for choosing DataWorks.         |"
+	@echo "|            - Nishi <nishi@nishi.boats>  |"
+	@echo "|                                         |"
+	@echo "+-----------------------------------------+"
 
 ./Grammar::
 	$(MAKE) -C $@ $(COMPILE_FLAGS)

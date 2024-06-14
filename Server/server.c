@@ -199,6 +199,7 @@ void protocol_loop(int sock) {
 								if(strcmp(entries[j]->pass, buf + i + 1) == 0) {
 									writeline(sock, "LOGIN");
 									login = true;
+									printf("User %s is in\n", user);
 									break;
 								} else {
 									writeline(sock, "ERROR:INVALID_PASSWORD");
@@ -251,6 +252,9 @@ int main(int _argc, char** _argv) {
 	signal(SIGINT, exitnow);
 	signal(SIGTERM, exitnow);
 	printf("DataWorks Server  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+	printf("\n");
+	printf("%s\n", dataworks_get_copyright());
+	printf("\n");
 	int st;
 	if((st = server_init()) != 0) return st;
 	if(auth) {

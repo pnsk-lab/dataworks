@@ -69,6 +69,9 @@ void discon(int sig) {
 
 int main(int _argc, char** _argv) {
 	printf("DataWorks Remote Client  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+	printf("\n");
+	printf("%s\n", dataworks_get_copyright());
+	printf("\n");
 	argc = _argc;
 	argv = _argv;
 	bool auth = false;
@@ -160,7 +163,7 @@ int main(int _argc, char** _argv) {
 				int ch = getchar();
 #endif
 				if(ch == EOF || ch == match) {
-					if(ch == EOF){
+					if(ch == EOF) {
 						free(username);
 						free(password);
 						goto go_quit;
@@ -199,7 +202,7 @@ int main(int _argc, char** _argv) {
 				int ch = getchar();
 #endif
 				if(ch == EOF || ch == match) {
-					if(ch == EOF){
+					if(ch == EOF) {
 						free(username);
 						free(password);
 						goto go_quit;
