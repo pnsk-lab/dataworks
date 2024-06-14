@@ -65,6 +65,7 @@ void discon(int sig) {
 		if(resp == NULL) break;
 		free(resp);
 	}
+	exit(0);
 }
 
 int main(int _argc, char** _argv) {
