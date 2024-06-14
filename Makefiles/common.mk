@@ -1,11 +1,11 @@
 # $Id$
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Grammar ./RemoteClient ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version thanks-banner
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Server ./Grammar ./RemoteClient ./Installer ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version thanks-banner dos-installer
 
-all: ./Grammar ./Library ./Client $(SERVER) $(RCLI) ./Document
+all: ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER) ./Document
 	@$(MAKE) thanks-banner
 
-no-doc: ./Grammar ./Library ./Client $(SERVER) $(RCLI)
+no-doc: ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER)
 	@$(MAKE) thanks-banner
 
 thanks-banner:
@@ -17,22 +17,25 @@ thanks-banner:
 	@echo "+-----------------------------------------+"
 
 ./Grammar::
-	$(MAKE) -C $@ $(COMPILE_FLAGS)
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./Library:: ./Grammar
-	$(MAKE) -C $@ $(COMPILE_FLAGS)
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./Client:: ./Library
-	$(MAKE) -C $@ $(COMPILE_FLAGS)
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./Server:: ./Library
-	$(MAKE) -C $@ $(COMPILE_FLAGS)
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./RemoteClient:: ./Library
-	$(MAKE) -C $@ $(COMPILE_FLAGS)
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
+
+./Installer:: ./Library
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./Document::
-	$(MAKE) -C ./Document $(COMPILE_FLAGS)
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 FILES = `find . -name "*.c" -or -name "*.h"`
 
@@ -53,7 +56,46 @@ clean:
 	$(MAKE) -C ./Client clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Server clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./RemoteClient clean $(COMPILE_FLAGS)
+	$(MAKE) -C ./Installer clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
+
+dos-installer:
+	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) clean ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos no-doc ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then rm -f install.img ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then mformat -C -f 1440 -v DWINST -i install.img :: ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img Client/*.exe ::dw.exe ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img Server/*.exe ::dwserv.exe ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img RemoteClient/*.exe ::dwrcli.exe ; fi
+	$(MAKE) PLATFORM=dos TARGET=clean ./Installer
+	$(MAKE) PLATFORM=dos ./Installer
+	mcopy -oi install.img Installer/*.exe ::install.exe
+	$(MAKE) PLATFORM=dos TARGET=clean ./Installer
+	$(MAKE) PLATFORM=dos PC98="-DPC98 -zk0" INDEP=jp INDEP_TO=cp932 ./Installer
+	mcopy -oi install.img Installer/*.exe ::insta98.exe
+	if [ ! -e lha.exe ]; then wget http://f.nishi.boats/f/g/lha.exe ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img lha.exe ::lha.exe ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then mkdir -p install-workdir ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "[cpu]" > install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "cycles=30000" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "[autoexec]" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "imgmount -t floppy a: ./install.img" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "a:" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "mount c: ./install-workdir" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "lha a C:\EXTRACT.LZH dw.exe dwserv.exe dwrcli.exe" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dw.exe" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dwserv.exe" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dwrcli.exe" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "c:" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "a:\lha s extract.lzh" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "a:" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "copy C:\EXTRACT.EXE" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "del lha.exe" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "exit" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then dosbox -conf install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then rm -rf install-workdir ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then rm -f install-dosbox.conf ; fi
+	$(MAKE) clean
 
 archive-prepare: all
 	rm -f dataworks.zip dataworks.tar.gz

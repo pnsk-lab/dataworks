@@ -29,32 +29,4 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#ifndef __DATAWORKS_DW_PARSER_H__
-#define __DATAWORKS_DW_PARSER_H__
-
-/**
- * @file dw_parser.h
- * @~english
- * @brief DataWorks parser
- *
- */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <stdbool.h>
-
-#include "../Grammar/dw.tab.h"
-
-struct Node* __dw_parser_parse(const char* str, bool top);
-struct Node* __dw_duplicate_node(struct Node* node);
-void __dw_free_node(struct Node* node);
-void __dw_free_node2(struct Node* node, bool top);
-bool __dw_print_node(struct Node* node, bool top);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+#define INSTALLER_TITLE "DataWorksインストーラー\n"

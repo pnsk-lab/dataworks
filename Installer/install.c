@@ -29,32 +29,18 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#ifndef __DATAWORKS_DW_PARSER_H__
-#define __DATAWORKS_DW_PARSER_H__
+#include <stdio.h>
+#include <string.h>
 
-/**
- * @file dw_parser.h
- * @~english
- * @brief DataWorks parser
- *
- */
+#include "indep.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+const char copyr1[] = "Copyright (C) Crabware, pnsk-lab 2024";
 
-#include <stdbool.h>
-
-#include "../Grammar/dw.tab.h"
-
-struct Node* __dw_parser_parse(const char* str, bool top);
-struct Node* __dw_duplicate_node(struct Node* node);
-void __dw_free_node(struct Node* node);
-void __dw_free_node2(struct Node* node, bool top);
-bool __dw_print_node(struct Node* node, bool top);
-
-#ifdef __cplusplus
+int main() {
+	printf("\x1b[2J\x1b[1;1H");
+	fflush(stdout);
+	printf(INSTALLER_TITLE);
+	int i;
+	for(i = 0; i < 80; i++) printf("-");
+	printf("\x1b[2;%dH %s -\n", 80 - strlen(copyr1) - 2, copyr1);
 }
-#endif
-
-#endif

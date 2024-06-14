@@ -55,6 +55,9 @@ Original: http://sw.nishi.boats/svn/nishi-dataworks
  - `Grammar`
  
  	Contains Yacc/Flex files
+ - `Installer`
+ 
+ 	Contains DOS installer source code
  - `Library`
  
  	Contains base library source code
