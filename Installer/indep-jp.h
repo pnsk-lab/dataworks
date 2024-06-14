@@ -29,4 +29,18 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#define INSTALLER_TITLE "DataWorksインストーラー\n"
+#define INSTALLER_TITLE "  DataWorksインストーラー\n"
+#define INSTALLER_LINE "─"
+#define INSTALLER_WELCOME \
+	"DataWorksインストーラーへようこそ！\n" \
+	"DataWorksはシンプルな、Cで書かれたクロスプラットフォームなDBMSです。\n" \
+	"非常に移植性を重視したコードを書いており、DOS、NetBSD、Linux、Windowsなどで動作\n" \
+	"します。\n" \
+	"\n" \
+	"インストールは単純です - インストール先を指定するだけです。\n" \
+	"ぜひ楽しんで！ - Nishi <nishi@nishi.boats>\n"
+#define INSTALLER_WHERE "どこにインストールしますか？ "
+#define INSTALLER_ERROR "エラー"
+#define INSTALLER_ABORT "インストールを中断します。"
+#define INSTALLER_COPYING "コピー中"
+#define INSTALLER_SUCCESS "インストールに成功しました。"

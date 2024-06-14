@@ -29,4 +29,18 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
-#define INSTALLER_TITLE "Installer for DataWorks\n"
+#define INSTALLER_TITLE " DataWorks Installer\n"
+#define INSTALLER_LINE "\xc4"
+#define INSTALLER_WELCOME \
+	"Welcome to the DataWorks Installer!\n" \
+	"DataWorks is a simple cross-platform DBMS written in C.\n" \
+	"Code is being written to be easy to port as much as possible, and works on DOS,\n" \
+	"NetBSD, Linux, Windows, and etc.\n" \
+	"\n" \
+	"Installation is easy - Just specify where to install.\n" \
+	"Enjoy! - Nishi <nishi@nishi.boats>\n"
+#define INSTALLER_WHERE "Where do you want to install to? "
+#define INSTALLER_ERROR "Error"
+#define INSTALLER_ABORT "Aborting the installation."
+#define INSTALLER_COPYING "Copying"
+#define INSTALLER_SUCCESS "Installed successfully."
