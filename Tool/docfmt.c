@@ -29,7 +29,10 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char* __util_strdup(const char* a) {
 	char* str = malloc(strlen(a) + 1);
@@ -46,4 +49,92 @@ char* __util_strcat(const char* a, const char* b) {
 	return str;
 }
 
-int main(int argc, char** argv) {}
+FILE* in;
+FILE* out;
+
+int process_doc(void) {
+	char cbuf[2];
+	cbuf[1] = 0;
+	char* full = malloc(1);
+	full[0] = 0;
+	char* str;
+
+	str = malloc(1);
+	str[0] = 0;
+	fseek(in, 0, SEEK_SET);
+	while(1) {
+		int len = fread(cbuf, 1, 1, in);
+		if(len <= 0) break;
+		{
+			char* tmp = full;
+			full = __util_strcat(tmp, cbuf);
+			free(tmp);
+		}
+		if(cbuf[0] == '\n') {
+			if(str[0] == '\\') {
+				if(strcmp(str, "\\hline") == 0) {
+				} else if(str[1] == '"') {
+				} else {
+					fprintf(stderr, "Invalid command. Aborted\n");
+					free(str);
+					return 1;
+				}
+			}
+			free(str);
+			str = malloc(1);
+			str[0] = 0;
+		} else if(cbuf[0] != '\r') {
+			char* tmp = str;
+			str = __util_strcat(tmp, cbuf);
+			free(tmp);
+		}
+	}
+	free(str);
+
+	str = malloc(1);
+	str[0] = 0;
+	int incr = 0;
+	while(1) {
+		cbuf[0] = full[incr++];
+		if(cbuf[0] == 0) break;
+		if(cbuf[0] == '\n') {
+			if(str[0] == '\\') {
+				if(strcmp(str, "\\hline") == 0) {
+					int i;
+					for(i = 0; i < 79; i++) fprintf(out, "=");
+					fprintf(out, "\n");
+				} else if(str[1] == '"') {
+				} else {
+					fprintf(stderr, "Invalid command. Aborted\n");
+					free(str);
+					return 1;
+				}
+			} else {
+				fprintf(out, "%s\n", str);
+			}
+			free(str);
+			str = malloc(1);
+			str[0] = 0;
+		} else if(cbuf[0] != '\r') {
+			char* tmp = str;
+			str = __util_strcat(tmp, cbuf);
+			free(tmp);
+		}
+	}
+	free(str);
+	free(full);
+	return 0;
+}
+
+int main(int argc, char** argv) {
+	if(argc < 2) {
+		fprintf(stderr, "Insufficient arguments\n");
+		return 1;
+	}
+	in = fopen(argv[1], "r");
+	out = stdout;
+	if(in == NULL) {
+		fprintf(stderr, "Failed to open the input\n");
+	}
+	return process_doc();
+}
