@@ -76,8 +76,8 @@ int process_doc(void) {
 				char* cmd = str;
 				char* val = NULL;
 				int i;
-				for(i = 0; str[i] != 0; i++){
-					if(str[i] == ' '){
+				for(i = 0; str[i] != 0; i++) {
+					if(str[i] == ' ') {
 						str[i] = 0;
 						val = str + i + 1;
 						break;
@@ -114,8 +114,8 @@ int process_doc(void) {
 				char* cmd = str;
 				char* val = NULL;
 				int i;
-				for(i = 0; str[i] != 0; i++){
-					if(str[i] == ' '){
+				for(i = 0; str[i] != 0; i++) {
+					if(str[i] == ' ') {
 						str[i] = 0;
 						val = str + i + 1;
 						break;
