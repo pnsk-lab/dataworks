@@ -1,11 +1,11 @@
 # $Id$
 
-.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Server ./Grammar ./RemoteClient ./Installer ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version thanks-banner dos-installer
+.PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Server ./Grammar ./RemoteClient ./Installer ./Tool ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version thanks-banner dos-installer
 
-all: ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER) ./Document
+all: ./Tool ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER) ./Document
 	@$(MAKE) thanks-banner
 
-no-doc: ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER)
+no-doc: ./Tool ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER)
 	@$(MAKE) thanks-banner
 
 thanks-banner:
@@ -34,7 +34,10 @@ thanks-banner:
 ./Installer:: ./Library
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
-./Document::
+./Tool:: ./Library
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
+
+./Document:: ./Tool
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 FILES = `find . -name "*.c" -or -name "*.h"`
@@ -58,6 +61,7 @@ clean:
 	$(MAKE) -C ./RemoteClient clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Installer clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
+	$(MAKE) -C ./Tool clean $(COMPILE_FLAGS)
 
 dos-installer:
 	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) clean ; fi
