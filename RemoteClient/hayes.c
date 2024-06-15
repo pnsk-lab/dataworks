@@ -150,7 +150,7 @@ int rcli_init(void) {
 	_bios_serialcom(_COM_INIT, port, _COM_9600 | _COM_NOPARITY | _COM_CHR8 | _COM_STOP1);
 	write_serial("AT&FE0F1\r");
 	char* resp = modem_response();
-	bool echo = __dw_strcaseequ(resp, "AT&FE0F1") || __dw_strcaseequ(resp, "NO CARRIER");
+	bool echo = __dw_strcaseequ(resp, "AT&FE0F1");
 	if(resp != NULL && echo) free(resp); /* Kill echo */
 	if(resp == NULL) return 1;
 	if(echo) resp = modem_response();
@@ -162,7 +162,13 @@ int rcli_init(void) {
 		write_serial(dial);
 		write_serial("\r");
 		while(true) {
+			free(resp);
 			resp = modem_response();
+			if(__dw_strcaseequ(resp, "NO CARRIER")) {
+				connected = false;
+				free(resp);
+				return 1;
+			}
 			int i;
 			for(i = 0; resp[i] != 0; i++) {
 				if(resp[i] == ' ') {
@@ -173,6 +179,7 @@ int rcli_init(void) {
 			if(__dw_strcaseequ(resp, "CONNECT")) {
 				printf("Connected\n");
 				connected = true;
+				free(resp);
 				break;
 			}
 		}
