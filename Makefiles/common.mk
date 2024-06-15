@@ -2,10 +2,10 @@
 
 .PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Server ./Grammar ./RemoteClient ./Installer ./Tool ./Package/PKGBUILD archive archive-prepare archive-cleanup archive-targz archive-zip dosbox prepare-dosbox dosbox-x cleanup-dosbox get-version thanks-banner dos-installer
 
-all: ./Tool ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER) ./Document
+all: ./Tool ./Grammar ./Library ./Client $(SERVER) $(RCLI) ./Document
 	@$(MAKE) thanks-banner
 
-no-doc: ./Tool ./Grammar ./Library ./Client $(SERVER) $(RCLI) $(INSTALLER)
+no-doc: ./Tool ./Grammar ./Library ./Client $(SERVER) $(RCLI)
 	@$(MAKE) thanks-banner
 
 thanks-banner:

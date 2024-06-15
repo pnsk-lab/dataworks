@@ -149,7 +149,7 @@ jobs:
     - name: Add INCLUDE env
       run: echo "INCLUDE=/usr/watcom/h" >> $GITHUB_ENV
     - name: Make
-      run: make -j3 YACC=byacc dos-installer
+      run: make YACC=byacc dos-installer
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
