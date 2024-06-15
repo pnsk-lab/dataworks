@@ -138,6 +138,16 @@ jobs:
       uses: actions/checkout@v4
     - name: Install packages
       run: sudo apt install flex byacc make graphviz
+    - name: Create /usr/watcom
+      run: sudo mkdir -p /usr/watcom
+    - name: Install Open Watcom
+      run: curl -L https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | sudo tar xvJf - -C /usr/watcom
+    - name: Add PATH
+      run: echo "/usr/watcom/binl64" >> $GITHUB_PATH
+    - name: Add WATCOM env
+      run: echo "WATCOM=/usr/watcom" >> $GITHUB_ENV
+    - name: Add INCLUDE env
+      run: echo "INCLUDE=/usr/watcom/h" >> $GITHUB_ENV
     - name: Make
       run: make -j3 YACC=byacc dos-installer
     - name: Upload artifact
