@@ -137,7 +137,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install packages
-      run: sudo apt install flex byacc make graphviz
+      run: sudo apt install flex byacc make graphviz mtools
     - name: Create /usr/watcom
       run: sudo mkdir -p /usr/watcom
     - name: Install Open Watcom
