@@ -124,6 +124,29 @@ jobs:
         name: build-macos
         path: build-macos.zip
 
+  build-dosimg:
+
+    name: "Build for DOS floppy image"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt install flex byacc make graphviz
+    - name: Make
+      run: make -j3 YACC=byacc dos-installer
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-dosimg
+        path: install.img
+
+
   release:
     
     name: "Release"
@@ -133,7 +156,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-generic, build-mac]
+    needs: [build-generic, build-mac, build-dosimg]
 
     steps:
     - name: Checkout
@@ -146,11 +169,15 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-macos
+    - name: Download from build-dosimg
+      uses: actions/download-artifact@v4
+      with:
+        name: build-dosimg
     - name: Extract the build-generic
       run: unzip $GITHUB_WORKSPACE/build-generic.zip
     - name: Extract the build-macos
       run: unzip $GITHUB_WORKSPACE/build-macos.zip
     - name: Release
-      run: gh release create -t "Release $(date +"%a %b %e %H:%M:%S %Z %Y")" "$(date +%Y%m%d%H%M%S)" dataworks-linux64.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-dos.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-server-win32.exe dataworks-server-win64.exe dataworks-server-dos.exe dataworks-server-dos4g.exe dataworks-win32.exe dataworks-win64.exe dataworks-dos.exe dataworks-dos4g.exe dataworks-linux64 dataworks-server-linux64 dataworks-macos-arm64 dataworks-server-macos-arm64 -n "Version \`$(make get-version)\` was built in this release"
+      run: gh release create -t "Release $(date +"%a %b %e %H:%M:%S %Z %Y")" "$(date +%Y%m%d%H%M%S)" dataworks-linux64.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-dos.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-server-win32.exe dataworks-server-win64.exe dataworks-server-dos.exe dataworks-server-dos4g.exe dataworks-win32.exe dataworks-win64.exe dataworks-dos.exe dataworks-dos4g.exe dataworks-linux64 dataworks-server-linux64 dataworks-macos-arm64 dataworks-server-macos-arm64 install.img -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
