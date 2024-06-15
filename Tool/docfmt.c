@@ -58,6 +58,7 @@ int process_doc(void) {
 	char* full = malloc(1);
 	full[0] = 0;
 	char* str;
+	int indent = 0;
 
 	str = malloc(1);
 	str[0] = 0;
@@ -72,7 +73,18 @@ int process_doc(void) {
 		}
 		if(cbuf[0] == '\n') {
 			if(str[0] == '\\') {
-				if(strcmp(str, "\\hline") == 0) {
+				char* cmd = str;
+				char* val = NULL;
+				int i;
+				for(i = 0; str[i] != 0; i++){
+					if(str[i] == ' '){
+						str[i] = 0;
+						val = str + i + 1;
+						break;
+					}
+				}
+				if(strcmp(cmd, "\\hline") == 0) {
+				} else if(strcmp(cmd, "\\indent") == 0) {
 				} else if(str[1] == '"') {
 				} else {
 					fprintf(stderr, "Invalid command. Aborted\n");
@@ -99,10 +111,22 @@ int process_doc(void) {
 		if(cbuf[0] == 0) break;
 		if(cbuf[0] == '\n') {
 			if(str[0] == '\\') {
-				if(strcmp(str, "\\hline") == 0) {
+				char* cmd = str;
+				char* val = NULL;
+				int i;
+				for(i = 0; str[i] != 0; i++){
+					if(str[i] == ' '){
+						str[i] = 0;
+						val = str + i + 1;
+						break;
+					}
+				}
+				if(strcmp(cmd, "\\hline") == 0) {
 					int i;
 					for(i = 0; i < 79; i++) fprintf(out, "=");
 					fprintf(out, "\n");
+				} else if(strcmp(cmd, "\\indent") == 0) {
+					indent = val == NULL ? 0 : atoi(val);
 				} else if(str[1] == '"') {
 				} else {
 					fprintf(stderr, "Invalid command. Aborted\n");
@@ -110,6 +134,8 @@ int process_doc(void) {
 					return 1;
 				}
 			} else {
+				int i;
+				for(i = 0; i < indent; i++) fprintf(out, " ");
 				fprintf(out, "%s\n", str);
 			}
 			free(str);
