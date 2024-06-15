@@ -137,7 +137,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install packages
-      run: sudo apt install flex byacc make graphviz mtools
+      run: sudo apt install flex byacc make graphviz mtools xvfb dosbox
     - name: Create /usr/watcom
       run: sudo mkdir -p /usr/watcom
     - name: Install Open Watcom
@@ -149,7 +149,7 @@ jobs:
     - name: Add INCLUDE env
       run: echo "INCLUDE=/usr/watcom/h" >> $GITHUB_ENV
     - name: Make
-      run: make YACC=byacc dos-installer
+      run: xvfb-run make YACC=byacc dos-installer
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
