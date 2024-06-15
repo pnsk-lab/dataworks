@@ -85,6 +85,7 @@ int process_doc(void) {
 				}
 				if(strcmp(cmd, "\\hline") == 0) {
 				} else if(strcmp(cmd, "\\indent") == 0) {
+				} else if(strcmp(cmd, "\\list") == 0) {
 				} else if(str[1] == '"') {
 				} else {
 					fprintf(stderr, "Invalid command. Aborted\n");
@@ -102,6 +103,8 @@ int process_doc(void) {
 		}
 	}
 	free(str);
+
+	int list = 1;
 
 	str = malloc(1);
 	str[0] = 0;
@@ -126,7 +129,24 @@ int process_doc(void) {
 					for(i = 0; i < 79; i++) fprintf(out, "=");
 					fprintf(out, "\n");
 				} else if(strcmp(cmd, "\\indent") == 0) {
-					indent = val == NULL ? 0 : atoi(val);
+					if(val == NULL) {
+						indent = 0;
+					} else {
+						if(val[0] == '+') {
+							indent += atoi(val + 1);
+						} else if(val[0] == '-') {
+							indent -= atoi(val + 1);
+						} else {
+							indent = atoi(val);
+						}
+					}
+				} else if(strcmp(cmd, "\\list") == 0) {
+					if(val == NULL) {
+						list = 1;
+					} else {
+						for(i = 0; i < indent; i++) fprintf(out, " ");
+						fprintf(out, "%d. %s\n", list++, val);
+					}
 				} else if(str[1] == '"') {
 				} else {
 					fprintf(stderr, "Invalid command. Aborted\n");

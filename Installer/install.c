@@ -150,6 +150,7 @@ do_so:
 		remove("dw.exe");
 		remove("dwserv.exe");
 		remove("dwrcli.exe");
+		remove("readme.doc");
 		system(to);
 		remove(to);
 		free(to);

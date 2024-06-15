@@ -34,7 +34,7 @@ thanks-banner:
 ./Installer:: ./Library
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
-./Tool:: ./Library
+./Tool::
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./Document:: ./Tool
@@ -64,7 +64,7 @@ clean:
 	$(MAKE) -C ./Tool clean $(COMPILE_FLAGS)
 
 dos-installer:
-	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) clean ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos clean ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos no-doc ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then rm -f install.img ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mformat -C -f 1440 -v DWINST -i install.img :: ; fi
@@ -75,8 +75,11 @@ dos-installer:
 	$(MAKE) PLATFORM=dos ./Installer
 	mcopy -oi install.img Installer/*.exe ::install.exe
 	$(MAKE) PLATFORM=dos TARGET=clean ./Installer
-	$(MAKE) PLATFORM=dos PC98="-DPC98 -zk0" INDEP=jp INDEP_TO=cp932 ./Installer
-	mcopy -oi install.img Installer/*.exe ::insta98.exe
+	$(MAKE) PLATFORM=dos INDEP=jp INDEP_TO=cp932 ./Installer
+	$(MAKE) ./Tool
+	$(MAKE) -C ./Document README.DOC
+	mcopy -toi install.img Document/README.DOC ::
+	mcopy -oi install.img Installer/*.exe ::instajp.exe
 	if [ ! -e lha.exe ]; then wget http://f.nishi.boats/f/g/lha.exe ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img lha.exe ::lha.exe ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mkdir -p install-workdir ; fi
@@ -86,10 +89,11 @@ dos-installer:
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "imgmount -t floppy a: ./install.img" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "a:" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "mount c: ./install-workdir" >> install-dosbox.conf ; fi
-	if [ ! "$(FORMAT)" = "NO" ]; then echo "lha a C:\EXTRACT.LZH dw.exe dwserv.exe dwrcli.exe" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "lha a C:\EXTRACT.LZH dw.exe dwserv.exe dwrcli.exe readme.doc" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dw.exe" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dwserv.exe" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dwrcli.exe" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "del readme.doc" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "c:" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "a:\lha s extract.lzh" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "a:" >> install-dosbox.conf ; fi

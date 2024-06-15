@@ -6,8 +6,8 @@ all: document README.DOC
 document:
 	doxygen
 
-README.DOC: README.FMT
-	../Tool/docfmt README.FMT
+README.DOC: ../Tool/docfmt README.FMT
+	../Tool/docfmt README.FMT > README.DOC
 
 clean:
-	rm -rf doc
+	rm -rf doc README.DOC

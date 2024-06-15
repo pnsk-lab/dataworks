@@ -1,10 +1,106 @@
 \" $Id$
 DataWorks Users' Manual
 \hline
+This Document describes how to do stuffs with DataWorks.
 
 Index
 \hline
-\indent 4
-test
-test
+\list
+\list What is DataWorks
+\list Supported platforms
+\list How to install
+\list Copyright
 \indent
+
+What is DataWorks
+\hline
+DataWorks is a simple cross-platform DBMS written in C.
+Its database file format is compatible with all platforms supported by DataWorks.
+
+Supported platforms
+\hline
+These platforms are currently supported.
+\list
+\" DOS
+\list DOS, and DOS with DOS/4GW
+\indent +2
+Supported features:
+\indent +2
+Server:
+\indent +2
+Works with Modem.
+\indent -2
+Client
+Remote Client:
+\indent +2
+Works with Modem.
+\indent -2
+\indent -2
+\indent -2
+\" NetBSD
+\list NetBSD
+\indent +2
+Supported features:
+\indent +2
+Server:
+\indent +2
+Works with TCP/IP socket.
+\indent -2
+Client
+Remote Client:
+\indent +2
+Works with TCP/IP socket.
+\indent -2
+\indent -2
+\indent -2
+\" Linux
+\list Linux
+\indent +2
+Supported features:
+\indent +2
+Server:
+\indent +2
+Works with TCP/IP socket.
+\indent -2
+Client
+Remote Client:
+\indent +2
+Works with TCP/IP socket.
+\indent -2
+\indent -2
+\indent -2
+\" Windows
+\list Windows
+\indent +2
+Supported features:
+\indent +2
+Server:
+\indent +2
+Works with TCP/IP socket.
+\indent -2
+Client
+Remote Client:
+\indent +2
+Works with TCP/IP socket.
+\indent -2
+\indent -2
+\indent -2
+\indent
+
+How to install
+\hline
+This document should be only included in DOS installer, so we'll only explain
+how to install on DOS.
+
+\list
+\list Insert the floppy/CD-ROM.
+\list Change the drive to your installation media.
+\list Run install.exe for English, instajp.exe for Japanese installer.
+\list Specify the path to be installed on.
+
+Copyright
+\hline
+Copyright (C) 2024 Crabware
+              2024 pnsk-lab
+
+DataWorks is licensed under the 3-clause BSD License.
