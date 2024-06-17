@@ -190,7 +190,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-generic, build-mac, build-dosimg]
+    needs: [build-generic, build-mac, build-debpkg, build-dosimg]
 
     steps:
     - name: Checkout
