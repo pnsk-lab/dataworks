@@ -124,7 +124,7 @@ jobs:
         name: build-macos
         path: build-macos.zip
 
-  build-dosimg:
+  build-debpkg:
 
     name: "Build for .deb"
 
