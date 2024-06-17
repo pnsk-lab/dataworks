@@ -1,4 +1,4 @@
-# $Id$
+# $Id: common-decl.mk 302 2024-06-14 12:23:13Z nishi $
 
 CC = cc
 SHCC = cc
