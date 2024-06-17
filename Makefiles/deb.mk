@@ -22,7 +22,7 @@
 	echo "Maintainer: Nishi <nishi@nishi.boats" >> workdir-deb/DEBIAN/control
 	echo "Depends: libc6 (>= 2.14)" >> workdir-deb/DEBIAN/control
 	echo "Homepage: http://nishi.boats/dataworks" >> workdir-deb/DEBIAN/control
-	echo "Installed-Size: `du -k workdir-deb/usr | cut -d"\t" -f1`" >> workdir-deb/DEBIAN/control
+	echo "Installed-Size: `du -k workdir-deb/usr | tail -n1 | grep -Eo "^[0-9]+"`" >> workdir-deb/DEBIAN/control
 	echo "Description: Simple DBMS written in C" >> workdir-deb/DEBIAN/control
 	fakeroot dpkg-deb --build workdir-deb $@
 	rm -rf workdir-deb
