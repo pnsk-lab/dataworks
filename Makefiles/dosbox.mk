@@ -1,4 +1,4 @@
-# $Id: common.mk 312 2024-06-15 02:13:12Z nishi $
+# $Id$
 
 .PHONY: dosbox prepare-dosbox dosbox-x cleanup-dosbox
 

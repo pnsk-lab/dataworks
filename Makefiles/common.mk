@@ -1,4 +1,4 @@
-# $Id: common.mk 312 2024-06-15 02:13:12Z nishi $
+# $Id$
 
 .PHONY: all no-doc replace format clean ./Library ./Client ./Document ./Server ./Grammar ./RemoteClient ./Installer ./Tool get-version thanks-banner dos-installer
 
