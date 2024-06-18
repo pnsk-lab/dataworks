@@ -29,9 +29,9 @@ jobs:
     - name: Make for Linux 64-bit
       run: make YACC=byacc -j3 archive
     - name: Rename to -linux64
-      run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz && mv Client/dataworks.exe dataworks-linux64.exe && mv Server/dataworks_server.exe dataworks-server-linux64.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-linux64.exe
+      run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz && mv Client/dataworks dataworks-linux64 && mv Server/dataworks_server dataworks-server-linux64 && mv RemoteClient/dataworks_remote_client dataworks-remote-client-linux64
     - name: Create artifact
-      run: zip -rv build-linux64.zip dataworks-linux64.tar.gz dataworks-linux64.zip dataworks-server-linux64.exe dataworks-linux64.exe dataworks-remote-client-linux64.exe
+      run: zip -rv build-linux64.zip dataworks-linux64.tar.gz dataworks-linux64.zip dataworks-server-linux64 dataworks-linux64 dataworks-remote-client-linux64
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
