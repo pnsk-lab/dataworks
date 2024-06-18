@@ -41,7 +41,7 @@ jobs:
     - name: Rename to -dos4g
       run: mv dataworks.zip dataworks-dos4g.zip && mv dataworks.tar.gz dataworks-dos4g.tar.gz && mv Client/dataworks.exe dataworks-dos4g.exe && mv Server/dataworks_server.exe dataworks-server-dos4g.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-dos4g.exe
     - name: Create artifact
-      run: zip -rv build-dos4g4g.zip dataworks-dos4g4g.tar.gz dataworks-dos4g.zip dataworks-server-dos4g.exe dataworks-dos4g.exe dataworks-remote-client-dos4g.exe
+      run: zip -rv build-dos4g.zip dataworks-dos4g4g.tar.gz dataworks-dos4g.zip dataworks-server-dos4g.exe dataworks-dos4g.exe dataworks-remote-client-dos4g.exe
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
