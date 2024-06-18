@@ -15,7 +15,7 @@
 	cp Client/dataworks workdir-deb/usr/bin/
 	cp Server/dataworks_server workdir-deb/usr/bin/
 	cp RemoteClient/dataworks_remote_client workdir-deb/usr/bin/
-	cd workdir-deb && find usr -type f | xargs md5sum > DEBIAN/md5sums
+	cd workdir-deb && find usr -type f | xargs $(MD5SUM) > DEBIAN/md5sums
 	echo "Package: dataworks" > workdir-deb/DEBIAN/control
 	echo "Version: $(VERSION)" >> workdir-deb/DEBIAN/control
 	echo "Architecture: $(DEB_ARCH)" >> workdir-deb/DEBIAN/control
