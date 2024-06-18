@@ -75,6 +75,7 @@ struct sockaddr_in6 server_address;
 #endif
 
 extern struct dataworks_db* db;
+extern bool usr1sig;
 
 int server_init(void) {
 	printf("Using BSD TCP/IP\n");
@@ -88,6 +89,8 @@ int server_init(void) {
 				i++;
 				authfile = argv[i];
 				auth = true;
+			} else if(option(argv[i], "s", "signal")) {
+				usr1sig = true;
 			} else if(option(argv[i], "h", "help")) {
 				printf("\n");
 				printf("Usage: %s [options] database\n", argv[0]);
@@ -95,6 +98,7 @@ int server_init(void) {
 				printf("Options:\n");
 				printf("\t-p --port [port]   Specify the port to be listened on\n");
 				printf("\t-l --login [path]  Specify the authentication file\n");
+				printf("\t-s --signal        Send SIGUSR1 when ready\n");
 				exit(0);
 			} else {
 				fprintf(stderr, "Invalid option: %s\n", argv[i]);

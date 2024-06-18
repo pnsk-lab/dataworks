@@ -44,6 +44,7 @@ int argc;
 char** argv;
 bool auth = false;
 char* authfile = NULL;
+bool usr1sig = false;
 FILE* authdb;
 struct auth_entry {
 	char* user;
@@ -314,6 +315,10 @@ int main(int _argc, char** _argv) {
 	if(db == NULL) {
 		fprintf(stderr, "Failed to open databse\n");
 		return 1;
+	}
+	if(usr1sig) {
+		/* Server is ready, raise SIGUSR1 */
+		raise(SIGUSR1);
 	}
 	server_loop();
 }

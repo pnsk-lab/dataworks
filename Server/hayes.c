@@ -92,6 +92,8 @@ void write_serial(const char* str) {
 bool connected;
 bool fancy = false;
 
+extern bool usr1sig;
+
 extern sig_atomic_t signals;
 extern struct dataworks_db* db;
 
@@ -249,6 +251,8 @@ int server_init(void) {
 				i++;
 				authfile = argv[i];
 				auth = true;
+			} else if(option(argv[i], "s", "signal")) {
+				usr1sig = true;
 			} else if(option(argv[i], "h", "help")) {
 				printf("\n");
 				printf("Usage: %s [options] database\n", argv[0]);
@@ -257,6 +261,7 @@ int server_init(void) {
 				printf("\t-p --port [comport]   Specify the modem port\n");
 				printf("\t-f --fancy            Enable the fancy manager ;)\n");
 				printf("\t-l --login [path]     Specify the authentication file\n");
+				printf("\t-s --signal           Send SIGUSR1 when ready\n");
 				exit(0);
 			} else if(option(argv[i], "f", "fancy")) {
 				fancy = true;

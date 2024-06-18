@@ -111,3 +111,4 @@ get-version:
 include Makefiles/archive.mk
 include Makefiles/dosbox.mk
 include Makefiles/package.mk
+include Makefiles/test.mk

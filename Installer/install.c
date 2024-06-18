@@ -33,8 +33,8 @@
 #include <direct.h>
 #else
 #include <dirent.h>
-#include <stdint.h>
 #include <errno.h>
+#include <stdint.h>
 #include <unistd.h>
 #endif
 #include <stdio.h>
