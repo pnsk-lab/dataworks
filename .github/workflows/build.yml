@@ -156,9 +156,9 @@ jobs:
     - name: Make for DOS
       run: make YACC=byacc PLATFORM=os2 -j3 archive
     - name: Rename to -os2
-      run: mv dataworks.zip dataworks-os2.zip && mv dataworks.tar.gz dataworks-os2.tar.gz && mv Client/dataworks.exe dataworks-os2.exe && mv Server/dataworks_server.exe dataworks-server-os2.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-os2.exe
+      run: mv dataworks.zip dataworks-os2.zip && mv dataworks.tar.gz dataworks-os2.tar.gz && mv Client/dataworks.exe dataworks-os2.exe
     - name: Create artifact
-      run: zip -rv build-os2.zip dataworks-os2.tar.gz dataworks-os2.zip dataworks-server-os2.exe dataworks-os2.exe dataworks-remote-client-os2.exe
+      run: zip -rv build-os2.zip dataworks-os2.tar.gz dataworks-os2.zip dataworks-os2.exe
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
