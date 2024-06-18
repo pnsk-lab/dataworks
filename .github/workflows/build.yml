@@ -2,6 +2,9 @@ name: Build DataWorks
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
   schedule:
   - cron: "0 */6 * * *"
 
@@ -196,6 +199,21 @@ jobs:
       run: sudo apt install flex byacc make graphviz
     - name: Make
       run: make YACC=byacc test
+
+  misc:
+    
+    name: "Misc"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Delete bad tags
+      run: gh release delete "$(make get-version)" --cleanup-tag -y || true
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     
