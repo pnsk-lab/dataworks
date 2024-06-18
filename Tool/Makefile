@@ -15,4 +15,4 @@ test: test.o
 	cc -D_DEFAULT_SOURCE -std=c99 -c -o $@ $<
 
 clean:
-	rm -f docfmt *.o
+	rm -f docfmt *.o test

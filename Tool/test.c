@@ -220,5 +220,6 @@ int main(int argc, char** argv) {
 	int status;
 	waitpid(pid, &status, 0);
 	waitpid(pid2, &status, 0);
+	remove("db.dwf");
 	return 0;
 }
