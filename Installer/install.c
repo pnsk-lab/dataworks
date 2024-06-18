@@ -92,7 +92,7 @@ do_so:
 			free(tmp);
 		}
 	}
-#ifdef __WATCOM__
+#ifdef __WATCOMC__
 	FILE* in = fopen("extract.exe", "rb");
 	struct stat s;
 	stat("extract.exe", &s);
