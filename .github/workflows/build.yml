@@ -10,6 +10,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-linux64:
+
+    name: "Build for Linux 64-bit"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt-get install zip byacc flex doxygen graphviz
+    - name: Make sure it is clean
+      run: make clean
+    - name: Make for Linux 64-bit
+      run: make YACC=byacc -j3 archive
+    - name: Rename to -linux64
+      run: mv dataworks.zip dataworks-linux64.zip && mv dataworks.tar.gz dataworks-linux64.tar.gz && mv Client/dataworks.exe dataworks-linux64.exe && mv Server/dataworks_server.exe dataworks-server-linux64.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-linux64.exe
+    - name: Create artifact
+      run: zip -rv build-linux64.zip dataworks-linux64.tar.gz dataworks-linux64.zip dataworks-server-linux64.exe dataworks-linux64.exe dataworks-remote-client-linux64.exe
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-linux64
+        path: build-linux64.zip
+
   build-win64:
 
     name: "Build for Windows 64-bit"
@@ -261,7 +289,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-dos, build-dos4g, build-win32, build-win64, build-mac, build-debpkg, build-dosimg, test]
+    needs: [build-dos, build-dos4g, build-win32, build-win64, build-linux64, build-mac, build-debpkg, build-dosimg, test]
 
     steps:
     - name: Checkout
@@ -282,6 +310,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-win64
+    - name: Download from build-linux64
+      uses: actions/download-artifact@v4
+      with:
+        name: build-linux64
     - name: Download from build-macos
       uses: actions/download-artifact@v4
       with:
@@ -306,6 +338,8 @@ jobs:
       run: unzip $GITHUB_WORKSPACE/build-win32.zip
     - name: Extract the build-win64
       run: unzip $GITHUB_WORKSPACE/build-win64.zip
+    - name: Extract the build-linux64
+      run: unzip $GITHUB_WORKSPACE/build-linux64.zip
     - name: Extract the build-macos
       run: unzip $GITHUB_WORKSPACE/build-macos.zip
     - name: Rename dataworks.deb
@@ -315,6 +349,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Release
-      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-{dos,dos4g,macos-arm64,win32,win64} dataworks-server-{dos,dos4g,macos-arm64,win32,win64} dataworks-remote-client-{dos,dos4g,macos-arm64,win32,win64} install1200.img install1440.img dataworks-amd64-ubuntu.deb -n "Version \`$(make get-version)\` was built in this release"
+      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} dataworks-server-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} dataworks-remote-client-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} install1200.img install1440.img dataworks-amd64-ubuntu.deb -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
