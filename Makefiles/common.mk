@@ -62,7 +62,6 @@ clean:
 	$(MAKE) -C ./Installer clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Tool clean $(COMPILE_FLAGS)
-	rm -f install.img
 
 dos-installer:
 	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos clean ; fi
