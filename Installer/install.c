@@ -29,7 +29,14 @@
 /* -------------------------------------------------------------------------- */
 /* --- END LICENSE --- */
 
+#ifdef __WATCOMC__
 #include <direct.h>
+#else
+#include <dirent.h>
+#include <stdint.h>
+#include <errno.h>
+#include <unistd.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -85,9 +92,15 @@ do_so:
 			free(tmp);
 		}
 	}
+#ifdef __WATCOM__
 	FILE* in = fopen("extract.exe", "rb");
 	struct stat s;
 	stat("extract.exe", &s);
+#else
+	FILE* in = fopen("extract", "rb");
+	struct stat s;
+	stat("extract", &s);
+#endif
 	if(in == NULL) {
 		printf("%s: ", INSTALLER_ERROR);
 		printf("%s\n", strerror(errno));
@@ -103,7 +116,11 @@ do_so:
 		free(str);
 		return 1;
 	} else {
+#ifdef __WATCOMC__
 		char* to = __util_strcat(str, "\\_extract.exe");
+#else
+		char* to = __util_strcat(str, "/_extract");
+#endif
 		FILE* out = fopen(to, "wb");
 		if(out == NULL) {
 			fclose(in);
@@ -136,6 +153,7 @@ do_so:
 		fclose(out);
 		printf("\n");
 		int i;
+#ifdef __WATCOMC__
 		for(i = 0; to[i] != 0; i++) {
 			if(to[i] == ':') {
 				unsigned total;
@@ -147,10 +165,14 @@ do_so:
 				break;
 			}
 		}
+#endif
 		remove("dw.exe");
 		remove("dwserv.exe");
 		remove("dwrcli.exe");
 		remove("readme.doc");
+#ifndef __WATCOMC__
+		chmod(to, 0755);
+#endif
 		system(to);
 		remove(to);
 		free(to);
