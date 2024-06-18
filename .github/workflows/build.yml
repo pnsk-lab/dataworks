@@ -10,6 +10,62 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-win64:
+
+    name: "Build for Windows 64-bit"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt-get install zip byacc flex doxygen graphviz mingw-w64
+    - name: Make sure it is clean
+      run: make clean PLATFORM=win64
+    - name: Make for Windows 64-bit
+      run: make YACC=byacc PLATFORM=win64 -j3 archive
+    - name: Rename to -win64
+      run: mv dataworks.zip dataworks-win64.zip && mv dataworks.tar.gz dataworks-win64.tar.gz && mv Client/dataworks.exe dataworks-win64.exe && mv Server/dataworks_server.exe dataworks-server-win64.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win64.exe
+    - name: Create artifact
+      run: zip -rv build-win64.zip dataworks-win64.tar.gz dataworks-win64.zip dataworks-server-win64.exe dataworks-win64.exe dataworks-remote-client-win64.exe
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-win64
+        path: build-win64.zip
+
+  build-win32:
+
+    name: "Build for Windows 32-bit"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt-get install zip byacc flex doxygen graphviz mingw-w64
+    - name: Make sure it is clean
+      run: make clean PLATFORM=win32
+    - name: Make for Windows 32-bit
+      run: make YACC=byacc PLATFORM=win32 -j3 archive
+    - name: Rename to -win32
+      run: mv dataworks.zip dataworks-win32.zip && mv dataworks.tar.gz dataworks-win32.tar.gz && mv Client/dataworks.exe dataworks-win32.exe && mv Server/dataworks_server.exe dataworks-server-win32.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win32.exe
+    - name: Create artifact
+      run: zip -rv build-win32.zip dataworks-win32.tar.gz dataworks-win32.zip dataworks-server-win32.exe dataworks-win32.exe dataworks-remote-client-win32.exe
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-win32
+        path: build-win32.zip
+
   build-dos4g:
 
     name: "Build for DOS/4G"
@@ -41,7 +97,7 @@ jobs:
     - name: Rename to -dos4g
       run: mv dataworks.zip dataworks-dos4g.zip && mv dataworks.tar.gz dataworks-dos4g.tar.gz && mv Client/dataworks.exe dataworks-dos4g.exe && mv Server/dataworks_server.exe dataworks-server-dos4g.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-dos4g.exe
     - name: Create artifact
-      run: zip -rv build-dos4g.zip dataworks-dos4g4g.tar.gz dataworks-dos4g.zip dataworks-server-dos4g.exe dataworks-dos4g.exe dataworks-remote-client-dos4g.exe
+      run: zip -rv build-dos4g.zip dataworks-dos4g.tar.gz dataworks-dos4g.zip dataworks-server-dos4g.exe dataworks-dos4g.exe dataworks-remote-client-dos4g.exe
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -205,7 +261,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-dos, build-dos4g, build-mac, build-debpkg, build-dosimg, test]
+    needs: [build-dos, build-dos4g, build-win32, build-win64, build-mac, build-debpkg, build-dosimg, test]
 
     steps:
     - name: Checkout
@@ -218,6 +274,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-dos4g
+    - name: Download from build-win32
+      uses: actions/download-artifact@v4
+      with:
+        name: build-win32
+    - name: Download from build-win64
+      uses: actions/download-artifact@v4
+      with:
+        name: build-win64
     - name: Download from build-macos
       uses: actions/download-artifact@v4
       with:
@@ -238,6 +302,10 @@ jobs:
       run: unzip $GITHUB_WORKSPACE/build-dos.zip
     - name: Extract the build-dos4g
       run: unzip $GITHUB_WORKSPACE/build-dos4g.zip
+    - name: Extract the build-win32
+      run: unzip $GITHUB_WORKSPACE/build-win32.zip
+    - name: Extract the build-win64
+      run: unzip $GITHUB_WORKSPACE/build-win64.zip
     - name: Extract the build-macos
       run: unzip $GITHUB_WORKSPACE/build-macos.zip
     - name: Rename dataworks.deb
