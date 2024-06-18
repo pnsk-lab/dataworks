@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <dataworks.h>
 #include <dw_util.h>
@@ -44,6 +45,7 @@
 
 int argc;
 char** argv;
+bool usr1sig = false;
 
 int rcli_init(void);
 char* readline_sock(void);
@@ -240,6 +242,12 @@ int main(int _argc, char** _argv) {
 		}
 		printf(". ");
 		fflush(stdout);
+#if !defined(__WATCOMC__) && !defined(__MINGW32__)
+		if(usr1sig) {
+			/* Server is ready, raise SIGUSR1 */
+			kill(getppid(), SIGUSR1);
+		}
+#endif
 		while(true) {
 			int len = fread(cbuf, 1, 1, stdin);
 			if(len <= 0) break;

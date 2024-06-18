@@ -60,6 +60,7 @@
 
 extern int argc;
 extern char** argv;
+extern bool usr1sig;
 
 int port = 4096;
 int sock;
@@ -79,6 +80,8 @@ int rcli_init(void) {
 			if(option(argv[i], "p", "port")) {
 				i++;
 				port = atoi(argv[i]);
+			} else if(option(argv[i], "s", "signal")) {
+				usr1sig = true;
 			} else if(option(argv[i], "h", "help")) {
 				printf("\n");
 				printf("Usage: %s [options] host\n", argv[0]);

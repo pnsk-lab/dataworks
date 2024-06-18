@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 int argc;
 char** argv;
@@ -316,9 +317,11 @@ int main(int _argc, char** _argv) {
 		fprintf(stderr, "Failed to open databse\n");
 		return 1;
 	}
+#if !defined(__WATCOMC__) && !defined(__MINGW32__)
 	if(usr1sig) {
 		/* Server is ready, raise SIGUSR1 */
-		raise(SIGUSR1);
+		kill(getppid(), SIGUSR1);
 	}
+#endif
 	server_loop();
 }

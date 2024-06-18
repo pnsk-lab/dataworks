@@ -42,6 +42,7 @@
 
 extern int argc;
 extern char** argv;
+extern bool usr1sig;
 
 int port = -1;
 bool connected = false;
@@ -123,6 +124,8 @@ int rcli_init(void) {
 					fprintf(stderr, "Invalid port: %s\n", argv[i]);
 					return 1;
 				}
+			} else if(option(argv[i], "s", "signal")) {
+				usr1sig = true;
 			} else if(option(argv[i], "h", "help")) {
 				printf("\n");
 				printf("Usage: %s [options] dial\n", argv[0]);

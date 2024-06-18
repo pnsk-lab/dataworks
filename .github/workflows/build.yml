@@ -180,6 +180,22 @@ jobs:
         name: build-dosimg
         path: install.img
 
+  test:
+
+    name: "Test"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt install flex byacc make graphviz
+    - name: Make
+      run: make YACC=byacc test
 
   release:
     
@@ -190,7 +206,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-generic, build-mac, build-debpkg, build-dosimg]
+    needs: [build-generic, build-mac, build-debpkg, build-dosimg, test]
 
     steps:
     - name: Checkout
