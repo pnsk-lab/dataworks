@@ -173,12 +173,23 @@ jobs:
     - name: Add INCLUDE env
       run: echo "INCLUDE=/usr/watcom/h" >> $GITHUB_ENV
     - name: Make
-      run: xvfb-run make YACC=byacc dos-installer
+      run: xvfb-run make YACC=byacc dos-installer FLOPPY_SIZE=1440
+    - name: Rename
+      run: mv install.img install1440.img
+    - name: Make
+      run: xvfb-run make YACC=byacc dos-installer FLOPPY_SIZE=1200
+    - name: Rename
+      run: mv install.img install1200.img
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: build-dosimg
-        path: install.img
+        name: build-dosimg1200
+        path: install1200.img
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-dosimg1440
+        path: install1440.img
 
   test:
 
@@ -223,10 +234,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-debpkg
-    - name: Download from build-dosimg
+    - name: Download from build-dosimg1200
       uses: actions/download-artifact@v4
       with:
-        name: build-dosimg
+        name: build-dosimg1200
+    - name: Download from build-dosimg1440
+      uses: actions/download-artifact@v4
+      with:
+        name: build-dosimg1440
     - name: Extract the build-generic
       run: unzip $GITHUB_WORKSPACE/build-generic.zip
     - name: Extract the build-macos
@@ -238,6 +253,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Release
-      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-linux64.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-dos.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-server-win32.exe dataworks-server-win64.exe dataworks-server-dos.exe dataworks-server-dos4g.exe dataworks-win32.exe dataworks-win64.exe dataworks-dos.exe dataworks-dos4g.exe dataworks-linux64 dataworks-server-linux64 dataworks-macos-arm64 dataworks-server-macos-arm64 install.img dataworks-amd64-ubuntu.deb -n "Version \`$(make get-version)\` was built in this release"
+      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-linux64.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-dos.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-server-win32.exe dataworks-server-win64.exe dataworks-server-dos.exe dataworks-server-dos4g.exe dataworks-win32.exe dataworks-win64.exe dataworks-dos.exe dataworks-dos4g.exe dataworks-linux64 dataworks-server-linux64 dataworks-macos-arm64 dataworks-server-macos-arm64 install1200.img install1440.img dataworks-amd64-ubuntu.deb -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

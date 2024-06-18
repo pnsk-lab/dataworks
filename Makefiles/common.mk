@@ -67,7 +67,7 @@ dos-installer:
 	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos clean ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos no-doc ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then rm -f install.img ; fi
-	if [ ! "$(FORMAT)" = "NO" ]; then mformat -C -f 1440 -v DWINST -i install.img :: ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then mformat -C -f $(FLOPPY_SIZE) -v DWINST -i install.img :: ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img Client/*.exe ::dw.exe ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img Server/*.exe ::dwserv.exe ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img RemoteClient/*.exe ::dwrcli.exe ; fi
