@@ -10,6 +10,44 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-dos4g:
+
+    name: "Build for DOS/4G"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt-get install zip byacc flex doxygen graphviz
+    - name: Create /usr/watcom
+      run: sudo mkdir -p /usr/watcom
+    - name: Install Open Watcom
+      run: curl -L https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | sudo tar xvJf - -C /usr/watcom
+    - name: Add PATH
+      run: echo "/usr/watcom/binl64" >> $GITHUB_PATH
+    - name: Add WATCOM env
+      run: echo "WATCOM=/usr/watcom" >> $GITHUB_ENV
+    - name: Add INCLUDE env
+      run: echo "INCLUDE=/usr/watcom/h" >> $GITHUB_ENV
+    - name: Make sure it is clean
+      run: make clean PLATFORM=dos4g
+    - name: Make for DOS
+      run: make YACC=byacc PLATFORM=dos4g -j3 archive
+    - name: Rename to -dos4g
+      run: mv dataworks.zip dataworks-dos4g.zip && mv dataworks.tar.gz dataworks-dos4g.tar.gz && mv Client/dataworks.exe dataworks-dos4g.exe && mv Server/dataworks_server.exe dataworks-server-dos4g.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-dos4g.exe
+    - name: Create artifact
+      run: zip -rv build-dos4g4g.zip dataworks-dos4g4g.tar.gz dataworks-dos4g.zip dataworks-server-dos4g.exe dataworks-dos4g.exe dataworks-remote-client-dos4g.exe
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-dos4g
+        path: build-dos4g.zip
+
   build-dos:
 
     name: "Build for DOS"
@@ -23,7 +61,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install packages
-      run: sudo apt-get install zip byacc flex doxygen mingw-w64 graphviz
+      run: sudo apt-get install zip byacc flex doxygen graphviz
     - name: Create /usr/watcom
       run: sudo mkdir -p /usr/watcom
     - name: Install Open Watcom
@@ -39,7 +77,7 @@ jobs:
     - name: Make for DOS
       run: make YACC=byacc PLATFORM=dos -j3 archive
     - name: Rename to -dos
-      run: mv dataworks.zip dataworks-dos.zip && mv dataworks.tar.gz dataworks-dos.tar.gz && mv Client/dataworks.exe dataworks-dos.exe && mv Server/dataworks_server.exe dataworks-server-dos.exe && mv RemoteClient/dataworks_remote_client dataworks-remote-client-dos.exe
+      run: mv dataworks.zip dataworks-dos.zip && mv dataworks.tar.gz dataworks-dos.tar.gz && mv Client/dataworks.exe dataworks-dos.exe && mv Server/dataworks_server.exe dataworks-server-dos.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-dos.exe
     - name: Create artifact
       run: zip -rv build-dos.zip dataworks-dos.tar.gz dataworks-dos.zip dataworks-server-dos.exe dataworks-dos.exe dataworks-remote-client-dos.exe
     - name: Upload artifact
@@ -167,7 +205,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-dos, build-mac, build-debpkg, build-dosimg, test]
+    needs: [build-dos, build-dos4g, build-mac, build-debpkg, build-dosimg, test]
 
     steps:
     - name: Checkout
@@ -176,6 +214,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-dos
+    - name: Download from build-dos4g
+      uses: actions/download-artifact@v4
+      with:
+        name: build-dos4g
     - name: Download from build-macos
       uses: actions/download-artifact@v4
       with:
@@ -194,6 +236,8 @@ jobs:
         name: build-dosimg1440
     - name: Extract the build-dos
       run: unzip $GITHUB_WORKSPACE/build-dos.zip
+    - name: Extract the build-dos4g
+      run: unzip $GITHUB_WORKSPACE/build-dos4g.zip
     - name: Extract the build-macos
       run: unzip $GITHUB_WORKSPACE/build-macos.zip
     - name: Rename dataworks.deb
