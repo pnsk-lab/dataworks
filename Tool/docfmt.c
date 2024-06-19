@@ -52,6 +52,8 @@ char* __util_strcat(const char* a, const char* b) {
 FILE* in;
 FILE* out;
 
+#define MAX 128
+
 int process_doc(void) {
 	char cbuf[2];
 	cbuf[1] = 0;
@@ -63,6 +65,7 @@ int process_doc(void) {
 	str = malloc(1);
 	str[0] = 0;
 	fseek(in, 0, SEEK_SET);
+	int cincr = 0;
 	while(1) {
 		int len = fread(cbuf, 1, 1, in);
 		if(len <= 0) break;
@@ -86,10 +89,27 @@ int process_doc(void) {
 				if(strcmp(cmd, "\\hline") == 0) {
 				} else if(strcmp(cmd, "\\indent") == 0) {
 				} else if(strcmp(cmd, "\\list") == 0) {
+				} else if(strcmp(cmd, "\\list+") == 0) {
+					cincr++;
+					if(cincr >= MAX){
+						free(str);
+						free(full);
+						fprintf(stderr, "List index stack overflow. Aborted\n");
+						return 1;
+					}
+				} else if(strcmp(cmd, "\\list-") == 0) {
+					cincr--;
+					if(cincr < 0){
+						free(str);
+						free(full);
+						fprintf(stderr, "List index stack underflow. Aborted\n");
+						return 1;
+					}
 				} else if(str[1] == '"') {
 				} else {
 					fprintf(stderr, "Invalid command. Aborted\n");
 					free(str);
+					free(full);
 					return 1;
 				}
 			}
@@ -104,7 +124,9 @@ int process_doc(void) {
 	}
 	free(str);
 
-	int list = 1;
+	int* list = malloc(MAX * sizeof(*list));
+	int listi = 0;
+	for(listi = 0; listi < MAX; listi++) list[listi] = 1;
 
 	str = malloc(1);
 	str[0] = 0;
@@ -140,18 +162,18 @@ int process_doc(void) {
 							indent = atoi(val);
 						}
 					}
+				} else if(strcmp(cmd, "\\list+") == 0) {
+					list++;
+				} else if(strcmp(cmd, "\\list-") == 0) {
+					list--;
 				} else if(strcmp(cmd, "\\list") == 0) {
 					if(val == NULL) {
-						list = 1;
+						*list = 1;
 					} else {
 						for(i = 0; i < indent; i++) fprintf(out, " ");
-						fprintf(out, "%d. %s\n", list++, val);
+						fprintf(out, "%d. %s\n", (*list)++, val);
 					}
 				} else if(str[1] == '"') {
-				} else {
-					fprintf(stderr, "Invalid command. Aborted\n");
-					free(str);
-					return 1;
 				}
 			} else {
 				int i;

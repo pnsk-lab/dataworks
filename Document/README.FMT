@@ -90,12 +90,27 @@ Works with TCP/IP socket.
 How to install
 \hline
 
-On DOS...
 \list
-\list Insert the floppy
+\list DOS and DOS/4G
+\list+
+\indent +2
+\list
+\list Insert the floppy/CD-ROM
 \list Change the drive to your installation media.
+\list Change the directory to dos or dos4g
 \list Run install.exe for English, instajp.exe for Japanese installer.
-\list Specify the path to be installed on.
+\indent -2
+\list-
+\list Windows
+\list+
+\indent +2
+\list
+\list Insert the CD-ROM
+\list Change the drive to your installation media.
+\list Change the directory to win32 or win64
+\list Run install.exe for English, instajp.exe for Japanese installer.
+\indent -2
+\list-
 
 Copyright
 \hline

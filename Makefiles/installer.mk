@@ -42,3 +42,54 @@ dos-installer:
 	if [ ! "$(FORMAT)" = "NO" ]; then rm -rf install-workdir ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then rm -f install-dosbox.conf ; fi
 	$(MAKE) clean
+
+./install.exe: no-doc
+	convert -size 150x57 xc:white canvas.bmp
+	convert Binary/dataworks-black.png dw.bmp
+	convert canvas.bmp dw.bmp -geometry +97+5 -composite dataworks.bmp
+	rm canvas.bmp dw.bmp
+	echo "!include MUI2.nsh" > install.nsi
+	echo "!define MUI_ABORTWARNING" >> install.nsi
+	echo "!define MUI_ICON \"Binary/dataworks.ico\"" >> install.nsi
+	echo "!define MUI_HEADERIMAGE" >> install.nsi
+	echo "!define MUI_HEADERIMAGE_BITMAP \"dataworks.bmp\"" >> install.nsi
+	echo "!define MUI_HEADERIMAGE_RIGHT" >> install.nsi
+	echo "!include nsDialogs.nsh" >> install.nsi
+	echo "!include LogicLib.nsh" >> install.nsi
+	echo "Name \"DataWorks\"" >> install.nsi
+	echo "OutFile \"$@\"" >> install.nsi
+	echo "SetCompressor lzma" >> install.nsi
+	echo "InstallDir \"\$$$(TO)\\DataWorks\"" >> install.nsi
+	echo "XPStyle on" >> install.nsi
+	echo "!insertmacro MUI_PAGE_WELCOME" >> install.nsi
+	echo "!insertmacro MUI_PAGE_DIRECTORY" >> install.nsi
+	echo "!insertmacro MUI_PAGE_INSTFILES" >> install.nsi
+	echo "!insertmacro MUI_PAGE_FINISH" >> install.nsi
+	echo "!insertmacro MUI_UNPAGE_WELCOME" >> install.nsi
+	echo "!insertmacro MUI_UNPAGE_CONFIRM" >> install.nsi
+	echo "!insertmacro MUI_UNPAGE_INSTFILES" >> install.nsi
+	echo "!insertmacro MUI_UNPAGE_FINISH" >> install.nsi
+	echo "!insertmacro MUI_LANGUAGE \"English\"" >> install.nsi
+	echo "Section" >> install.nsi
+	echo "  SetOutPath \"\$$INSTDIR\"" >> install.nsi
+	echo "  File \"Client/dataworks.exe\"" >> install.nsi
+	echo "  File \"Server/dataworks_server.exe\"" >> install.nsi
+	echo "  File \"RemoteClient/dataworks_remote_client.exe\"" >> install.nsi
+	echo "  CreateDirectory \"\$$SMPROGRAMS\\DataWorks\"" >> install.nsi
+	echo "  SetOutPath \"\$$INSTDIR\"" >> install.nsi
+	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Client.lnk\" \"\$$INSTDIR\\dataworks.exe\" \"\"" >> install.nsi
+	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Remote Client.lnk\" \"\$$INSTDIR\\dataworks_remote_client.exe\" \"\"" >> install.nsi
+	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Server.lnk\" \"\$$INSTDIR\\dataworks_server.exe\" \"\"" >> install.nsi
+	echo "  WriteUninstaller \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"Dataworks\""
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"UninstallString\" \"\$$INSTDIR\\Uninstall.exe\""
+	echo "SectionEnd" >> install.nsi
+	echo "Section Uninsatll" >> install.nsi
+	echo "  SetAutoClose false" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\dataworks.exe\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\dataworks_server.exe\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\dataworks_remote_client.exe\"" >> install.nsi
+	echo "  RMDir \"\$$INSTDIR\"" >> install.nsi
+	echo "SectionEnd" >> install.nsi
+	makensis install.nsi
+	rm install.nsi dataworks.bmp
