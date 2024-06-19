@@ -107,7 +107,15 @@ bool __dw_print_node(struct Node* node, bool top) {
 		fflush(stdout);
 		return true;
 	} else if(node->string != NULL) {
-		printf("\"%s\"", node->string);
+		printf("\"");
+		fflush(stdout);
+		int i;
+		for(i = 0; node->string[i] != 0; i++){
+			if(node->string[i] == '"') printf("\\");
+			printf("%c", node->string[i]);
+			fflush(stdout);
+		}
+		printf("\"");
 		fflush(stdout);
 		return true;
 	} else if(node->ident != NULL) {

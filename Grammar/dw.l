@@ -36,25 +36,59 @@
 extern YYSTYPE yylval;
 
 double __dw_atof(const char* str);
+char* __dw_strcat(const char* a, const char* b);
+char* str = NULL;
 %}
 
-%%
+%x DQ SQ
 
-["][^"]*["]			{
-	yylval.node.string = strdup(yytext + 1);
-	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
+%%
+\"				{
+	str = malloc(1);
+	str[0] = 0;
+	BEGIN(DQ);
+}
+<DQ>[^"]			{
+	char* tmp = str;
+	str = __dw_strcat(tmp, yytext);
+	free(tmp);
+}
+<DQ>\\\"			{
+	char* tmp = str;
+	str = __dw_strcat(tmp, yytext + 1);
+	free(tmp);
+}
+<DQ>\"				{
+	yylval.node.string = strdup(str);
 	yylval.node.nodes = NULL;
 	yylval.node.ident = NULL;
-	yylval.node.number = 123123;
 	yylval.node.type = 'S';
+	BEGIN(INITIAL);
+	free(str);
 	return (STRING);
 }
-['][^']*[']			{
-	yylval.node.string = strdup(yytext + 1);
-	yylval.node.string[strlen(yylval.node.string) - 1] = 0;
+\'				{
+	str = malloc(1);
+	str[0] = 0;
+	BEGIN(SQ);
+}
+<SQ>[^']			{
+	char* tmp = str;
+	str = __dw_strcat(tmp, yytext);
+	free(tmp);
+}
+<SQ>\\\'			{
+	char* tmp = str;
+	str = __dw_strcat(tmp, yytext + 1);
+	free(tmp);
+}
+<SQ>\'				{
+	yylval.node.string = strdup(str);
 	yylval.node.nodes = NULL;
 	yylval.node.ident = NULL;
 	yylval.node.type = 'S';
+	BEGIN(INITIAL);
+	free(str);
 	return (STRING);
 }
 [ \t]*#.*			{ return (COMMENT); }
