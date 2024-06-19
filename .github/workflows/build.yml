@@ -56,7 +56,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install packages
-      run: sudo apt-get install zip byacc flex doxygen graphviz
+      run: sudo apt-get install zip byacc flex doxygen graphviz lhasa
     - name: Get VBCC
       run: git clone https://github.com/kusma/vbcc
     - name: Get VASM
@@ -64,7 +64,9 @@ jobs:
     - name: Get VLINK
       run: git clone https://github.com/kusma/vlink
     - name: Get targets and stuff
-      run: git clone https://github.com/kusma/amiga-dev
+      run: wget http://phoenix.owl.de/vbcc/2022-03-23/vbcc_target_m68k-kick13.lha
+    - name: Extract
+      run: lha x vbcc_target_m68k-kick13.lha
     - name: Make directories for VBCC/VASM/VLINK
       run: sudo mkdir -p /usr/vtool/bin && sudo mkdir -p /usr/vtool/config && sudo mkdir -p /usr/vtool/targets
     - name: Build VBCC
@@ -77,7 +79,7 @@ jobs:
       run: make -j3
       working-directory: ./vlink
     - name: Copy files
-      run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp -rf amiga-dev/targets/m68k-amigaos /usr/vtool/targets/ && sudo cp vc.config /usr/vtool/config/kick13
+      run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp -rf vbcc_target_m68k-kick13/targets/* /usr/vtool/targets/ && sudo cp vbcc_target_m68k-kick13/config/* /usr/vtool/config/
     - name: Add PATH
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
