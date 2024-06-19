@@ -85,7 +85,7 @@ jobs:
     - name: Change permissions
       run: sudo chmod -R 777 /usr/vtool
     - name: Change owner
-      run: sudo chmod -R root: /usr/vtool
+      run: sudo chmod -R root /usr/vtool
     - name: Add PATH
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
