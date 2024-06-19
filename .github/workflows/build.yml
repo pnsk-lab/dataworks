@@ -64,7 +64,7 @@ jobs:
     - name: Get VLINK
       run: git clone https://github.com/kusma/vlink
     - name: Get targets and stuff
-      run: wget http://phoenix.owl.de/vbcc/2022-03-223vbcc_target_m68k-kick13.lha
+      run: wget http://phoenix.owl.de/vbcc/2022-03-23/vbcc_target_m68k-kick13.lha
     - name: Extract
       run: lha x vbcc_target_m68k-kick13.lha && tar xvf vbcc0_9hP2.tar.gz
     - name: Make directories for VBCC/VASM/VLINK
