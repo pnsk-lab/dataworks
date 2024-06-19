@@ -88,7 +88,9 @@ jobs:
     - name: Make sure it is clean
       run: make clean PLATFORM=win64
     - name: Make for Windows 64-bit
-      run: make YACC=byacc PLATFORM=win64 -j3 archive insall.exe
+      run: make YACC=byacc PLATFORM=win64 -j3 archive
+    - name: Make installer
+      run: make YACC=byacc PLATFORM=win32 install.exe
     - name: Rename to -win64
       run: mv dataworks.zip dataworks-win64.zip && mv dataworks.tar.gz dataworks-win64.tar.gz && mv Client/dataworks.exe dataworks-win64.exe && mv Server/dataworks_server.exe dataworks-server-win64.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win64.exe && mv install.exe install-win64.exe
     - name: Create artifact
@@ -116,7 +118,9 @@ jobs:
     - name: Make sure it is clean
       run: make clean PLATFORM=win32
     - name: Make for Windows 32-bit
-      run: make YACC=byacc PLATFORM=win32 -j3 archive install.exe
+      run: make YACC=byacc PLATFORM=win32 -j3 archive
+    - name: Make installer
+      run: make YACC=byacc PLATFORM=win32 install.exe
     - name: Rename to -win32
       run: mv dataworks.zip dataworks-win32.zip && mv dataworks.tar.gz dataworks-win32.tar.gz && mv Client/dataworks.exe dataworks-win32.exe && mv Server/dataworks_server.exe dataworks-server-win32.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win32.exe && mv install.exe install-win32.exe
     - name: Create artifact
