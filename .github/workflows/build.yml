@@ -80,6 +80,8 @@ jobs:
       working-directory: ./vlink
     - name: Copy files
       run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp -rf vbcc_target_m68k-kick13/targets/* /usr/vtool/targets/ && sudo cp vbcc_target_m68k-kick13/config/* /usr/vtool/config/
+    - name: Change permissions
+      run: sudo chmod -R 755 /usr/vtool
     - name: Add PATH
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
@@ -87,7 +89,7 @@ jobs:
     - name: Make sure it is clean
       run: make clean PLATFORM=amigaos
     - name: Make for Amiga
-      run: VBCC=/usr/vtool make YACC=byacc -j3 PLATFORM=amigaos archive
+      run: make YACC=byacc -j3 PLATFORM=amigaos archive
 
   build-linux64:
 
