@@ -70,7 +70,7 @@ jobs:
     - name: Make directories for VBCC/VASM/VLINK
       run: sudo mkdir -p /usr/vtool/bin && sudo mkdir -p /usr/vtool/config && sudo mkdir -p /usr/vtool/targets
     - name: Extract
-      run: lha x vbcc_target_m68k-kick13.lha && tar xvf vbcc0_9hP2.tar.gz && tar xvf vbcc_unix_config.tar.gz -C /usr/vtool
+      run: lha x vbcc_target_m68k-kick13.lha && tar xvf vbcc0_9hP2.tar.gz && sudo tar xvf vbcc_unix_config.tar.gz -C /usr/vtool
     - name: Build VBCC
       run: yes "" | make TARGET=m68k
       working-directory: ./vbcc
