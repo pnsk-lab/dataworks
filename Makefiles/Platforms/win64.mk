@@ -16,3 +16,4 @@ LDFLAGS += -Wl,--out-implib,./dataworks.lib
 LINK_LIB += dataworks.res
 SERVLINK_LIB += -lws2_32
 RCLILINK_LIB += -lws2_32
+TO = PROGRAMFILES64
