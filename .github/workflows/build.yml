@@ -58,15 +58,15 @@ jobs:
     - name: Install packages
       run: sudo apt-get install zip byacc flex doxygen graphviz lhasa
     - name: Get VBCC
-      run: git clone https://github.com/kusma/vbcc
+      run: wget http://phoenix.owl.de/tags/vbcc0_9hP2.tar.gz
     - name: Get VASM
       run: git clone https://github.com/kusma/vasm
     - name: Get VLINK
       run: git clone https://github.com/kusma/vlink
     - name: Get targets and stuff
-      run: wget http://phoenix.owl.de/vbcc/2022-03-23/vbcc_target_m68k-kick13.lha
+      run: wget http://phoenix.owl.de/vbcc/2022-03-223vbcc_target_m68k-kick13.lha
     - name: Extract
-      run: lha x vbcc_target_m68k-kick13.lha
+      run: lha x vbcc_target_m68k-kick13.lha && tar xvf vbcc0_9hP2.tar.gz
     - name: Make directories for VBCC/VASM/VLINK
       run: sudo mkdir -p /usr/vtool/bin && sudo mkdir -p /usr/vtool/config && sudo mkdir -p /usr/vtool/targets
     - name: Build VBCC
