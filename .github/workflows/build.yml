@@ -81,9 +81,11 @@ jobs:
       run: make -j3
       working-directory: ./vlink
     - name: Copy files
-      run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp -rf vbcc_target_m68k-kick13/targets/m68k-kick13 /usr/vtool/targets/m68k-kick13 && sudo cp vbcc_target_m68k-kick13/config/* /usr/vtool/config/
+      run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp -rf vbcc_target_m68k-kick13/targets/* /usr/vtool/targets/ && sudo cp vbcc_target_m68k-kick13/config/* /usr/vtool/config/
     - name: Change permissions
       run: sudo chmod -R 755 /usr/vtool
+    - name: debug
+      run: ls -la /usr/vtool/targets
     - name: Add PATH
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
