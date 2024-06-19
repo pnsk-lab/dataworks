@@ -65,10 +65,12 @@ jobs:
       run: git clone https://github.com/kusma/vlink
     - name: Get targets and stuff
       run: wget http://phoenix.owl.de/vbcc/2022-03-23/vbcc_target_m68k-kick13.lha
-    - name: Extract
-      run: lha x vbcc_target_m68k-kick13.lha && tar xvf vbcc0_9hP2.tar.gz
+    - name: Get configs
+      run: wget http://phoenix.owl.de/vbcc/2022-03-23/vbcc_unix_config.tar.gz
     - name: Make directories for VBCC/VASM/VLINK
       run: sudo mkdir -p /usr/vtool/bin && sudo mkdir -p /usr/vtool/config && sudo mkdir -p /usr/vtool/targets
+    - name: Extract
+      run: lha x vbcc_target_m68k-kick13.lha && tar xvf vbcc0_9hP2.tar.gz && tar xvf vbcc_unix_config.tar.gz -C /usr/vtool
     - name: Build VBCC
       run: yes "" | make TARGET=m68k
       working-directory: ./vbcc
@@ -82,8 +84,6 @@ jobs:
       run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp -rf vbcc_target_m68k-kick13/targets/* /usr/vtool/targets/ && sudo cp vbcc_target_m68k-kick13/config/* /usr/vtool/config/
     - name: Change permissions
       run: sudo chmod -R 755 /usr/vtool
-    - name: debug
-      run: ls /usr/vtool/targets/m68k-kick13
     - name: Add PATH
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
