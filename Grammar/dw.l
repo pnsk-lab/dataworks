@@ -53,7 +53,7 @@ char* str = NULL;
 	str = __dw_strcat(tmp, yytext);
 	free(tmp);
 }
-<DQ>\\\"			{
+<DQ>\\.				{
 	char* tmp = str;
 	str = __dw_strcat(tmp, yytext + 1);
 	free(tmp);
@@ -77,7 +77,7 @@ char* str = NULL;
 	str = __dw_strcat(tmp, yytext);
 	free(tmp);
 }
-<SQ>\\\'			{
+<SQ>\\.				{
 	char* tmp = str;
 	str = __dw_strcat(tmp, yytext + 1);
 	free(tmp);
