@@ -110,9 +110,13 @@ bool __dw_print_node(struct Node* node, bool top) {
 		printf("\"");
 		fflush(stdout);
 		int i;
-		for(i = 0; node->string[i] != 0; i++){
-			if(node->string[i] == '"') printf("\\");
-			printf("%c", node->string[i]);
+		for(i = 0; node->string[i] != 0; i++) {
+			if(node->string[i] >= 0 && node->string[i] <= 0x1f) {
+				printf("\\x%02x", node->string[i]);
+			} else {
+				if(node->string[i] == '"') printf("\\");
+				printf("%c", node->string[i]);
+			}
 			fflush(stdout);
 		}
 		printf("\"");
