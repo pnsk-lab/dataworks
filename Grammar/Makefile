@@ -6,7 +6,7 @@
 all: dw.tab.o dw.yy.o
 
 .c.o:
-	$(CC) $(CFLAGS) -fPIC -c -o $@ $<
+	$(CC) $(CFLAGS) $(PIC) -c -o $@ $<
 
 dw.tab.c: dw.y
 	$(YACC) $(YFLAGS) -o $@ dw.y

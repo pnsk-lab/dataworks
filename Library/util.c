@@ -38,7 +38,9 @@
 #ifdef __MINGW32__
 #include <fileapi.h>
 #else
+#ifndef NO_UNISTD
 #include <unistd.h>
+#endif
 #endif
 
 char* __dw_strdup(const char* a) {
@@ -73,6 +75,8 @@ bool __dw_lockfile(struct dataworks_db* db) {
 	fseek(db->fp, 0, SEEK_SET);
 #if defined(__WATCOMC__)
 
+#elif defined(__VBCC__)
+
 #elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};
 	LockFileEx(db->fp, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlap);
@@ -92,6 +96,8 @@ bool __dw_unlockfile(struct dataworks_db* db) {
 	fseek(db->fp, 0, SEEK_SET);
 	fflush(db->fp);
 #if defined(__WATCOMC__)
+
+#elif defined(__VBCC__)
 
 #elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};

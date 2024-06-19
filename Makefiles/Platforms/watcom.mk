@@ -1,5 +1,7 @@
 # $Id$
 
+# THIS IS A TEMPLATE
+
 CC = owcc
 SHCC = true
 AR = wlib

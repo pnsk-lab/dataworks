@@ -37,6 +37,21 @@ extern YYSTYPE yylval;
 
 double __dw_atof(const char* str);
 char* __dw_strcat(const char* a, const char* b);
+char* __dw_strdup(const char* a);
+
+#ifdef NO_STRDUP
+#define strdup __dw_strdup
+#endif
+
+#ifdef __VBCC__
+int isatty(int fd){
+	return 0;
+}
+int fileno(FILE* fp){
+	return 0;
+}
+#endif
+
 char* str = NULL;
 
 void proc_esc(void){
