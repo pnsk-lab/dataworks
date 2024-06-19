@@ -43,6 +43,50 @@ jobs:
     - name: Deploy
       uses: actions/deploy-pages@v4
 
+  build-amiga:
+
+    name: "Build for Amiga"
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install packages
+      run: sudo apt-get install zip byacc flex doxygen graphviz lhasa
+    - name: Get VBCC
+      run: git clone https://github.com/kusma/vbcc
+    - name: Get VASM
+      run: git clone https://github.com/kusma/vasm
+    - name: Get VLINK
+      run: git clone https://github.com/kusma/vlink
+    - name: Get targets and stuff
+      run: git clone https://github.com/kusma/amiga-dev
+    - name: Make directories for VBCC/VASM/VLINK
+      run: sudo mkdir -p /usr/vtool/bin && sudo mkdir -p /usr/vtool/config && sudo mkdir -p /usr/vtool/targets
+    - name: Build VBCC
+      run: yes "" | make TARGET=m68k
+      working-directory: ./vbcc
+    - name: Build VASM
+      run: make CPU=m68k SYNTAX=mot -j3
+      working-directory: ./vasm
+    - name: Build VLINK
+      run: make -j3
+      working-directory: ./vlink
+    - name: Copy files
+      run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp amiga-dev/targets/m68k-amigaos /usr/vtool/targets/ && sudo cp vc.config /usr/vtool/config/kick13
+    - name: Add PATH
+      run: echo "/usr/vtool/bin" >> $GITHUB_PATH
+    - name: Add VBCC env
+      run: echo "VBCC=/usr/vtool" >> $GITHUB_ENV
+    - name: Make sure it is clean
+      run: make clean
+    - name: Make for Amiga
+      run: make YACC=byacc -j3 PLATFORM=amigaos archive
+
   build-linux64:
 
     name: "Build for Linux 64-bit"
@@ -364,7 +408,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-dos, build-dos4g, build-win32, build-win64, build-linux64, build-mac, build-os2, build-debpkg, build-dosimg, test]
+    needs: [build-dos, build-dos4g, build-amiga, build-win32, build-win64, build-linux64, build-mac, build-os2, build-debpkg, build-dosimg, test]
 
     steps:
     - name: Checkout
