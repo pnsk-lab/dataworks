@@ -38,6 +38,37 @@ extern YYSTYPE yylval;
 double __dw_atof(const char* str);
 char* __dw_strcat(const char* a, const char* b);
 char* str = NULL;
+
+void proc_esc(void){
+	if(yytext[1] == 'x'){
+		char cbuf[2];
+		int ch = 0;
+		if(yytext[2] >= '0' && yytext[2] <= '9'){
+			ch |= yytext[2] - '0';
+		}else if(yytext[2] >= 'a' && yytext[2] <= 'f'){
+			ch |= yytext[2] - 'a' + 10;
+		}else if(yytext[2] >= 'A' && yytext[2] <= 'F'){
+			ch |= yytext[2] - 'A' + 10;
+		}
+		ch = ch << 4;
+		if(yytext[3] >= '0' && yytext[3] <= '9'){
+			ch |= yytext[3] - '0';
+		}else if(yytext[3] >= 'a' && yytext[3] <= 'f'){
+			ch |= yytext[3] - 'a' + 10;
+		}else if(yytext[3] >= 'A' && yytext[3] <= 'F'){
+			ch |= yytext[3] - 'A' + 10;
+		}
+		cbuf[0] = ch;
+		cbuf[1] = 0;
+		char* tmp = str;
+		str = __dw_strcat(tmp, cbuf);
+		free(tmp);
+	}else{
+		char* tmp = str;
+		str = __dw_strcat(tmp, yytext + 1);
+		free(tmp);
+	}
+}
 %}
 
 %x DQ SQ
@@ -53,10 +84,8 @@ char* str = NULL;
 	str = __dw_strcat(tmp, yytext);
 	free(tmp);
 }
-<DQ>\\.				{
-	char* tmp = str;
-	str = __dw_strcat(tmp, yytext + 1);
-	free(tmp);
+<DQ>\\(x[0-9a-fA-F]{2}|.)	{
+	proc_esc();
 }
 <DQ>\"				{
 	yylval.node.string = strdup(str);
@@ -77,10 +106,8 @@ char* str = NULL;
 	str = __dw_strcat(tmp, yytext);
 	free(tmp);
 }
-<SQ>\\.				{
-	char* tmp = str;
-	str = __dw_strcat(tmp, yytext + 1);
-	free(tmp);
+<SQ>\\(x[0-9a-fA-F]{2}|.)	{
+	proc_esc();
 }
 <SQ>\'				{
 	yylval.node.string = strdup(str);
