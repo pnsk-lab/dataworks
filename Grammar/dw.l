@@ -50,6 +50,8 @@ int isatty(int fd){
 int fileno(FILE* fp){
 	return 0;
 }
+#else
+#include <unistd.h>
 #endif
 
 char* str = NULL;
