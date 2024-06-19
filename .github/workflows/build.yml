@@ -84,8 +84,10 @@ jobs:
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
       run: echo "VBCC=/usr/vtool" >> $GITHUB_ENV
+    - name: show me env
+      run: env
     - name: Make sure it is clean
-      run: make clean
+      run: make clean PLATFORM=amigaos
     - name: Make for Amiga
       run: make YACC=byacc -j3 PLATFORM=amigaos archive
 
