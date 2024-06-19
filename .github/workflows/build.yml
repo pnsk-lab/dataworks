@@ -85,7 +85,7 @@ jobs:
     - name: Change permissions
       run: sudo chmod -R 755 /usr/vtool
     - name: debug
-      run: ls -la /usr/vtool/targets
+      run: ls -la /usr/vtool/targets/m68k-kick13
     - name: Add PATH
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
