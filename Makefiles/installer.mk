@@ -84,7 +84,7 @@ dos-installer:
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"Dataworks\""
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"UninstallString\" \"\$$INSTDIR\\Uninstall.exe\""
 	echo "SectionEnd" >> install.nsi
-	echo "Section Uninsatll" >> install.nsi
+	echo "Section Uninstall" >> install.nsi
 	echo "  SetAutoClose false" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\dataworks.exe\"" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\dataworks_server.exe\"" >> install.nsi
