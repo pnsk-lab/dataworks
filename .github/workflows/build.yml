@@ -93,9 +93,9 @@ jobs:
     - name: Make for Amiga
       run: make YACC=byacc -j3 PLATFORM=amigaos archive
     - name: Rename to -amiga
-      run: mv dataworks.zip dataworks-amiga.zip && mv dataworks.tar.gz dataworks-amiga.tar.gz && mv Client/dataworks dataworks-amiga && mv Server/dataworks_server dataworks-server-amiga && mv RemoteClient/dataworks_remote_client dataworks-remote-client-amiga
+      run: mv dataworks.zip dataworks-amiga.zip && mv dataworks.tar.gz dataworks-amiga.tar.gz && mv Client/dataworks dataworks-amiga
     - name: Create artifact
-      run: zip -rv build-amiga.zip dataworks-amiga.tar.gz dataworks-amiga.zip dataworks-server-amiga dataworks-amiga dataworks-remote-client-amiga
+      run: zip -rv build-amiga.zip dataworks-amiga.tar.gz dataworks-amiga.zip dataworks-amiga
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
