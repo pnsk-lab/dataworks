@@ -149,11 +149,13 @@ jobs:
     - name: Make for Windows 64-bit
       run: make YACC=byacc PLATFORM=win64 -j3 archive
     - name: Make installer
-      run: make YACC=byacc PLATFORM=win32 install.exe
+      run: make YACC=byacc PLATFORM=win32 install.exe && mv install.exe install-win64.exe
+    - name: Make Japanese installer
+      run: make YACC=byacc PLATFORM=win32 INSTALLER_LANGUAGE=Japanese install.exe && mv install.exe install-win64jp.exe
     - name: Rename to -win64
-      run: mv dataworks.zip dataworks-win64.zip && mv dataworks.tar.gz dataworks-win64.tar.gz && mv Client/dataworks.exe dataworks-win64.exe && mv Server/dataworks_server.exe dataworks-server-win64.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win64.exe && mv install.exe install-win64.exe
+      run: mv dataworks.zip dataworks-win64.zip && mv dataworks.tar.gz dataworks-win64.tar.gz && mv Client/dataworks.exe dataworks-win64.exe && mv Server/dataworks_server.exe dataworks-server-win64.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win64.exe
     - name: Create artifact
-      run: zip -rv build-win64.zip dataworks-win64.tar.gz dataworks-win64.zip dataworks-server-win64.exe dataworks-win64.exe dataworks-remote-client-win64.exe install-win64.exe
+      run: zip -rv build-win64.zip dataworks-win64.tar.gz dataworks-win64.zip dataworks-server-win64.exe dataworks-win64.exe dataworks-remote-client-win64.exe install-win64.exe install-win64jp.exe
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -179,11 +181,13 @@ jobs:
     - name: Make for Windows 32-bit
       run: make YACC=byacc PLATFORM=win32 -j3 archive
     - name: Make installer
-      run: make YACC=byacc PLATFORM=win32 install.exe
+      run: make YACC=byacc PLATFORM=win32 install.exe && mv install.exe install-win32.exe
+    - name: Make Japanese installer
+      run: make YACC=byacc PLATFORM=win32 INSTALLER_LANGUAGE=Japanese install.exe && mv install.exe install-win32jp.exe
     - name: Rename to -win32
-      run: mv dataworks.zip dataworks-win32.zip && mv dataworks.tar.gz dataworks-win32.tar.gz && mv Client/dataworks.exe dataworks-win32.exe && mv Server/dataworks_server.exe dataworks-server-win32.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win32.exe && mv install.exe install-win32.exe
+      run: mv dataworks.zip dataworks-win32.zip && mv dataworks.tar.gz dataworks-win32.tar.gz && mv Client/dataworks.exe dataworks-win32.exe && mv Server/dataworks_server.exe dataworks-server-win32.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win32.exe
     - name: Create artifact
-      run: zip -rv build-win32.zip dataworks-win32.tar.gz dataworks-win32.zip dataworks-server-win32.exe dataworks-win32.exe dataworks-remote-client-win32.exe install-win32.exe
+      run: zip -rv build-win32.zip dataworks-win32.tar.gz dataworks-win32.zip dataworks-server-win32.exe dataworks-win32.exe dataworks-remote-client-win32.exe install-win32.exe install-win32jp.exe
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -495,6 +499,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Release
-      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-amiga.{tar.gz,zip} dataworks-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64,amiga} dataworks-server-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} dataworks-remote-client-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe -n "Version \`$(make get-version)\` was built in this release"
+      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-amiga.{tar.gz,zip} dataworks-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64,amiga} dataworks-server-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} dataworks-remote-client-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe install-win{32,64}jp.exe -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -54,6 +54,7 @@ dos-installer:
 	echo "!define MUI_HEADERIMAGE" >> install.nsi
 	echo "!define MUI_HEADERIMAGE_BITMAP \"dataworks.bmp\"" >> install.nsi
 	echo "!define MUI_HEADERIMAGE_RIGHT" >> install.nsi
+	echo "!define MUI_WELCOMEFINISHPAGE_BITMAP Binary/nsis.bmp" >> install.nsi
 	echo "!include nsDialogs.nsh" >> install.nsi
 	echo "!include LogicLib.nsh" >> install.nsi
 	echo "!include x64.nsh" >> install.nsi
@@ -73,7 +74,7 @@ dos-installer:
 	echo "!insertmacro MUI_UNPAGE_CONFIRM" >> install.nsi
 	echo "!insertmacro MUI_UNPAGE_INSTFILES" >> install.nsi
 	echo "!insertmacro MUI_UNPAGE_FINISH" >> install.nsi
-	echo "!insertmacro MUI_LANGUAGE \"English\"" >> install.nsi
+	echo "!insertmacro MUI_LANGUAGE \"$(INSTALLER_LANGUAGE)\"" >> install.nsi
 	echo "Function .onInit" >> install.nsi
 	echo "  UserInfo::GetAccountType" >> install.nsi
 	echo "  pop \$$0" >> install.nsi

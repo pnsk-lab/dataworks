@@ -15,6 +15,7 @@ YFLAGS = -d -t -y
 LFLAGS = --nounistd
 LIBS =
 PIC = -fPIC
+INSTALLER_LANGUAGE = English
 LIB_PREFIX = lib
 LIB_SUFFIX = .so
 STATICLIB_PREFIX = lib
