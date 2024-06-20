@@ -84,8 +84,6 @@ jobs:
       run: sudo cp vbcc/bin/* /usr/vtool/bin/ && sudo cp vasm/vobjdump /usr/vtool/bin/ && sudo cp vasm/vasmm68k_mot /usr/vtool/bin/ && sudo cp vlink/vlink /usr/vtool/bin/ && sudo cp -rf vbcc_target_m68k-kick13/targets/m68k-kick13 /usr/vtool/targets/
     - name: Change permissions
       run: sudo chmod -R 777 /usr/vtool
-    - name: Change owner
-      run: sudo chmod -R root /usr/vtool
     - name: Add PATH
       run: echo "/usr/vtool/bin" >> $GITHUB_PATH
     - name: Add VBCC env
