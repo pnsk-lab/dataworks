@@ -39,6 +39,7 @@
 #include <winsock2.h>
 #include <ws2def.h>
 #include <ws2tcpip.h>
+#include <wspiapi.h>
 #else
 #include <arpa/inet.h>
 #include <netdb.h>

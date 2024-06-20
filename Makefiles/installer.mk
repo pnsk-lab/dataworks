@@ -142,6 +142,7 @@ dos-installer:
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayIcon\" \"\$$INSTDIR\\dataworks.exe\"" >> install.nsi
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"DataWorks\"" >> install.nsi
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"UninstallString\" \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
+	echo "    CreateShortcut \"\$$SMPROGRAMS\\\DataWorks\\\Uninstall.lnk\" \"\$$INSTDIR\\\Uninstall.exe\" \"\"" >> install.nsi
 	echo "SectionEnd" >> install.nsi
 	echo "Section Uninstall" >> install.nsi
 	echo "  SetAutoClose false" >> install.nsi
@@ -156,6 +157,11 @@ dos-installer:
 	echo "  RMDir \"\$$INSTDIR\\\include\"" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\\Uninstall.exe\"" >> install.nsi
 	echo "  RMDir \"\$$INSTDIR\"" >> install.nsi
+	echo "  Delete \"\$$SMPROGRAMS\\\DataWorks\\\DataWorks Client.lnk\"" >> install.nsi
+	echo "  Delete \"\$$SMPROGRAMS\\\DataWorks\\\DataWorks Server.lnk\"" >> install.nsi
+	echo "  Delete \"\$$SMPROGRAMS\\\DataWorks\\\DataWorks Remote Client.lnk\"" >> install.nsi
+	echo "  Delete \"\$$SMPROGRAMS\\\DataWorks\\\Uninstall.lnk\"" >> install.nsi
+	echo "  RMDir \"\$$SMPROGRAMS\\\DataWorks\"" >> install.nsi
 	echo "  DeleteRegKey HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\"" >> install.nsi
 	echo "SectionEnd" >> install.nsi
 	echo "!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN" >> install.nsi
