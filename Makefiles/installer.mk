@@ -100,9 +100,9 @@ dos-installer:
 	echo "  \$${Else}" >> install.nsi
 	echo "    SetRegView 32" >> install.nsi
 	echo "  \$${EndIf}" >> install.nsi
-	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayIcon\" \"\$$INSTDIR\\dataworks.exew\""
-	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"Dataworks\""
-	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"UninstallString\" \'\"\$$INSTDIR\\Uninstall.exe\"\'"
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayIcon\" \"\$$INSTDIR\\dataworks.exew\"" >> install.nsi
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"Dataworks\"" >> install.nsi
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"UninstallString\" \'\"\$$INSTDIR\\Uninstall.exe\"\'" >> install.nsi
 	echo "SectionEnd" >> install.nsi
 	echo "Section Uninstall" >> install.nsi
 	echo "  SetAutoClose false" >> install.nsi
