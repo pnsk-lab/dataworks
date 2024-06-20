@@ -59,10 +59,13 @@ dos-installer:
 	echo "!include x64.nsh" >> install.nsi
 	echo "Name \"DataWorks\"" >> install.nsi
 	echo "OutFile \"$@\"" >> install.nsi
+	echo "RequestExecutionLevel admin" >> install.nsi
 	echo "SetCompressor lzma" >> install.nsi
 	echo "InstallDir \"\$$$(TO)\\DataWorks\"" >> install.nsi
 	echo "XPStyle on" >> install.nsi
+	echo "!define MUI_LICENSEPAGE_RADIOBUTTONS" >> install.nsi
 	echo "!insertmacro MUI_PAGE_WELCOME" >> install.nsi
+	echo "!insertmacro MUI_PAGE_LICENSE LICENSE" >> install.nsi
 	echo "!insertmacro MUI_PAGE_DIRECTORY" >> install.nsi
 	echo "!insertmacro MUI_PAGE_INSTFILES" >> install.nsi
 	echo "!insertmacro MUI_PAGE_FINISH" >> install.nsi
@@ -71,6 +74,15 @@ dos-installer:
 	echo "!insertmacro MUI_UNPAGE_INSTFILES" >> install.nsi
 	echo "!insertmacro MUI_UNPAGE_FINISH" >> install.nsi
 	echo "!insertmacro MUI_LANGUAGE \"English\"" >> install.nsi
+	echo "Function .onInit" >> install.nsi
+	echo "  UserInfo::GetAccountType" >> install.nsi
+	echo "  pop \$$0" >> install.nsi
+	echo "  \$${If} \$$0 != \"admin\"" >> install.nsi
+	echo "    MessageBox mb_iconstop \"Administrator rights required!\"" >> install.nsi
+	echo "    SetErrorLevel 740" >> install.nsi
+	echo "    Quit" >> install.nsi
+	echo "  \$${EndIf}" >> install.nsi
+	echo "FunctionEnd" >> install.nsi
 	echo "Section" >> install.nsi
 	echo "  SetOutPath \"\$$INSTDIR\"" >> install.nsi
 	echo "  File \"Client/dataworks.exe\"" >> install.nsi
@@ -98,6 +110,7 @@ dos-installer:
 	echo "  Delete \"\$$INSTDIR\\dataworks_remote_client.exe\"" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
 	echo "  RMDir \"\$$INSTDIR\"" >> install.nsi
+	echo "  DeleteRegKey HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\"" >> install.nsi
 	echo "SectionEnd" >> install.nsi
 	makensis install.nsi
 	rm install.nsi dataworks.bmp
