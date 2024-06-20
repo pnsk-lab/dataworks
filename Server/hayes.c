@@ -251,6 +251,9 @@ int server_init(void) {
 				i++;
 				authfile = argv[i];
 				auth = true;
+			} else if(option(argv[i], "d", "db")) {
+				i++;
+				db = dataworks_database_open(argv[i]);
 			} else if(option(argv[i], "s", "signal")) {
 				usr1sig = true;
 			} else if(option(argv[i], "h", "help")) {
@@ -262,6 +265,7 @@ int server_init(void) {
 				printf("\t-f --fancy            Enable the fancy manager ;)\n");
 				printf("\t-l --login [path]     Specify the authentication file\n");
 				printf("\t-s --signal           Send SIGUSR1 when ready\n");
+				printf("\t-d --db [path]        Force [path] as the database file\n");
 				exit(0);
 			} else if(option(argv[i], "f", "fancy")) {
 				fancy = true;

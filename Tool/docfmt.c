@@ -91,7 +91,7 @@ int process_doc(void) {
 				} else if(strcmp(cmd, "\\list") == 0) {
 				} else if(strcmp(cmd, "\\list+") == 0) {
 					cincr++;
-					if(cincr >= MAX){
+					if(cincr >= MAX) {
 						free(str);
 						free(full);
 						fprintf(stderr, "List index stack overflow. Aborted\n");
@@ -99,7 +99,7 @@ int process_doc(void) {
 					}
 				} else if(strcmp(cmd, "\\list-") == 0) {
 					cincr--;
-					if(cincr < 0){
+					if(cincr < 0) {
 						free(str);
 						free(full);
 						fprintf(stderr, "List index stack underflow. Aborted\n");

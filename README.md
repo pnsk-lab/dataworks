@@ -28,6 +28,8 @@ DataWorks is a simple DBMS written in C.
 	Works on amd64 10.0, and macppc 9.3.
 5. Linux
 6. MacOSX
+7. Amiga Workbench/AmigaOS
+8. OS/2
 
 ## Server support
 1. DOS with modem
