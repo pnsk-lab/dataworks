@@ -64,7 +64,7 @@ dos-installer:
 	echo "InstallDir \"\$$$(TO)\\DataWorks\"" >> install.nsi
 	echo "XPStyle on" >> install.nsi
 	echo "!define MUI_LICENSEPAGE_RADIOBUTTONS" >> install.nsi
-	echo "!insertmacro MUI_RESERVEFILE_LANGDLL" >> instal.nsi
+	echo "!insertmacro MUI_RESERVEFILE_LANGDLL" >> install.nsi
 	echo "!insertmacro MUI_PAGE_WELCOME" >> install.nsi
 	echo "!insertmacro MUI_PAGE_LICENSE LICENSE" >> install.nsi
 	echo "!insertmacro MUI_PAGE_DIRECTORY" >> install.nsi
@@ -167,6 +167,5 @@ dos-installer:
 	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${DLL_SET} \"\$$(DLL_SET_DESC)\"" >> install.nsi
 	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${HEADERS_SET} \"\$$(HEADERS_SET_DESC)\"" >> install.nsi
 	echo "!insertmacro MUI_FUNCTION_DESCRIPTION_END" >> install.nsi
-	cat install.nsi
 	makensis install.nsi
 	rm install.nsi dataworks.bmp
