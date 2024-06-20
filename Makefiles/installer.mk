@@ -56,6 +56,7 @@ dos-installer:
 	echo "!define MUI_HEADERIMAGE_RIGHT" >> install.nsi
 	echo "!include nsDialogs.nsh" >> install.nsi
 	echo "!include LogicLib.nsh" >> install.nsi
+	echo "!include x64.nsh" >> install.nsi
 	echo "Name \"DataWorks\"" >> install.nsi
 	echo "OutFile \"$@\"" >> install.nsi
 	echo "SetCompressor lzma" >> install.nsi
@@ -81,6 +82,12 @@ dos-installer:
 	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Remote Client.lnk\" \"\$$INSTDIR\\dataworks_remote_client.exe\" \"\"" >> install.nsi
 	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Server.lnk\" \"\$$INSTDIR\\dataworks_server.exe\" \"\"" >> install.nsi
 	echo "  WriteUninstaller \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
+	echo "  \$${If} \$${RunningX64}" >> install.nsi
+	echo "    SetRegView 64" >> install.nsi
+	echo "  \$${Else}" >> install.nsi
+	echo "    SetRegView 32" >> install.nsi
+	echo "  \$${EndIf}" >> install.nsi
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayIcon\" \"\$$INSTDIR\\dataworks.exew\""
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"Dataworks\""
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"UninstallString\" \"\$$INSTDIR\\Uninstall.exe\""
 	echo "SectionEnd" >> install.nsi
@@ -89,6 +96,7 @@ dos-installer:
 	echo "  Delete \"\$$INSTDIR\\dataworks.exe\"" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\dataworks_server.exe\"" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\dataworks_remote_client.exe\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
 	echo "  RMDir \"\$$INSTDIR\"" >> install.nsi
 	echo "SectionEnd" >> install.nsi
 	makensis install.nsi
