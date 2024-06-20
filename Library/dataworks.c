@@ -55,16 +55,20 @@ const char* dataworks_platform = "WatcomC/"
 #elif defined(__APPLE__)
 const char* dataworks_platform = "MacOSX/"
 #elif defined(__VBCC__)
-const char* dataworks_platform = "VBCC/"
 #else
 #undef SUPPORTED
 const char* dataworks_platform = "Unknown/"
 #endif
 #ifdef __VBCC__
 #ifdef AMIGA
-				 "amiga (amiga)";
+const char* dataworks_platform = "Amiga/"
 #else
-				 "unknown (unknown)";
+const char* dataworks_platform = "VBCC/"
+#endif
+#ifdef __M68K__
+    "m68k (m68k)"
+#else
+    "unknown (unknown)"
 #endif
 ;
 #else
