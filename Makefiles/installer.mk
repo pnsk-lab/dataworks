@@ -66,7 +66,7 @@ dos-installer:
 	echo "XPStyle on" >> install.nsi
 	echo "!define MUI_LICENSEPAGE_RADIOBUTTONS" >> install.nsi
 	echo "!insertmacro MUI_PAGE_WELCOME" >> install.nsi
-	echo "!insertmacro MUI_PAGE_LICENSE LICENSE" >> install.nsi
+	echo "!insertmacro MUI_PAGE_LICENSE LICENSE$(LICENSE_LANGUAGE)" >> install.nsi
 	echo "!insertmacro MUI_PAGE_DIRECTORY" >> install.nsi
 	echo "!insertmacro MUI_PAGE_INSTFILES" >> install.nsi
 	echo "!insertmacro MUI_PAGE_FINISH" >> install.nsi

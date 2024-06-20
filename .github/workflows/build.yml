@@ -151,7 +151,7 @@ jobs:
     - name: Make installer
       run: make YACC=byacc PLATFORM=win32 install.exe && mv install.exe install-win64.exe
     - name: Make Japanese installer
-      run: make YACC=byacc PLATFORM=win32 INSTALLER_LANGUAGE=Japanese install.exe && mv install.exe install-win64jp.exe
+      run: make YACC=byacc PLATFORM=win32 INSTALLER_LANGUAGE=Japanese LICENSE_LANGUAGE=.JP install.exe && mv install.exe install-win64jp.exe
     - name: Rename to -win64
       run: mv dataworks.zip dataworks-win64.zip && mv dataworks.tar.gz dataworks-win64.tar.gz && mv Client/dataworks.exe dataworks-win64.exe && mv Server/dataworks_server.exe dataworks-server-win64.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win64.exe
     - name: Create artifact
@@ -183,7 +183,7 @@ jobs:
     - name: Make installer
       run: make YACC=byacc PLATFORM=win32 install.exe && mv install.exe install-win32.exe
     - name: Make Japanese installer
-      run: make YACC=byacc PLATFORM=win32 INSTALLER_LANGUAGE=Japanese install.exe && mv install.exe install-win32jp.exe
+      run: make YACC=byacc PLATFORM=win32 INSTALLER_LANGUAGE=Japanese LICENSE_LANGUAGE=.JP install.exe && mv install.exe install-win32jp.exe
     - name: Rename to -win32
       run: mv dataworks.zip dataworks-win32.zip && mv dataworks.tar.gz dataworks-win32.tar.gz && mv Client/dataworks.exe dataworks-win32.exe && mv Server/dataworks_server.exe dataworks-server-win32.exe && mv RemoteClient/dataworks_remote_client.exe dataworks-remote-client-win32.exe
     - name: Create artifact
