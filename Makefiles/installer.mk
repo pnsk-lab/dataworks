@@ -60,58 +60,113 @@ dos-installer:
 	echo "!include x64.nsh" >> install.nsi
 	echo "Name \"DataWorks\"" >> install.nsi
 	echo "OutFile \"$@\"" >> install.nsi
-	echo "RequestExecutionLevel admin" >> install.nsi
 	echo "SetCompressor lzma" >> install.nsi
 	echo "InstallDir \"\$$$(TO)\\DataWorks\"" >> install.nsi
 	echo "XPStyle on" >> install.nsi
 	echo "!define MUI_LICENSEPAGE_RADIOBUTTONS" >> install.nsi
+	echo "!insertmacro MUI_RESERVEFILE_LANGDLL" >> instal.nsi
 	echo "!insertmacro MUI_PAGE_WELCOME" >> install.nsi
-	echo "!insertmacro MUI_PAGE_LICENSE LICENSE$(LICENSE_LANGUAGE)" >> install.nsi
+	echo "!insertmacro MUI_PAGE_LICENSE LICENSE" >> install.nsi
 	echo "!insertmacro MUI_PAGE_DIRECTORY" >> install.nsi
+	echo "!insertmacro MUI_PAGE_COMPONENTS" >> install.nsi
 	echo "!insertmacro MUI_PAGE_INSTFILES" >> install.nsi
 	echo "!insertmacro MUI_PAGE_FINISH" >> install.nsi
 	echo "!insertmacro MUI_UNPAGE_WELCOME" >> install.nsi
 	echo "!insertmacro MUI_UNPAGE_CONFIRM" >> install.nsi
 	echo "!insertmacro MUI_UNPAGE_INSTFILES" >> install.nsi
 	echo "!insertmacro MUI_UNPAGE_FINISH" >> install.nsi
-	echo "!insertmacro MUI_LANGUAGE \"$(INSTALLER_LANGUAGE)\"" >> install.nsi
+	echo "!insertmacro MUI_LANGUAGE \"English\"" >> install.nsi
+	echo "!insertmacro MUI_LANGUAGE \"Japanese\"" >> install.nsi
+	echo "LangString APP_SET_DESC \$${LANG_ENGLISH} \"Application set\"" >> install.nsi
+	echo "LangString APP_SET_DESC \$${LANG_JAPANESE} \"アプリケーションセット\"" >> install.nsi
+	echo "LangString CLIENT_SET_DESC \$${LANG_ENGLISH} \"Client\"" >> install.nsi
+	echo "LangString CLIENT_SET_DESC \$${LANG_JAPANESE} \"クライアント\"" >> install.nsi
+	echo "LangString SERVER_SET_DESC \$${LANG_ENGLISH} \"Server\"" >> install.nsi
+	echo "LangString SERVER_SET_DESC \$${LANG_JAPANESE} \"サーバー\"" >> install.nsi
+	echo "LangString RCLI_SET_DESC \$${LANG_ENGLISH} \"Remote Client\"" >> install.nsi
+	echo "LangString RCLI_SET_DESC \$${LANG_JAPANESE} \"リモートクライアント\"" >> install.nsi
+	echo "LangString DEV_SET_DESC \$${LANG_ENGLISH} \"Development set\"" >> install.nsi
+	echo "LangString DEV_SET_DESC \$${LANG_JAPANESE} \"開発用セット\"" >> install.nsi
+	echo "LangString DLL_SET_DESC \$${LANG_ENGLISH} \"Library\"" >> install.nsi
+	echo "LangString DLL_SET_DESC \$${LANG_JAPANESE} \"ライブラリ\"" >> install.nsi
+	echo "LangString HEADERS_SET_DESC \$${LANG_ENGLISH} \"Headers\"" >> install.nsi
+	echo "LangString HEADERS_SET_DESC \$${LANG_JAPANESE} \"ヘッダー\"" >> install.nsi
 	echo "Function .onInit" >> install.nsi
-	echo "  UserInfo::GetAccountType" >> install.nsi
-	echo "  pop \$$0" >> install.nsi
-	echo "  \$${If} \$$0 != \"admin\"" >> install.nsi
-	echo "    MessageBox mb_iconstop \"Administrator rights required!\"" >> install.nsi
-	echo "    SetErrorLevel 740" >> install.nsi
-	echo "    Quit" >> install.nsi
-	echo "  \$${EndIf}" >> install.nsi
+	echo "  !insertmacro MUI_LANGDLL_DISPLAY" >> install.nsi
 	echo "FunctionEnd" >> install.nsi
-	echo "Section" >> install.nsi
-	echo "  SetOutPath \"\$$INSTDIR\"" >> install.nsi
-	echo "  File \"Client/dataworks.exe\"" >> install.nsi
-	echo "  File \"Server/dataworks_server.exe\"" >> install.nsi
-	echo "  File \"RemoteClient/dataworks_remote_client.exe\"" >> install.nsi
-	echo "  CreateDirectory \"\$$SMPROGRAMS\\DataWorks\"" >> install.nsi
-	echo "  SetOutPath \"\$$INSTDIR\"" >> install.nsi
-	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Client.lnk\" \"\$$INSTDIR\\dataworks.exe\" \"\"" >> install.nsi
-	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Remote Client.lnk\" \"\$$INSTDIR\\dataworks_remote_client.exe\" \"\"" >> install.nsi
-	echo "  CreateShortcut \"\$$SMPROGRAMS\\DataWorks\\DataWorks Server.lnk\" \"\$$INSTDIR\\dataworks_server.exe\" \"\"" >> install.nsi
+	echo "Section -Pre" >> install.nsi
+	echo "  CreateDirectory \"\$$SMPROGRAMS\\\DataWorks\"" >> install.nsi
+	echo "SectionEnd" >> install.nsi
+	echo "SectionGroup /e \"\$$(APP_SET_DESC)\" APP_SET" >> install.nsi
+	echo "  Section -PreApp" >> install.nsi
+	echo "    CreateDirectory \"\$$INSTDIR\\\bin\"" >> install.nsi
+	echo "  SectionEnd" >> install.nsi
+	echo "  Section \"\$$(CLIENT_SET_DESC)\" CLIENT_SET" >> install.nsi
+	echo "    SetOutPath \"\$$INSTDIR\\\bin\"" >> install.nsi
+	echo "    File \"Client/dataworks.exe\"" >> install.nsi
+	echo "    CreateShortcut \"\$$SMPROGRAMS\\\DataWorks\\\DataWorks Client.lnk\" \"\$$INSTDIR\\\bin\\\dataworks.exe\" \"\"" >> install.nsi
+	echo "  SectionEnd" >> install.nsi
+	echo "  Section \"\$$(SERVER_SET_DESC)\" SERVER_SET" >> install.nsi
+	echo "    SetOutPath \"\$$INSTDIR\\\bin\"" >> install.nsi
+	echo "    File \"Server/dataworks_server.exe\"" >> install.nsi
+	echo "    CreateShortcut \"\$$SMPROGRAMS\\\DataWorks\\\DataWorks Server.lnk\" \"\$$INSTDIR\\\bin\\\dataworks_server.exe\" \"\"" >> install.nsi
+	echo "  SectionEnd" >> install.nsi
+	echo "  Section \"\$$(RCLI_SET_DESC)\" RCLI_SET" >> install.nsi
+	echo "    SetOutPath \"\$$INSTDIR\\\bin\"" >> install.nsi
+	echo "    File \"RemoteClient/dataworks_remote_client.exe\"" >> install.nsi
+	echo "    CreateShortcut \"\$$SMPROGRAMS\\\DataWorks\\\DataWorks Remote Client.lnk\" \"\$$INSTDIR\\\bin\\\dataworks_remote_client.exe\" \"\"" >> install.nsi
+	echo "  SectionEnd" >> install.nsi
+	echo "SectionGroupEnd" >> install.nsi
+	echo "SectionGroup /e \"\$$(DEV_SET_DESC)\" DEV_SET" >> install.nsi
+	echo "  Section /o \"\$$(DLL_SET_DESC)\" DLL_SET" >> install.nsi
+	echo "    CreateDirectory \"\$$INSTDIR\\\lib\"" >> install.nsi
+	echo "    SetOutPath \"\$$INSTDIR\\\lib\"" >> install.nsi
+	echo "    File \"Library/dataworks.dll\"" >> install.nsi
+	echo "    File \"Library/dataworks.lib\"" >> install.nsi
+	echo "  SectionEnd" >> install.nsi
+	echo "  Section /o \"\$$(HEADERS_SET_DESC)\" HEADERS_SET" >> install.nsi
+	echo "    CreateDirectory \"\$$INSTDIR\\\include\"" >> install.nsi
+	echo "    SetOutPath \"\$$INSTDIR\\\include\"" >> install.nsi
+	for i in `find Library -name "*.h"`; do \
+		echo "    File \"$$i\"" >> install.nsi; \
+        done
+	echo "  SectionEnd" >> install.nsi
+	echo "SectionGroupEnd" >> install.nsi
+	echo "Section -Post" >> install.nsi
 	echo "  WriteUninstaller \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
 	echo "  \$${If} \$${RunningX64}" >> install.nsi
 	echo "    SetRegView 64" >> install.nsi
 	echo "  \$${Else}" >> install.nsi
 	echo "    SetRegView 32" >> install.nsi
 	echo "  \$${EndIf}" >> install.nsi
-	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayIcon\" \"\$$INSTDIR\\dataworks.exew\"" >> install.nsi
-	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"Dataworks\"" >> install.nsi
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayIcon\" \"\$$INSTDIR\\dataworks.exe\"" >> install.nsi
+	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"DisplayName\" \"DataWorks\"" >> install.nsi
 	echo "  WriteRegStr HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\" \"UninstallString\" \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
 	echo "SectionEnd" >> install.nsi
 	echo "Section Uninstall" >> install.nsi
 	echo "  SetAutoClose false" >> install.nsi
-	echo "  Delete \"\$$INSTDIR\\dataworks.exe\"" >> install.nsi
-	echo "  Delete \"\$$INSTDIR\\dataworks_server.exe\"" >> install.nsi
-	echo "  Delete \"\$$INSTDIR\\dataworks_remote_client.exe\"" >> install.nsi
-	echo "  Delete \"\$$INSTDIR\\Uninstall.exe\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\\bin\\\dataworks.exe\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\\bin\\\dataworks_server.exe\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\\bin\\\dataworks_remote_client.exe\"" >> install.nsi
+	echo "  RMDir \"\$$INSTDIR\\\bin\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\\lib\\\dataworks.dll\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\\lib\\\dataworks.lib\"" >> install.nsi
+	echo "  RMDir \"\$$INSTDIR\\\lib\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\\include\\\*.h\"" >> install.nsi
+	echo "  RMDir \"\$$INSTDIR\\\include\"" >> install.nsi
+	echo "  Delete \"\$$INSTDIR\\\Uninstall.exe\"" >> install.nsi
 	echo "  RMDir \"\$$INSTDIR\"" >> install.nsi
 	echo "  DeleteRegKey HKLM \"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\DataWorks\"" >> install.nsi
 	echo "SectionEnd" >> install.nsi
+	echo "!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN" >> install.nsi
+	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${APP_SET} \"\$$(APP_SET_DESC)\"" >> install.nsi
+	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${SERVER_SET} \"\$$(SERVER_SET_DESC)\"" >> install.nsi
+	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${CLIENT_SET} \"\$$(CLIENT_SET_DESC)\"" >> install.nsi
+	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${RCLI_SET} \"\$$(RCLI_SET_DESC)\"" >> install.nsi
+	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${DEV_SET} \"\$$(DEV_SET_DESC)\"" >> install.nsi
+	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${DLL_SET} \"\$$(DLL_SET_DESC)\"" >> install.nsi
+	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${HEADERS_SET} \"\$$(HEADERS_SET_DESC)\"" >> install.nsi
+	echo "!insertmacro MUI_FUNCTION_DESCRIPTION_END" >> install.nsi
+	cat install.nsi
 	makensis install.nsi
 	rm install.nsi dataworks.bmp
