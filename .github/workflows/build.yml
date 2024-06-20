@@ -92,6 +92,15 @@ jobs:
       run: make clean PLATFORM=amigaos
     - name: Make for Amiga
       run: make YACC=byacc -j3 PLATFORM=amigaos archive
+    - name: Rename to -amiga
+      run: mv dataworks.zip dataworks-amiga.zip && mv dataworks.tar.gz dataworks-amiga.tar.gz && mv Client/dataworks dataworks-amiga && mv Server/dataworks_server dataworks-server-amiga && mv RemoteClient/dataworks_remote_client dataworks-remote-client-amiga
+    - name: Create artifact
+      run: zip -rv build-amiga.zip dataworks-amiga.tar.gz dataworks-amiga.zip dataworks-server-amiga dataworks-amiga dataworks-remote-client-amiga
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-amiga
+        path: build-amiga.zip
 
   build-linux64:
 
@@ -443,6 +452,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-linux64
+    - name: Download from build-amiga
+      uses: actions/download-artifact@v4
+      with:
+        name: build-amiga
     - name: Download from build-macos
       uses: actions/download-artifact@v4
       with:
@@ -471,6 +484,8 @@ jobs:
       run: unzip $GITHUB_WORKSPACE/build-win64.zip
     - name: Extract the build-linux64
       run: unzip $GITHUB_WORKSPACE/build-linux64.zip
+    - name: Extract the build-amiga
+      run: unzip $GITHUB_WORKSPACE/build-amiga.zip
     - name: Extract the build-macos
       run: unzip $GITHUB_WORKSPACE/build-macos.zip
     - name: Rename dataworks.deb
@@ -480,6 +495,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Release
-      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} dataworks-server-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} dataworks-remote-client-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe -n "Version \`$(make get-version)\` was built in this release"
+      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-amiga.{tar.gz,zip} dataworks-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64,amiga} dataworks-server-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} dataworks-remote-client-{dos.exe,dos4g.exe,macos-arm64,win32.exe,win64.exe,linux64} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
