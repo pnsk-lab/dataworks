@@ -22,7 +22,7 @@ DataWorks is a simple DBMS written in C.
 	Works on 80386 with 2MB RAM.
 3. Windows 32-bit/64-bit
  
-	Works on Windows 7 or later.
+	Works on Windows 2000 or later.
 4. NetBSD
  
 	Works on amd64 10.0, and macppc 9.3.
