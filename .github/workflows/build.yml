@@ -495,6 +495,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Release
-      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-amiga.{tar.gz,zip} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe -n "Version \`$(make get-version)\` was built in this release"
+      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-dos.{tar.gz,zip} dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-amiga.{tar.gz,zip} dataworks-os2.{tar.gz,zip} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
