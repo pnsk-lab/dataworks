@@ -1,4 +1,5 @@
 # $Id$
+# PLATFORM: Windows 64-bit
 
 CC = x86_64-w64-mingw32-gcc
 SHCC = x86_64-w64-mingw32-gcc

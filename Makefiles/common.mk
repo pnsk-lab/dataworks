@@ -71,3 +71,4 @@ include Makefiles/dosbox.mk
 include Makefiles/package.mk
 include Makefiles/test.mk
 include Makefiles/installer.mk
+include Makefiles/util.mk

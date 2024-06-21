@@ -1,4 +1,5 @@
 # $Id$
+# PLATFORM: Windows NT
 
 WATCOM_PLATFORM=nt
 include Makefiles/Platforms/watcom.mk

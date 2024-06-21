@@ -1,4 +1,5 @@
 # $Id$
+# PLATFORM: OS/2
 
 WATCOM_PLATFORM=os2
 include Makefiles/Platforms/watcom.mk

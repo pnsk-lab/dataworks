@@ -1,4 +1,5 @@
 # $Id$
+# PLATFORM: AmigaOS
 
 VBCC_PLATFORM=kick13
 include Makefiles/Platforms/vbcc.mk

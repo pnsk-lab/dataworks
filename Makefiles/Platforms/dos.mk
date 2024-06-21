@@ -1,4 +1,5 @@
 # $Id$
+# PLATFORM: DOS
 
 WATCOM_PLATFORM=dos
 include Makefiles/Platforms/watcom.mk
