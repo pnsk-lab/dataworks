@@ -218,7 +218,10 @@ int main(int argc, char** argv) {
 		if((ch = fgetc(fp)) == EOF) break;
 		if(ch == '\n') {
 			until_end = false;
-			if(buf[0] == '.') {
+			if(buf[0] == '!') {
+				system(buf + 1);
+				printf("\n");
+			}else if(buf[0] == '.') {
 				if(__dw_strcaseequ(buf, ".bye") || __dw_strcaseequ(buf, ".quit")) {
 					printf("Bye.\n");
 					break;
