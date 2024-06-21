@@ -68,7 +68,7 @@ bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = 4096;
 int server_socket;
-#ifdef USE_WINSOCK
+#if defined(USE_WINSOCK) || defined(__minix)
 struct sockaddr_in server_address;
 #else
 struct sockaddr_in6 server_address;
@@ -116,8 +116,10 @@ int server_init(void) {
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 0), &wsa);
 #endif
-#ifdef USE_WINSOCK
+#if defined(USE_WINSOCK)
 	if((server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
+#elif defined(__minix)
+	if((server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 #else
 	if((server_socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 #endif
@@ -136,7 +138,7 @@ int server_init(void) {
 		return 1;
 	}
 #ifdef USE_WINSOCK
-#else
+#elif !defined(__minix)
 	int no = 0;
 	if(setsockopt(server_socket, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)) < 0) {
 		fprintf(stderr, "BSD TCP/IP initialization fail (setsockopt)\n");
@@ -145,9 +147,13 @@ int server_init(void) {
 	}
 #endif
 	memset(&server_address, 0, sizeof(server_address));
-#ifdef USE_WINSOCK
+#if defined(USE_WINSOCK) || defined(__minix)
 	server_address.sin_family = AF_INET;
+#ifdef __minix
+	server_address.sin_addr.s_addr = INADDR_ANY;
+#else
 	server_address.sin_addr.S_un.S_addr = INADDR_ANY;
+#endif
 	server_address.sin_port = htons(port);
 #else
 	server_address.sin6_family = AF_INET6;
