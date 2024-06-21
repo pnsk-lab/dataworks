@@ -54,6 +54,8 @@ const char* dataworks_platform = "Linux/"
 const char* dataworks_platform = "WatcomC/"
 #elif defined(__APPLE__)
 const char* dataworks_platform = "MacOSX/"
+#elif defined(__minix)
+const char* dataworks_platform = "Minix/"
 #elif defined(__VBCC__)
 #else
 #undef SUPPORTED
