@@ -55,6 +55,7 @@ dos-installer:
 	echo "!define MUI_HEADERIMAGE_BITMAP \"dataworks.bmp\"" >> install.nsi
 	echo "!define MUI_HEADERIMAGE_RIGHT" >> install.nsi
 	echo "!define MUI_WELCOMEFINISHPAGE_BITMAP Binary/nsis.bmp" >> install.nsi
+	echo "!define MUI_UNWELCOMEFINISHPAGE_BITMAP Binary/nsis.bmp" >> install.nsi
 	echo "!include nsDialogs.nsh" >> install.nsi
 	echo "!include LogicLib.nsh" >> install.nsi
 	echo "!include x64.nsh" >> install.nsi
@@ -100,6 +101,7 @@ dos-installer:
 	echo "SectionGroup /e \"\$$(APP_SET_DESC)\" APP_SET" >> install.nsi
 	echo "  Section -PreApp" >> install.nsi
 	echo "    CreateDirectory \"\$$INSTDIR\\\bin\"" >> install.nsi
+	echo "    SetShellVarContext all" >> install.nsi
 	echo "  SectionEnd" >> install.nsi
 	echo "  Section \"\$$(CLIENT_SET_DESC)\" CLIENT_SET" >> install.nsi
 	echo "    SetOutPath \"\$$INSTDIR\\\bin\"" >> install.nsi
@@ -146,6 +148,11 @@ dos-installer:
 	echo "SectionEnd" >> install.nsi
 	echo "Section Uninstall" >> install.nsi
 	echo "  SetAutoClose false" >> install.nsi
+	echo "  \$${If} \$${RunningX64}" >> install.nsi
+	echo "    SetRegView 64" >> install.nsi
+	echo "  \$${Else}" >> install.nsi
+	echo "    SetRegView 32" >> install.nsi
+	echo "  \$${EndIf}" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\\bin\\\dataworks.exe\"" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\\bin\\\dataworks_server.exe\"" >> install.nsi
 	echo "  Delete \"\$$INSTDIR\\\bin\\\dataworks_remote_client.exe\"" >> install.nsi

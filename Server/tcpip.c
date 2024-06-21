@@ -44,14 +44,14 @@ extern char** argv;
 extern bool auth;
 extern char* authfile;
 
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || defined(__WATCOMC__)
 #define USE_WINSOCK
 #endif
 
 #ifdef USE_WINSOCK
 #include <process.h>
-#include <windows.h>
 #include <winsock2.h>
+#include <windows.h>
 #else
 #include <arpa/inet.h>
 #include <netinet/in.h>

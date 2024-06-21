@@ -11,5 +11,6 @@ AllowShortBlocksOnASingleLine: Never
 AllowShortLoopsOnASingleLine: true
 SpaceBeforeParens: Never
 AlignEscapedNewlines: DontAlign
+SortIncludes: false
 StatementMacros:
  - __dw_big_endian

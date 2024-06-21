@@ -34,9 +34,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __MINGW32__
-#include <windows.h>
+#if defined(__MINGW32__) || defined(__WATCOMC__)
+#define USE_WINSOCK
+#endif
+
+#ifdef USE_WINSOCK
 #include <winsock2.h>
+#include <windows.h>
 #include <ws2def.h>
 #include <ws2tcpip.h>
 #include <wspiapi.h>

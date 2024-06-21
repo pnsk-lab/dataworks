@@ -61,16 +61,16 @@ const char* dataworks_platform = "Unknown/"
 #endif
 #ifdef __VBCC__
 #ifdef AMIGA
-const char* dataworks_platform = "Amiga/"
+    const char* dataworks_platform = "Amiga/"
 #else
-const char* dataworks_platform = "VBCC/"
+    const char* dataworks_platform = "VBCC/"
 #endif
 #ifdef __M68K__
-    "m68k (m68k)"
+				     "m68k (m68k)"
 #else
-    "unknown (unknown)"
+				     "unknown (unknown)"
 #endif
-;
+    ;
 #else
     PLATFORM_M " (" PLATFORM_P ")";
 #endif

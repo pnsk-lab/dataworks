@@ -221,7 +221,7 @@ int main(int argc, char** argv) {
 			if(buf[0] == '!') {
 				system(buf + 1);
 				printf("\n");
-			}else if(buf[0] == '.') {
+			} else if(buf[0] == '.') {
 				if(__dw_strcaseequ(buf, ".bye") || __dw_strcaseequ(buf, ".quit")) {
 					printf("Bye.\n");
 					break;
