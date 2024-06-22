@@ -108,7 +108,13 @@ char* dataworks_get_compiler(void) {
 #elif defined(__VBCC__)
 	sprintf(ver, "VBCC");
 #elif defined(__GNUC__)
-	sprintf(ver, "GCC %s", __VERSION__);
+	sprintf(ver, "%sGCC %s",
+#if defined(__MINGW32__)
+		"MinGW32-",
+#else
+		"",
+#endif
+		__VERSION__);
 #else
 	sprintf(ver, "Unsupported compiler");
 #endif
