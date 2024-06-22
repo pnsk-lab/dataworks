@@ -94,6 +94,7 @@ dos-installer:
 	echo "LangString HEADERS_SET_DESC \$${LANG_JAPANESE} \"ヘッダー\"" >> install.nsi
 	echo "Function .onInit" >> install.nsi
 	echo "  !insertmacro MUI_LANGDLL_DISPLAY" >> install.nsi
+	echo "  $(CUSTOM_NSIS)" >> install.nsi
 	echo "FunctionEnd" >> install.nsi
 	echo "Section -Pre" >> install.nsi
 	echo "  CreateDirectory \"\$$SMPROGRAMS\\\DataWorks\"" >> install.nsi
@@ -181,4 +182,5 @@ dos-installer:
 	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${HEADERS_SET} \"\$$(HEADERS_SET_DESC)\"" >> install.nsi
 	echo "!insertmacro MUI_FUNCTION_DESCRIPTION_END" >> install.nsi
 	makensis install.nsi
+	cat install.nsi
 	rm install.nsi dataworks.bmp

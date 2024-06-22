@@ -18,3 +18,4 @@ LINK_LIB += dataworks.res
 SERVLINK_LIB += -lws2_32
 RCLILINK_LIB += -lws2_32
 TO = PROGRAMFILES64
+CUSTOM_NSIS = StrCpy \$$InstDir "\$$PROGRAMFILES64\\\DataWorks"
