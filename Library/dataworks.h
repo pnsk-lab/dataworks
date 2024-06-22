@@ -71,6 +71,14 @@ const char* dataworks_get_lex_version(void);
 
 /**
  * @~english
+ * @brief Get the compiler which was used to compile DataWorks
+ * @return Compiler which was used to compile DataWorks
+ *
+ */
+char* dataworks_get_compiler(void);
+
+/**
+ * @~english
  * @brief Get the compilation date of DataWorks
  * @return Compilation date of DataWorks
  *

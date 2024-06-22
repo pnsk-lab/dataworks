@@ -33,6 +33,8 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 const char* dataworks_version = "0.1.1";
 const char* dataworks_compile_date = __DATE__;
@@ -93,6 +95,25 @@ char dataworks_get_endian(void) {
 const char* dataworks_get_copyright(void) { return dataworks_copyright; }
 
 int yywrap() { return 1; }
+
+char* dataworks_get_compiler(void) {
+	char* ver = malloc(513);
+	memset(ver, 0, 513);
+#if defined(__WATCOMC__)
+	sprintf(ver, "Open Watcom %d.%d", __WATCOMC__ / 100, __WATCOMC__ % 100);
+#elif defined(__clang__)
+	sprintf(ver, "%s", __VERSION__);
+#elif defined(__PCC__)
+	sprintf(ver, "%s", __VERSION__);
+#elif defined(__VBCC__)
+	sprintf(ver, "VBCC");
+#elif defined(__GNUC__)
+	sprintf(ver, "GCC %s", __VERSION__);
+#else
+	sprintf(ver, "Unsupported compiler");
+#endif
+	return ver;
+}
 
 int yyerror(const char* err) {
 	fprintf(stderr, "Parser error: %s\n", err);
