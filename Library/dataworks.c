@@ -100,7 +100,7 @@ char* dataworks_get_compiler(void) {
 	char* ver = malloc(513);
 	memset(ver, 0, 513);
 #if defined(__WATCOMC__)
-	sprintf(ver, "Open Watcom %d.%d", __WATCOMC__ / 100, __WATCOMC__ % 100);
+	sprintf(ver, "Open Watcom %d.%d", (int)__WATCOMC__ / 100, (int)__WATCOMC__ % 100);
 #elif defined(__clang__)
 	sprintf(ver, "%s", __VERSION__);
 #elif defined(__PCC__)
