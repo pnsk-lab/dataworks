@@ -1,6 +1,6 @@
 # $Id$
 
-.PHONY: all clean document document-jp
+.PHONY: all clean document document-jp document-sr
 all: document README.DOC
 
 document:
@@ -8,6 +8,9 @@ document:
 
 document-jp:
 	doxygen Doxyfile-JP
+
+document-sr:
+	doxygen Doxyfile-SR
 
 README.DOC: ../Tool/docfmt README.FMT
 	../Tool/docfmt README.FMT > README.DOC
