@@ -92,7 +92,7 @@ int rcli_init(void) {
 				printf("Usage: %s [options] host\n", argv[0]);
 				printf("You can use double-dash or slash for long-format flag, and single-dash or slash for short-foramt flag.\n");
 				printf("Options:\n");
-				printf("\t-p --port [port]   Specify the port to be listened on\n");
+				printf("\t-p --port [port]   Specify the port to be connected to\n");
 				exit(0);
 			} else {
 				fprintf(stderr, "Invalid option: %s\n", argv[i]);

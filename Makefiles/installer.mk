@@ -65,6 +65,7 @@ dos-installer:
 	echo "InstallDir \"\$$$(TO)\\DataWorks\"" >> install.nsi
 	echo "XPStyle on" >> install.nsi
 	echo "!define MUI_LICENSEPAGE_RADIOBUTTONS" >> install.nsi
+	echo "!define MUI_FINISHPAGE_NOAUTOCLOSE" >> install.nsi
 	echo "!insertmacro MUI_RESERVEFILE_LANGDLL" >> install.nsi
 	echo "!insertmacro MUI_PAGE_WELCOME" >> install.nsi
 	echo "!insertmacro MUI_PAGE_LICENSE LICENSE" >> install.nsi
@@ -97,12 +98,12 @@ dos-installer:
 	echo "  $(CUSTOM_NSIS)" >> install.nsi
 	echo "FunctionEnd" >> install.nsi
 	echo "Section -Pre" >> install.nsi
+	echo "  SetShellVarContext all" >> install.nsi
 	echo "  CreateDirectory \"\$$SMPROGRAMS\\\DataWorks\"" >> install.nsi
 	echo "SectionEnd" >> install.nsi
 	echo "SectionGroup /e \"\$$(APP_SET_DESC)\" APP_SET" >> install.nsi
 	echo "  Section -PreApp" >> install.nsi
 	echo "    CreateDirectory \"\$$INSTDIR\\\bin\"" >> install.nsi
-	echo "    SetShellVarContext all" >> install.nsi
 	echo "  SectionEnd" >> install.nsi
 	echo "  Section \"\$$(CLIENT_SET_DESC)\" CLIENT_SET" >> install.nsi
 	echo "    SetOutPath \"\$$INSTDIR\\\bin\"" >> install.nsi
@@ -181,6 +182,7 @@ dos-installer:
 	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${DLL_SET} \"\$$(DLL_SET_DESC)\"" >> install.nsi
 	echo "  !insertmacro MUI_DESCRIPTION_TEXT \$${HEADERS_SET} \"\$$(HEADERS_SET_DESC)\"" >> install.nsi
 	echo "!insertmacro MUI_FUNCTION_DESCRIPTION_END" >> install.nsi
+	cat install.nsi
 	makensis install.nsi
 	cat install.nsi
 	rm install.nsi dataworks.bmp
