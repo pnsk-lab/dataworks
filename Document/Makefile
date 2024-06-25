@@ -15,4 +15,4 @@ README.DOC: ../Tool/docfmt README.FMT
 	../Tool/docfmt README.FMT > README.DOC
 
 clean:
-	rm -rf doc README.DOC
+	rm -rf doc README.DOC index.md indexjp.md
