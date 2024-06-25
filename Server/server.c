@@ -324,7 +324,9 @@ int main(int _argc, char** _argv) {
 	flog = stdout;
 	signal(SIGINT, exitnow);
 	signal(SIGTERM, exitnow);
+#if !defined(__MINGW32__)
 	signal(SIGUSR1, rescan_sig);
+#endif
 	printf("DataWorks Server  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 	printf("\n");
 	printf("%s\n", dataworks_get_copyright());
