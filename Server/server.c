@@ -75,6 +75,8 @@ void writeline(int sock, const char* str);
 char* readline_sock(int sock);
 void disconnect(int sock);
 
+FILE* flog;
+
 void protocol_init(int sock) {
 	/* sock is ignored on hayes */
 	char* tmp;
@@ -202,7 +204,7 @@ void protocol_loop(int sock) {
 								if(strcmp(entries[j]->pass, buf + i + 1) == 0) {
 									writeline(sock, "LOGIN");
 									login = true;
-									printf("User %s is in\n", user);
+									fprintf(flog, "User %s is in\n", user);
 									break;
 								} else {
 									writeline(sock, "ERROR:INVALID_PASSWORD");
@@ -237,6 +239,7 @@ void protocol_loop(int sock) {
 		}
 		free(buf);
 	}
+	if(user != NULL) fprintf(flog, "User %s disconnected\n", user);
 }
 
 void exitnow(int sig) {
@@ -246,8 +249,6 @@ void exitnow(int sig) {
 	if(sig != -1) exit(0);
 #endif
 }
-
-FILE* flog;
 
 int rescan(void) {
 	if(entries != NULL) {
