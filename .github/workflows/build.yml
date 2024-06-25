@@ -348,7 +348,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-dos, build-dos4g, build-amiga, build-win32, build-win64, build-linux64, build-mac, build-os2, build-debpkg, build-dosimg, test]
+    needs: [build-dos4g, build-amiga, build-win32, build-win64, build-linux64, build-mac, build-os2, build-debpkg, build-dosimg, test]
 
     steps:
     - name: Checkout
