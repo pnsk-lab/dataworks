@@ -51,7 +51,7 @@ struct auth_entry {
 	char* user;
 	char* pass;
 };
-struct auth_entry** entries;
+struct auth_entry** entries = NULL;
 #ifdef __DOS__
 sig_atomic_t signals = 0;
 #endif
@@ -247,19 +247,21 @@ void exitnow(int sig) {
 #endif
 }
 
-int main(int _argc, char** _argv) {
-	argc = _argc;
-	argv = _argv;
+FILE* flog;
+
+int rescan(void) {
+	if(entries != NULL) {
+		fprintf(flog, "Rescan...\n");
+		int i;
+		for(i = 0; entries[i] != NULL; i++) {
+			free(entries[i]->user);
+			free(entries[i]->pass);
+			free(entries[i]);
+		}
+		free(entries);
+	}
 	entries = malloc(sizeof(*entries));
 	entries[0] = NULL;
-	signal(SIGINT, exitnow);
-	signal(SIGTERM, exitnow);
-	printf("DataWorks Server  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
-	printf("\n");
-	printf("%s\n", dataworks_get_copyright());
-	printf("\n");
-	int st;
-	if((st = server_init()) != 0) return st;
 	if(auth) {
 		authdb = fopen(authfile, "r");
 		if(authdb == NULL) {
@@ -294,7 +296,7 @@ int main(int _argc, char** _argv) {
 					entries[i]->user = __dw_strdup(str);
 					entries[i]->pass = __dw_strdup(str + shift + 1);
 					entries[i + 1] = NULL;
-					printf("User %s is allowed to access the database now\n", str);
+					fprintf(flog, "User %s is allowed to access the database now\n", str);
 				}
 				free(str);
 				str = malloc(1);
@@ -307,6 +309,29 @@ int main(int _argc, char** _argv) {
 		}
 		free(str);
 	}
+	return 0;
+}
+
+void rescan_sig(int sign) {
+	int st = rescan();
+	if(st != 0) exit(st);
+}
+
+int main(int _argc, char** _argv) {
+	argc = _argc;
+	argv = _argv;
+	flog = stdout;
+	signal(SIGINT, exitnow);
+	signal(SIGTERM, exitnow);
+	signal(SIGUSR1, rescan_sig);
+	printf("DataWorks Server  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
+	printf("\n");
+	printf("%s\n", dataworks_get_copyright());
+	printf("\n");
+	int st;
+	if((st = server_init()) != 0) return st;
+	st = rescan();
+	if(st != 0) return st;
 	if(db != NULL) {
 		if(db->error) {
 			dataworks_database_close(db);
