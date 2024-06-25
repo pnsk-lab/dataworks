@@ -3,18 +3,20 @@
 .PHONY: dos-installer
 
 dos-installer:
-	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos clean ; fi
-	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos no-doc ; fi
+	if [ ! -e "dos4gw.exe" ]; then wget "https://github.com/yetmorecode/dos32a-ng/releases/download/9.1.2/DOS32ANG.EXE" -O dos4gw.exe ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos4g clean ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then $(MAKE) PLATFORM=dos4g no-doc ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then rm -f install.img ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mformat -C -f $(FLOPPY_SIZE) -v DWINST -i install.img :: ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img Client/*.exe ::dw.exe ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img Server/*.exe ::dwserv.exe ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img RemoteClient/*.exe ::dwrcli.exe ; fi
-	$(MAKE) PLATFORM=dos TARGET=clean ./Installer
-	$(MAKE) PLATFORM=dos ./Installer
+	if [ ! "$(FORMAT)" = "NO" ]; then mcopy -i install.img dos4gw.exe ::dos4gw.exe ; fi
+	$(MAKE) PLATFORM=dos4g TARGET=clean ./Installer
+	$(MAKE) PLATFORM=dos4g ./Installer
 	mcopy -oi install.img Installer/*.exe ::install.exe
-	$(MAKE) PLATFORM=dos TARGET=clean ./Installer
-	$(MAKE) PLATFORM=dos INDEP=jp INDEP_TO=cp932 ./Installer
+	$(MAKE) PLATFORM=dos4g TARGET=clean ./Installer
+	$(MAKE) PLATFORM=dos4g INDEP=jp INDEP_TO=cp932 ./Installer
 	$(MAKE) ./Tool
 	$(MAKE) -C ./Document README.DOC
 	mcopy -toi install.img Document/README.DOC ::
@@ -28,7 +30,7 @@ dos-installer:
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "imgmount -t floppy a: ./install.img" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "a:" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "mount c: ./install-workdir" >> install-dosbox.conf ; fi
-	if [ ! "$(FORMAT)" = "NO" ]; then echo "lha a C:\EXTRACT.LZH dw.exe dwserv.exe dwrcli.exe readme.doc" >> install-dosbox.conf ; fi
+	if [ ! "$(FORMAT)" = "NO" ]; then echo "lha a C:\EXTRACT.LZH dw.exe dwserv.exe dwrcli.exe readme.doc dos4gw.exe" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dw.exe" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dwserv.exe" >> install-dosbox.conf ; fi
 	if [ ! "$(FORMAT)" = "NO" ]; then echo "del dwrcli.exe" >> install-dosbox.conf ; fi

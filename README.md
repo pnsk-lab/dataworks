@@ -9,27 +9,24 @@ DataWorks is a simple DBMS written in C.
 ## Features
 1. File database
 2. Can be run as a server
-3. Works even on your 80286 machine
+3. Works even on your ~~80286~~ 80386 machine
 4. Server can be run over modem if you are on DOS
 5. Cross-platform database
 
 ## Platform support
-1. DOS (16-bit)
- 
-	Works on 80286 with 1MB RAM.
-2. DOS with DOS/4GW or its compatibles
+1. DOS with DOS/4GW or its compatibles
  
 	Works on 80386 with 2MB RAM.
-3. Windows 32-bit/64-bit
+2. Windows 32-bit/64-bit
  
 	Works on Windows 2000 or later.
-4. NetBSD
+3. NetBSD
  
 	Works on amd64 10.0, and macppc 9.3.
-5. Linux
-6. MacOSX
-7. Amiga Workbench/AmigaOS
-8. OS/2
+4. Linux
+5. MacOSX
+6. Amiga Workbench/AmigaOS
+7. OS/2
 
 ## Server support
 1. DOS with modem
