@@ -28,11 +28,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Install packages
-      run: sudo apt-get install zip byacc flex doxygen graphviz
-    - name: Make sure it is clean
-      run: make clean
-    - name: Make for Linux 64-bit
-      run: make YACC=byacc -j3
+      run: sudo apt-get install doxygen graphviz
     - name: Setup Pages
       uses: actions/configure-pages@v4
     - name: Upload pages
