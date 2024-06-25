@@ -36,7 +36,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-const char* dataworks_version = "0.1.1";
+const char* dataworks_version = "0.1.2";
 const char* dataworks_compile_date = __DATE__;
 const char* dataworks_copyright = "Copyright (c) Crabware 2024\n"
 				  "              pnsk-lab 2024\n"

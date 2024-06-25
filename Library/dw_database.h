@@ -173,6 +173,13 @@ enum DW_ERRORS {
 	 *
 	 */
 	DW_ERR_PARSER_FAIL,
+
+	/**
+	 * @~english
+	 * @brief Type mispatch
+	 *
+	 */
+	DW_ERR_EXEC_TYPE_MISMATCH,
 };
 
 /**
@@ -644,6 +651,14 @@ uint64_t dataworks_database_get_table_count(struct dataworks_db* db, const char*
  *
  */
 void dataworks_database_set_table_count(struct dataworks_db* db, const char* table, uint64_t count);
+
+/**
+ * @~english
+ * @brief Get the using table name.
+ * @param db Database
+ *
+ */
+char* dataworks_database_get_using_table(struct dataworks_db* db);
 
 #ifdef __cplusplus
 }

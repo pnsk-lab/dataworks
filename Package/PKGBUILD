@@ -1,13 +1,13 @@
 # $Id$
 
 pkgname='dataworks'
-pkgver='0.1.1'
+pkgver='0.1.2'
 pkgdesc='Database System'
 arch=('i686' 'x86_64')
 license=('BSD')
-pkgrel='40'
+pkgrel='2'
 makedepends=('byacc')
-source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision=418')
+source=('dataworks::svn+http://sw.nishi.boats/svn/nishi-dataworks/trunk#revision=437')
 sha256sums=('SKIP')
 
 build() {

@@ -59,7 +59,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 			newnode->string = __dw_strdup(dataworks_get_version());
 			used = true;
 		}
-		if(node->nodes != NULL) {
+		if(node->nodes != NULL && !__dw_strcaseequ(node->ident, "insert")) {
 			for(i = 0; node->nodes[i] != NULL; i++) {
 				struct Node* r = parser_process(db, node->nodes[i], false);
 				if(r->errnum != DW_ERR_SUCCESS) {
@@ -181,6 +181,32 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 			}
 		} else if(__dw_strcaseequ(node->ident, "insert")) {
+			for(i = 0; node->nodes[i] != NULL; i++)
+				;
+
+			char** list = dataworks_database_get_table_fields(db, dataworks_database_get_using_table(db));
+
+			int count;
+			for(count = 0; list[count] != NULL; count++) free(list[count]);
+			free(list);
+
+			if(i < count) {
+				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+			} else if(i > count) {
+				newnode->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
+			} else {
+				struct Node** arr = malloc(sizeof(*arr) * (i + 1));
+				for(i = 0; node->nodes[i] != NULL; i++) {
+					struct Node* r = parser_process(db, node->nodes[i], false);
+					arr[i] = r;
+				}
+				arr[i] = NULL;
+
+				for(i = 0; arr[i] != NULL; i++) {
+					__dw_free_node(arr[i]);
+				}
+				free(arr);
+			}
 		} else if(!used) {
 			newnode->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
 		}
