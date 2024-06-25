@@ -609,8 +609,8 @@ void dataworks_database_free_result(struct dataworks_db_result* result);
  * @param records Records
  * @param fields Fields in binary
  * @param prop List which contains character `U` or `S`
- * `U` indicates the field is unset
- * `S` indicates the field is set
+ * - `U` indicates the field is unset
+ * - `S` indicates the field is set
  * @return Result
  *
  */
