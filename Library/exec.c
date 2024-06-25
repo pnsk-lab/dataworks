@@ -47,6 +47,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 		newnode->string = NULL;
 		newnode->nodes = NULL;
 		newnode->type = 0;
+		newnode->result = NULL;
 		newnode->errnum = DW_ERR_SUCCESS;
 		char** fields = malloc(sizeof(*fields));
 		fields[0] = NULL;
@@ -74,6 +75,8 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 				if(__dw_strcaseequ(node->ident, "print")) {
 					if(r->type == 'N') {
 						printf("%f", r->number);
+					} else if(r->type == 'L') {
+						printf("%c", r->logical ? 'T' : 'F');
 					} else if(r->string != NULL) {
 						printf("%s", r->string);
 					}
@@ -148,6 +151,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 						free(val);
 					}
 					used = true;
+				} else if(__dw_strcaseequ(node->ident, "insert")) {
 				} else {
 					int j;
 					for(i = 0; fields[i] != NULL; i++) free(fields[i]);
@@ -176,6 +180,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 			} else {
 				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 			}
+		} else if(__dw_strcaseequ(node->ident, "insert")) {
 		} else if(!used) {
 			newnode->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
 		}
@@ -187,6 +192,7 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 	} else {
 		struct Node* n = __dw_duplicate_node(node);
 		n->errnum = DW_ERR_SUCCESS;
+		n->result = NULL;
 		return n;
 	}
 }

@@ -46,6 +46,7 @@
 		double number;
 		unsigned char logical;
 		struct Node** nodes;
+		void* result;
 	} node;
 }
 

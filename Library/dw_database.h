@@ -607,14 +607,13 @@ void dataworks_database_free_result(struct dataworks_db_result* result);
  * @brief Inserts the record.
  * @param db Database
  * @param records Records
- * @param fields Fields in binary
  * @param prop List which contains character `U` or `S`
  * - `U` indicates the field is unset
  * - `S` indicates the field is set
  * @return Result
  *
  */
-struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** fields, const char* prop);
+struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** records, const char* prop);
 
 /**
  * @~english
