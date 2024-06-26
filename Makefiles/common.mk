@@ -51,7 +51,7 @@ replace:
         done
 
 format:
-	clang-format -i $(FILES)
+	clang-format --verbose -i $(FILES)
 
 clean:
 	$(MAKE) -C ./Grammar clean $(COMPILE_FLAGS)

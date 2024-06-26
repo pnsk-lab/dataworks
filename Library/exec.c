@@ -200,30 +200,27 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 				for(i = 0; node->nodes[i] != NULL; i++) {
 					struct Node* r = parser_process(db, node->nodes[i], false);
 					char t = __dw_get_node_type(r);
-					if(!(
-						(typ[i] == 'F' || typ[i] == 'I') && t == 'N'
-					||	typ[i] == t
-					)){
+					if(!((typ[i] == 'F' || typ[i] == 'I') && t == 'N' || typ[i] == t)) {
 						newnode->errnum = DW_ERR_EXEC_TYPE_MISMATCH;
 					}
 					arr[i] = r;
 				}
 				arr[i] = NULL;
 
-				if(newnode->errnum == DW_ERR_SUCCESS){
+				if(newnode->errnum == DW_ERR_SUCCESS) {
 					void** fields = malloc(sizeof(*fields) * (i + 1));
 					fields[i] = NULL;
 					int k;
-					for(k = 0; k < i; k++){
-						if(typ[k] == DW_RECORD_STRING){
+					for(k = 0; k < i; k++) {
+						if(typ[k] == DW_RECORD_STRING) {
 							fields[k] = __dw_strdup(arr[k]->string);
-						}else if(typ[k] == DW_RECORD_LOGICAL){
+						} else if(typ[k] == DW_RECORD_LOGICAL) {
 							fields[k] = malloc(1);
 							*(char*)fields[k] = arr[k]->logical;
-						}else if(typ[k] == DW_RECORD_FLOATING){
+						} else if(typ[k] == DW_RECORD_FLOATING) {
 							fields[k] = malloc(sizeof(double));
 							*(double*)fields[k] = arr[k]->number;
-						}else if(typ[k] == DW_RECORD_INTEGER){
+						} else if(typ[k] == DW_RECORD_INTEGER) {
 							fields[k] = malloc(8);
 							*(uint64_t*)fields[k] = arr[k]->number;
 						}
