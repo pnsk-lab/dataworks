@@ -153,44 +153,6 @@ jobs:
         name: build-win32
         path: build-win32.zip
 
-  build-os2:
-
-    name: "Build for OS/2"
-
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Install packages
-      run: sudo apt-get install zip byacc flex doxygen graphviz
-    - name: Create /usr/watcom
-      run: sudo mkdir -p /usr/watcom
-    - name: Install Open Watcom
-      run: curl -L https://github.com/open-watcom/open-watcom-v2/releases/download/Last-CI-build/ow-snapshot.tar.xz | sudo tar xvJf - -C /usr/watcom
-    - name: Add PATH
-      run: echo "/usr/watcom/binl64" >> $GITHUB_PATH
-    - name: Add WATCOM env
-      run: echo "WATCOM=/usr/watcom" >> $GITHUB_ENV
-    - name: Add INCLUDE env
-      run: echo "INCLUDE=/usr/watcom/h" >> $GITHUB_ENV
-    - name: Make sure it is clean
-      run: make clean PLATFORM=dos4g
-    - name: Make for OS/2
-      run: make YACC=byacc PLATFORM=os2 -j3 archive
-    - name: Rename to -os2
-      run: mv dataworks.zip dataworks-os2.zip && mv dataworks.tar.gz dataworks-os2.tar.gz && mv Client/dataworks.exe dataworks-os2.exe
-    - name: Create artifact
-      run: zip -rv build-os2.zip dataworks-os2.tar.gz dataworks-os2.zip dataworks-os2.exe
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-os2
-        path: build-os2.zip
-
   build-dos4g:
 
     name: "Build for DOS/4G"
@@ -348,7 +310,7 @@ jobs:
     permissions:
       contents: write
 
-    needs: [build-dos4g, build-amiga, build-win32, build-win64, build-linux64, build-mac, build-os2, build-debpkg, build-dosimg, test]
+    needs: [build-dos4g, build-amiga, build-win32, build-win64, build-linux64, build-mac, build-debpkg, build-dosimg, test]
 
     steps:
     - name: Checkout
@@ -357,10 +319,6 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-dos4g
-    - name: Download from build-os2
-      uses: actions/download-artifact@v4
-      with:
-        name: build-os2
     - name: Download from build-win32
       uses: actions/download-artifact@v4
       with:
@@ -395,8 +353,6 @@ jobs:
         name: build-dosimg1440
     - name: Extract the build-dos4g
       run: unzip $GITHUB_WORKSPACE/build-dos4g.zip
-    - name: Extract the build-os2
-      run: unzip $GITHUB_WORKSPACE/build-os2.zip
     - name: Extract the build-win32
       run: unzip $GITHUB_WORKSPACE/build-win32.zip
     - name: Extract the build-win64
@@ -414,6 +370,6 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Release
-      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-amiga.{tar.gz,zip} dataworks-os2.{tar.gz,zip} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe -n "Version \`$(make get-version)\` was built in this release"
+      run: gh release create -t "v$(make get-version)" "$(make get-version)" dataworks-macos-arm64.{tar.gz,zip} dataworks-dos4g.{tar.gz,zip} dataworks-win32.{tar.gz,zip} dataworks-win64.{tar.gz,zip} dataworks-linux64.{tar.gz,zip} dataworks-amiga.{tar.gz,zip} install1200.img install1440.img dataworks-amd64-ubuntu.deb install-win{32,64}.exe -n "Version \`$(make get-version)\` was built in this release"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

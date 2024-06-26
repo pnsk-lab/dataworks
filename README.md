@@ -26,7 +26,6 @@ DataWorks is a simple DBMS written in C.
 4. Linux
 5. MacOSX
 6. Amiga Workbench/AmigaOS
-7. OS/2
 
 ## Server support
 1. DOS with modem
