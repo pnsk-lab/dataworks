@@ -193,7 +193,7 @@ enum DW_RECORD_TYPES {
 	 * @brief String
 	 *
 	 */
-	DW_RECORD_STRING = 'C',
+	DW_RECORD_STRING = 'S',
 
 	/**
 	 * @~english
@@ -613,14 +613,11 @@ void dataworks_database_free_result(struct dataworks_db_result* result);
  * @~english
  * @brief Inserts the record.
  * @param db Database
- * @param records Records
- * @param prop List which contains character `U` or `S`
- * - `U` indicates the field is unset
- * - `S` indicates the field is set
+ * @param fields Fields
  * @return Result
  *
  */
-struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** records, const char* prop);
+struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** records);
 
 /**
  * @~english

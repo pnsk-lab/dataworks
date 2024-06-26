@@ -96,7 +96,7 @@ void __dw_add_record(struct dataworks_db* db, uint64_t count, uint64_t dbindex, 
 	__dw_unlockfile(db);
 }
 
-struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** fields, const char* prop) {
+struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db* db, void** fields) {
 	struct dataworks_db_result* r = malloc(sizeof(*r));
 	r->error = false;
 	int i;
@@ -112,16 +112,9 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
 	}
 	free(dbi);
 	char* types = dataworks_database_get_table_field_types(db, db->name);
-	for(i = 0; prop[i] != 0; i++)
-		;
-	if(strlen(types) != i) {
-		r->error = true;
-		r->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
-		return r;
-	}
 	__dw_lockfile(db);
 	uint64_t count = dataworks_database_get_table_count(db, db->name);
-	for(i = 0; prop[i] != 0; i++) {
+	for(i = 0; fields[i] != NULL; i++) {
 		uint64_t entsize = 0;
 		if(types[i] == DW_RECORD_STRING) {
 			entsize = strlen(fields[i]);
@@ -134,7 +127,7 @@ struct dataworks_db_result* dataworks_database_insert_record(struct dataworks_db
 		} else if(types[i] == DW_RECORD_HELP) {
 			entsize = strlen(fields[i]);
 		}
-		__dw_add_record(db, count, dbindex, i, fields[i], entsize, prop[i] == 'S');
+		__dw_add_record(db, count, dbindex, i, fields[i], entsize, 1);
 	}
 	dataworks_database_set_table_count(db, db->name, count + 1);
 	__dw_unlockfile(db);

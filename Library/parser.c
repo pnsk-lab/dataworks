@@ -102,6 +102,15 @@ void __dw_free_node2(struct Node* node, bool top) {
 	if(!top) free(node);
 }
 
+char __dw_get_node_type(struct Node* node){
+	if(node->type == 'N' || node->type == 'L'){
+		return node->type;
+	}else if(node->string != NULL){
+		return 'S';
+	}
+	return 0;
+}
+
 bool __dw_print_node(struct Node* node, bool top) {
 	if(node->type == 'N') {
 		printf("%f", node->number);
