@@ -1,54 +1,54 @@
 # DWF - DataWorks Database Format 1.0 {#FORMATv1}
 
-DWF is a simple database format designed for DataWorks.
+DWFはDataWorks用に作られたシンプルなデータベースフォーマットです。
 
-## Specification
+## 指定
 
-You SHOULD use `.dwf` for the extension.
+`.dwf`を拡張子として使うべきです。 (SHOULD)
 
-All numbers MUST use big-endian.
+すべての数値はビッグエンディアンである必要があります。 (MUST)
 
-### File structure
+### ファイルの構造
 
-First 3 bytes MUST be 7F 44 57 (\x7F DW) (`signature`)
+最初の3バイトは`7F 44 57` (`\x7F DW`)である必要があります。 (MUST、文書内では`signature`と呼びます)
 
-Database entry (`dbentry`) MUST be in this format:
+データベースのエントリー(文書内では`dbentry`と呼びます)はこのフォーマットである必要があります: (MUST)
 
-| Name | Size | Type | Info |
+| 名称 | サイズ | 型 | 補足 |
 | ---- | ---- | ---- | ---- |
-| flag | 1 byte | uint8\_t | |
-| length | 8 bytes | uint64\_t | Size of the actual data inside |
-| size | 8 bytes | uint64\_t | |
-| field\_index | 1 byte | uint8\_t | |
-| db\_index | 1 byte | uint8\_t | |
-| count | 8 bytes | uint64\_t | |
-| fragnum | 8 bytes | uint64\_t | |
-| data | \[size\] bytes | Binary | |
+| flag | 1バイト | uint8\_t | |
+| length | 8バイト | uint64\_t | 実データのサイズです。`dbentry`が再利用された際にここが`size`と異なる場合があります。 |
+| size | 8バイト | uint64\_t | |
+| field\_index | 1バイト| uint8\_t | |
+| db\_index | 1バイト | uint8\_t | |
+| count | 8バイト | uint64\_t | |
+| fragnum | 8バイト | uint64\_t | |
+| data | sizeバイト | Binary | |
 
-and 2 flags for `dbentry`:
-| Type | Mask | Info |
+そして2つのフラグが`dbentry`用に定義されています:
+| タイプ | マスク | 補足 |
 | ---- | ---- | ---- |
-| Used | 0b10000000 | Flag this if you are using the entry. |
-| Fragment | 0b01000000 | Flag this if the entry is fragment. |
-| Unset | 0b00100000 | Flag this if the entry is unset. |
+| 使用中 | 0b10000000 | エントリーを使っている時にフラグしてください。 |
+| 断片 | 0b01000000 | エントリーが断片な時にフラグしてください。 |
+| 未設定 | 0b00100000 | 非推奨です。エントリーをダミーとしてとりあえず使う時にフラグされるはずでした。(現在では別のハンドル方法を用いるため、使う必要はありませんし、使わないでください。) |
 
-Index entry (`indexentry`) MUST be in this format:
-| Name | Size | Type | Info |
+インデックスエントリー(文書内では`indexentry`と呼びます)はこのフォーマットである必要があります: (MUST)
+| 名称 | サイズ | 型 | 補足 |
 | ---- | ---- | ---- | ---- |
-| flag | 1 byte | uint8\_t | |
-| count | 8 bytes | uint64\_t | |
-| dbname\_len | 1 byte | uint8\_t | |
-| dbname | 256 bytes | ASCII | |
-| fields | 4096 bytes | ASCII | Separate field names using NUL. Put NUL twice on the last field name. Like: `type` `name` `<NUL>` `type` `name` `<NUL>` ... `type` `name` `<NUL>` `<NUL>` |
+| flag | 1バイト | uint8\_t | |
+| count | 8バイト | uint64\_t | |
+| dbname\_len | 1バイト | uint8\_t | |
+| dbname | 256バイト | ASCII | |
+| fields | 4096バイト | ASCII | フィールド名をNULで区切ってください。最後のフィールド名には1つの代わりに2つNULを入れてください。このように: `type` `name` `<NUL>` `type` `name` `<NUL>` ... `type` `name` `<NUL>` `<NUL>` |
 
-There are 5 types for `indexentry`:
-| Type | Character | Type | Info |
+そして5つの型が`indexentry`用に定義されています:
+| 名称 | 文字 | 型 | 補足 |
 | ---- | --------- | ---- | ---- |
-| String | `S` | ASCII | |
-| Integer | `I` | int64\_t | |
-| Floating | `F` | double | |
-| Logical | `L` | uint8\_t | 0 for false, other value for true |
-| Help | `?` | ASCII | Should be just ignored |
+| 文字列 | `S` | ASCII | |
+| 整数 | `I` | int64\_t | |
+| 浮動小数点 | `F` | double | |
+| 論理 | `L` | uint8\_t | 0なら偽、それ以外なら真と判別してください。 (MUST) |
+| ヘルプ | `?` | ASCII | 無視されるべきです。 (SHOULD) |
 
 There is 1 flag for `indexentry`:
 | Type | Mask | Info |

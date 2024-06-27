@@ -38,7 +38,7 @@ thanks-banner:
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./Document:: ./Tool
-	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET) $(DOCTARGET)
 
 FILES = `find . -name "*.c" -or -name "*.h"`
 

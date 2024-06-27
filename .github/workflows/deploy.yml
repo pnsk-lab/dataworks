@@ -29,13 +29,25 @@ jobs:
       uses: actions/checkout@v4
     - name: Install packages
       run: sudo apt-get install doxygen graphviz
+    - name: Setup directories
+      run: mkdir -p pages/en && mkdir -p pages/jp
+    - name: Clean
+      run: make clean
     - name: Make
       run: make ./Document
+    - name: Copy files
+      run: cp -rf Document/doc/html/* pages/en/
+    - name: Clean
+      run: make clean
+    - name: Make
+      run: make ./Document DOCTARGET=document-jp
+    - name: Copy files
+      run: cp -rf Document/doc/htmljp/* pages/jp/
     - name: Setup Pages
       uses: actions/configure-pages@v4
     - name: Upload pages
       uses: actions/upload-pages-artifact@v3
       with:
-        path: "Document/doc/html"
+        path: "pages"
     - name: Deploy
       uses: actions/deploy-pages@v4

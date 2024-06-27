@@ -10,7 +10,7 @@ All numbers MUST use big-endian.
 
 ### File structure
 
-First 3 bytes MUST be 7F 44 57 (\x7F DW) (`signature`)
+First 3 bytes MUST be `7F 44 57` (`\x7F DW`) (`signature`)
 
 Database entry (`dbentry`) MUST be in this format:
 

@@ -1,14 +1,14 @@
-# Abstract {#mainpage}
+# 概要 {#mainpage}
 
-**DataWorks** is a general-purpose and platform independent database library/client.
+**DataWorks** は普通な用途に使えるプラットフォーム非依存なデータベースライブラリ/ツールです。
 
-This document was generated for DataWorks @VERSION@.
+このドキュメントはDataWorks @VERSION@用に生成されました。
 
-## License
+## ライセンス
 
-**DataWorks** is free software, and sources are published under 3-clause BSD License by Crabware/pnsk-lab.
+**DataWorks** はフリーソフトウェアであり、ソースコードは3条項ライセンスの下でCrabware/[pnsk-lab](https://github.com/pnsk-lab)によって公開されています。
 
-Crabware is a software-development division of Hinode Gakuen PC-Club. Contact: Nishi &lt;nishi@nishi.boats&gt;
+Crabwareは日出学園パソコン部のソフトウェア開発部門です。　連絡先: Nishi &lt;nishi@nishi.boats&gt;
 
 @example client.c
 @example server.c
