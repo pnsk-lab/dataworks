@@ -32,7 +32,7 @@ jobs:
     - name: Setup directories
       run: mkdir -p pages/en && mkdir -p pages/jp
     - name: Make HTML
-      run: echo "<html><head><meta charset=\"UTF-8\"><title>Select</title></head><body><h1>Select</h1><hr><ul><li><a href=\"/en\">English</a></li><li><a href=\"/jp\">Japanese</a></li></ul></body></html>" > pages/index.html
+      run: echo "<html><head><meta charset=\"UTF-8\"><title>Select</title></head><body><h1>Select</h1><hr><ul><li><a href=\"./en\">English</a></li><li><a href=\"./jp\">Japanese</a></li></ul></body></html>" > pages/index.html
     - name: Clean
       run: make clean
     - name: Make
