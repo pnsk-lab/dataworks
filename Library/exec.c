@@ -152,6 +152,19 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 					}
 					used = true;
 				} else if(__dw_strcaseequ(node->ident, "insert")) {
+				} else if(__dw_strcaseequ(node->ident, "delete_table")) {
+					if(name == NULL) {
+						name = __dw_strdup(r->string);
+					} else {
+						newnode->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
+						__dw_free_node(r);
+						int j;
+						for(j = 0; fields[j] != NULL; j++) free(fields[j]);
+						free(fields);
+						free(fieldtypes);
+						if(name != NULL) free(name);
+						return newnode;
+					}
 				} else {
 					int j;
 					for(i = 0; fields[i] != NULL; i++) free(fields[i]);
@@ -168,6 +181,12 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 		if(__dw_strcaseequ(node->ident, "create_table")) {
 			if(name != NULL) {
 				newnode->errnum = dataworks_database_create_table(db, name, fields, fieldtypes);
+			} else {
+				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+			}
+		} else if(__dw_strcaseequ(node->ident, "delete_table")) {
+			if(name != NULL) {
+				newnode->errnum = dataworks_database_delete_table(db, name);
 			} else {
 				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 			}
