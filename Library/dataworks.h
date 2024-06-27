@@ -37,6 +37,9 @@
  * @~english
  * @brief DataWorks info
  *
+ * @~japanese
+ * @brief DataWorksの情報
+ *
  */
 
 #ifdef __cplusplus
@@ -50,6 +53,10 @@ extern "C" {
  * @brief Get the version of DataWorks
  * @return Version of DataWorks
  *
+ * @~japanese
+ * @brief DataWorksのバージョンを取得します
+ * @return DataWorksのバージョン
+ *
  */
 const char* dataworks_get_version(void);
 
@@ -57,6 +64,10 @@ const char* dataworks_get_version(void);
  * @~english
  * @brief Get the version of Yacc used by DataWorks
  * @return Yacc version of DataWorks
+ *
+ * @~japanese
+ * @brief DataWorksのコンパイル時に使われたYaccのバージョンを取得します
+ * @return DataWorksのコンパイル時に使われたYaccのバージョン
  *
  */
 const char* dataworks_get_yacc_version(void);
@@ -66,6 +77,10 @@ const char* dataworks_get_yacc_version(void);
  * @brief Get the version of Lex used by DataWorks
  * @return Lex version of DataWorks
  *
+ * @~japanese
+ * @brief DataWorksのコンパイル時に使われたLexのバージョンを取得します
+ * @return DataWorksのコンパイル時に使われたLexのバージョン
+ *
  */
 const char* dataworks_get_lex_version(void);
 
@@ -73,6 +88,10 @@ const char* dataworks_get_lex_version(void);
  * @~english
  * @brief Get the compiler which was used to compile DataWorks
  * @return Compiler which was used to compile DataWorks
+ *
+ * @~japanese
+ * @brief DataWorksのコンパイル時に使われたコンパイラのバージョンを取得します
+ * @return DataWorksのコンパイル時に使われたコンパイラのバージョン
  *
  */
 char* dataworks_get_compiler(void);
@@ -82,6 +101,10 @@ char* dataworks_get_compiler(void);
  * @brief Get the compilation date of DataWorks
  * @return Compilation date of DataWorks
  *
+ * @~japanese
+ * @brief DataWorksのコンパイル日時を取得します
+ * @return DataWorksのコンパイル日時
+ *
  */
 const char* dataworks_get_compile_date(void);
 
@@ -89,6 +112,10 @@ const char* dataworks_get_compile_date(void);
  * @~english
  * @brief Get the compilation platform of DataWorks
  * @return Compilation platform of DataWorks
+ *
+ * @~japanese
+ * @brief DataWorksのコンパイル先環境を取得します
+ * @return DataWorksのコンパイル先環境
  *
  */
 const char* dataworks_get_platform(void);
@@ -98,6 +125,10 @@ const char* dataworks_get_platform(void);
  * @brief Get the Endian of the platform
  * @return Endian of the platform
  *
+ * @~japanese
+ * @brief 実行環境のエンディアンを取得します
+ * @return 実行環境のエンディアン
+ *
  */
 char dataworks_get_endian(void);
 
@@ -106,6 +137,10 @@ char dataworks_get_endian(void);
  * @brief Get the copyright of DataWorks
  * @return Copyright of DataWorks
  *
+ * @~japanese
+ * @brief DataWorksのコピーライトを取得します
+ * @return DataWorksのコピーライト
+ *
  */
 const char* dataworks_get_copyright(void);
 
@@ -113,6 +148,10 @@ const char* dataworks_get_copyright(void);
  * @~english
  * @brief Get if your platform is supported or not
  * @return Supported or not
+ *
+ * @~japanese
+ * @brief あなたの環境がサポートされているか否かを取得します
+ * @return サポートされているか否か
  *
  */
 bool dataworks_get_if_supported(void);
