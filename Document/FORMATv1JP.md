@@ -50,29 +50,29 @@ DWFはDataWorks用に作られたシンプルなデータベースフォーマ�
 | 論理 | `L` | uint8\_t | 0なら偽、それ以外なら真と判別してください。 (MUST) |
 | ヘルプ | `?` | ASCII | 無視されるべきです。 (SHOULD) |
 
-There is 1 flag for `indexentry`:
-| Type | Mask | Info |
+そして1つのフラグが`indexentry`用に定義されています:
+| タイプ | マスク | 補足 |
 | ---- | ---- | ---- |
-| Used | 0b10000000 | Flag this if you are using the entry. |
+| 使用中 | 0b10000000 | エントリーを使っている時にフラグしてください。 |
 
-Info entry (`infoentry`) MUST be in this format:
-| Name | Size | Type | Info |
+インフォエントリー(文書内では`infoentry`と呼びます)はこのフォーマットである必要があります: (MUST)
+| 名称 | サイズ | 型 | 補足 |
 | ---- | ---- | ---- | ---- |
-| version | 2 bytes | uint16\_t | MUST be 1 for 1.0 |
-| mtime | 8 bytes | int64\_t | Last modified time of the database |
+| version | 2バイト | uint16\_t | フォーマットバージョンが1.0の場合は1である必要があります。 (MUST) |
+| mtime | 8バイト | int64\_t | 最終更新日時です。 |
 
-`infoentry` IS the only thing which SHOULD be compatible in later format.
+`infoentry`だけが後のフォーマットでも互換性を保つ想定をすべきです。 (SHOULD)
 
-File MUST look like this:
-| Data | Info |
+ファイルはこのようになるはずです: (MUST)
+| データ | 補足 |
 | ---- | ---- |
 | `signature` | |
 | `infoentry` | |
-| `indexentry` | 1st one |
-| `indexentry` | 2nd one |
+| `indexentry` | 1番目 |
+| `indexentry` | 2番目 |
 | ... | |
-| `indexentry` | 256th one |
-| `dbentry` | 1st one |
-| `dbentry` | 2nd one |
+| `indexentry` | 256番目 |
+| `dbentry` | 1番目 |
+| `dbentry` | 2番目 |
 | ... | |
-| `dbentry` | nth one |
+| `dbentry` | n番目 |
