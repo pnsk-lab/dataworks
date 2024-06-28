@@ -71,12 +71,19 @@ int main(int argc, char** argv) {
 	setlocale(LC_ALL, "");
 #endif
 	int i;
-	bool clear = true;
 	bool create = false;
 	bool banner = true;
 	bool log = true;
 	const char* fname = NULL;
 	const char* fprog = NULL;
+#ifdef __MINGW32__
+	winstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD mode = 0;
+	GetConsoleMode(winstdout, &mode);
+	const DWORD origmode = mode;
+	mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+	SetConsoleMode(winstdout, mode);
+#endif
 	for(i = 1; i < argc; i++) {
 		if(argv[i][0] == '-' || argv[i][0] == '/') {
 			if(option(argv[i], "V", "version")) {
@@ -84,12 +91,9 @@ int main(int argc, char** argv) {
 				return 0;
 			} else if(option(argv[i], "C", "create")) {
 				create = true;
-			} else if(option(argv[i], "NC", "noclear")) {
-				clear = false;
 			} else if(option(argv[i], "q", "quiet")) {
 				banner = false;
 				log = false;
-				clear = false;
 			} else if(option(argv[i], "NB", "nobanner")) {
 				banner = false;
 			} else if(option(argv[i], "NL", "nolog")) {
@@ -127,22 +131,6 @@ int main(int argc, char** argv) {
 			fname = argv[i];
 		}
 	}
-	if(fname == NULL) {
-		fprintf(stderr, "%s: filename needed\n", argv[0]);
-		return 1;
-	}
-#ifdef __MINGW32__
-	winstdout = GetStdHandle(STD_OUTPUT_HANDLE);
-	DWORD mode = 0;
-	GetConsoleMode(winstdout, &mode);
-	const DWORD origmode = mode;
-	mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-	SetConsoleMode(winstdout, mode);
-#endif
-	if(clear) {
-		printf("\x1b[2J\x1b[1;1H");
-		fflush(stdout);
-	}
 	if(banner) {
 		printf("DataWorks  version %s  %s %s\n", dataworks_get_version(), dataworks_get_compile_date(), dataworks_get_platform());
 		char* comp = dataworks_get_compiler();
@@ -161,6 +149,10 @@ int main(int argc, char** argv) {
 		}
 		printf("%s\n", dataworks_get_copyright());
 		printf("All rights reserved.\n");
+	}
+	if(fname == NULL) {
+		fprintf(stderr, "%s: filename needed\n", argv[0]);
+		return 1;
 	}
 	if(create) {
 		if(log) {
