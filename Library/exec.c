@@ -200,60 +200,64 @@ struct Node* parser_process(struct dataworks_db* db, struct Node* node, bool dol
 				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
 			}
 		} else if(__dw_strcaseequ(node->ident, "insert")) {
-			for(i = 0; node->nodes[i] != NULL; i++)
-				;
-
-			char** list = dataworks_database_get_table_fields(db, dataworks_database_get_using_table(db));
-
-			int count;
-			for(count = 0; list[count] != NULL; count++) free(list[count]);
-			free(list);
-
-			if(i < count) {
-				newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
-			} else if(i > count) {
-				newnode->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
+			if(dataworks_database_get_using_table(db) == NULL) {
+				newnode->errnum = DW_ERR_DATABASE_NOT_SELECTED;
 			} else {
-				char* typ = dataworks_database_get_table_field_types(db, dataworks_database_get_using_table(db));
-				struct Node** arr = malloc(sizeof(*arr) * (i + 1));
-				for(i = 0; node->nodes[i] != NULL; i++) {
-					struct Node* r = parser_process(db, node->nodes[i], false);
-					char t = __dw_get_node_type(r);
-					if(!((typ[i] == 'F' || typ[i] == 'I') && t == 'N' || typ[i] == t)) {
-						newnode->errnum = DW_ERR_EXEC_TYPE_MISMATCH;
-					}
-					arr[i] = r;
-				}
-				arr[i] = NULL;
+				for(i = 0; node->nodes[i] != NULL; i++)
+					;
 
-				if(newnode->errnum == DW_ERR_SUCCESS) {
-					void** fields = malloc(sizeof(*fields) * (i + 1));
-					fields[i] = NULL;
-					int k;
-					for(k = 0; k < i; k++) {
-						if(typ[k] == DW_RECORD_STRING) {
-							fields[k] = __dw_strdup(arr[k]->string);
-						} else if(typ[k] == DW_RECORD_LOGICAL) {
-							fields[k] = malloc(1);
-							*(char*)fields[k] = arr[k]->logical;
-						} else if(typ[k] == DW_RECORD_FLOATING) {
-							fields[k] = malloc(sizeof(double));
-							*(double*)fields[k] = arr[k]->number;
-						} else if(typ[k] == DW_RECORD_INTEGER) {
-							fields[k] = malloc(8);
-							*(uint64_t*)fields[k] = arr[k]->number;
+				char** list = dataworks_database_get_table_fields(db, dataworks_database_get_using_table(db));
+
+				int count;
+				for(count = 0; list[count] != NULL; count++) free(list[count]);
+				free(list);
+
+				if(i < count) {
+					newnode->errnum = DW_ERR_EXEC_INSUFFICIENT_ARGUMENTS;
+				} else if(i > count) {
+					newnode->errnum = DW_ERR_EXEC_TOO_MANY_ARGUMENTS;
+				} else {
+					char* typ = dataworks_database_get_table_field_types(db, dataworks_database_get_using_table(db));
+					struct Node** arr = malloc(sizeof(*arr) * (i + 1));
+					for(i = 0; node->nodes[i] != NULL; i++) {
+						struct Node* r = parser_process(db, node->nodes[i], false);
+						char t = __dw_get_node_type(r);
+						if(!((typ[i] == 'F' || typ[i] == 'I') && t == 'N' || typ[i] == t)) {
+							newnode->errnum = DW_ERR_EXEC_TYPE_MISMATCH;
 						}
+						arr[i] = r;
 					}
-					struct dataworks_db_result* insr = dataworks_database_insert_record(db, fields);
+					arr[i] = NULL;
 
-					free(fields);
-				}
+					if(newnode->errnum == DW_ERR_SUCCESS) {
+						void** fields = malloc(sizeof(*fields) * (i + 1));
+						fields[i] = NULL;
+						int k;
+						for(k = 0; k < i; k++) {
+							if(typ[k] == DW_RECORD_STRING) {
+								fields[k] = __dw_strdup(arr[k]->string);
+							} else if(typ[k] == DW_RECORD_LOGICAL) {
+								fields[k] = malloc(1);
+								*(char*)fields[k] = arr[k]->logical;
+							} else if(typ[k] == DW_RECORD_FLOATING) {
+								fields[k] = malloc(sizeof(double));
+								*(double*)fields[k] = arr[k]->number;
+							} else if(typ[k] == DW_RECORD_INTEGER) {
+								fields[k] = malloc(8);
+								*(uint64_t*)fields[k] = arr[k]->number;
+							}
+						}
+						struct dataworks_db_result* insr = dataworks_database_insert_record(db, fields);
 
-				for(i = 0; arr[i] != NULL; i++) {
-					__dw_free_node(arr[i]);
+						free(fields);
+					}
+
+					for(i = 0; arr[i] != NULL; i++) {
+						__dw_free_node(arr[i]);
+					}
+					free(typ);
+					free(arr);
 				}
-				free(typ);
-				free(arr);
 			}
 		} else if(!used) {
 			newnode->errnum = DW_ERR_EXEC_UNKNOWN_METHOD;
