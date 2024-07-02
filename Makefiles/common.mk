@@ -19,16 +19,16 @@ thanks-banner:
 ./Grammar::
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
-./Library:: ./Grammar
+./Library:: ./Grammar ./Resource
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
-./Client:: ./Library
+./Client:: ./Library ./Resource
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
-./Server:: ./Library
+./Server:: ./Library ./Resource
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
-./RemoteClient:: ./Library
+./RemoteClient:: ./Library ./Resource
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
 
 ./Installer:: ./Library
@@ -36,6 +36,9 @@ thanks-banner:
 
 ./Tool::
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET)
+
+./Resource::
+	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET) $(RESOURCE_TARGET)
 
 ./Document:: ./Tool
 	$(MAKE) -C $@ $(COMPILE_FLAGS) $(TARGET) $(DOCTARGET)
@@ -62,6 +65,7 @@ clean:
 	$(MAKE) -C ./Installer clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Document clean $(COMPILE_FLAGS)
 	$(MAKE) -C ./Tool clean $(COMPILE_FLAGS)
+	$(MAKE) -C ./Resource clean $(COMPILE_FLAGS)
 
 get-version:
 	@echo $(VERSION)

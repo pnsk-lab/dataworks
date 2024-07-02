@@ -41,7 +41,8 @@
 
 const char sig[3] = {0x7f, 'D', 'W'};
 
-const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method", "Insufficient arguments", "Too many arguments", "Not used", "Too many tables", "Database not selected", "Parser fail", "Type mismatch"};
+#define DEFINE_DW_DATABASE
+#include "../Resource/resource.c"
 
 #ifdef M_I86
 #define BUFSIZE 128
