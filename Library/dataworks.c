@@ -58,6 +58,8 @@ const char* dataworks_platform = "WatcomC/"
 const char* dataworks_platform = "MacOSX/"
 #elif defined(__minix)
 const char* dataworks_platform = "Minix/"
+#elif defined(DJGPP)
+const char* dataworks_platform = "DJGPP/"
 #elif defined(__VBCC__)
 #else
 #undef SUPPORTED
