@@ -43,6 +43,10 @@
 #endif
 #endif
 
+#ifdef DJGPP
+#define off_t uint64_t
+#endif
+
 char* __dw_strdup(const char* a) {
 	char* str = malloc(strlen(a) + 1);
 	memcpy(str, a, strlen(a));
@@ -77,6 +81,7 @@ bool __dw_lockfile(struct dataworks_db* db) {
 
 #elif defined(__VBCC__)
 
+#elif defined(DJGPP)
 #elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};
 	LockFileEx(db->fp, LOCKFILE_EXCLUSIVE_LOCK, 0, MAXDWORD, MAXDWORD, &overlap);
@@ -99,6 +104,7 @@ bool __dw_unlockfile(struct dataworks_db* db) {
 
 #elif defined(__VBCC__)
 
+#elif defined(DJGPP)
 #elif defined(__MINGW32__)
 	OVERLAPPED overlap = {0};
 	UnlockFileEx(db->fp, 0, MAXDWORD, MAXDWORD, &overlap);

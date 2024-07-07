@@ -43,6 +43,10 @@ char* __dw_strdup(const char* a);
 #define strdup __dw_strdup
 #endif
 
+#ifndef EINTR
+#define EINTR 0
+#endif
+
 #ifdef __VBCC__
 int isatty(int fd){
 	return 0;
@@ -105,7 +109,7 @@ void proc_esc(void){
 	proc_esc();
 }
 <DQ>\"				{
-	yylval.node.string = strdup(str);
+	yylval.node.string = __dw_strdup(str);
 	yylval.node.nodes = NULL;
 	yylval.node.ident = NULL;
 	yylval.node.type = 'S';
@@ -127,7 +131,7 @@ void proc_esc(void){
 	proc_esc();
 }
 <SQ>\'				{
-	yylval.node.string = strdup(str);
+	yylval.node.string = __dw_strdup(str);
 	yylval.node.nodes = NULL;
 	yylval.node.ident = NULL;
 	yylval.node.type = 'S';
@@ -137,7 +141,7 @@ void proc_esc(void){
 }
 [ \t]*#.*			{ return (COMMENT); }
 [a-zA-Z_][a-zA-Z0-9_\-]+	{
-	yylval.node.ident = strdup(yytext);
+	yylval.node.ident = __dw_strdup(yytext);
 	yylval.node.nodes = NULL;
 	yylval.node.string = NULL;
 	yylval.node.type = 'I';
