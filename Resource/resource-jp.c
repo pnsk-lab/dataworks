@@ -4,6 +4,6 @@
 
 #ifndef __DW_RESOURCE__
 #ifdef DEFINE_DW_DATABASE
-const char* dw_errors[] = {"Success", "Used already", "File open fail", "Invalid signature", "Invalid version", "Parser returned NULL", "Cannot call non-method", "Unknown method", "Insufficient arguments", "Too many arguments", "Not used", "Too many tables", "Database not selected", "Parser fail", "Type mismatch"};
+const char* dw_errors[] = {"成功", "使用済みです", "ファイルを開けるのに失敗しました", "不正なシグネチャです", "不正なバージョンです", "パーサーがヌルポインターを返しました", "非メソッドを呼び出すことはできません", "未知のメソッドです", "引数が足りません", "引数が多すぎます", "未使用です", "テーブルが多すぎます", "テーブルが選択されていません", "パーサーが失敗しました", "型が合致しません"};
 #endif
 #endif
