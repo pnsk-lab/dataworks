@@ -44,20 +44,30 @@ extern char** argv;
 extern bool auth;
 extern char* authfile;
 
-#if defined(__MINGW32__) || defined(__WATCOMC__)
+#if defined(__MINGW32__) || (defined(__WATCOMC__) && !defined(__NETWARE__))
 #define USE_WINSOCK
+#endif
+
+#ifdef __minix
+#define USE_IPV4
 #endif
 
 #ifdef USE_WINSOCK
 #include <process.h>
 #include <winsock2.h>
 #include <windows.h>
+#define USE_IPV4
 #else
+#ifndef __NETWARE__
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#endif
 #include <signal.h>
 #include <sys/socket.h>
+#ifdef __NETWARE__
+#define USE_IPV4
+#endif
 #endif
 #include <unistd.h>
 
@@ -68,7 +78,7 @@ bool option(const char* str, const char* shortopt, const char* longopt);
 
 int port = 4096;
 int server_socket;
-#if defined(USE_WINSOCK) || defined(__minix)
+#if defined(USE_IPV4)
 struct sockaddr_in server_address;
 #else
 struct sockaddr_in6 server_address;
@@ -118,8 +128,8 @@ int server_init(void) {
 #endif
 #if defined(USE_WINSOCK)
 	if((server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
-#elif defined(__minix)
-	if((server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
+#elif defined(USE_IPV4)
+	if((server_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 #else
 	if((server_socket = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 #endif
@@ -132,13 +142,13 @@ int server_init(void) {
 		close(server_socket);
 		return 1;
 	}
-	if(setsockopt(server_socket, IPPROTO_TCP, TCP_NODELAY, (void*)&yes, sizeof(yes)) < 0) {
+	if(setsockopt(server_socket, 0, TCP_NODELAY, (void*)&yes, sizeof(yes)) < 0) {
 		fprintf(stderr, "BSD TCP/IP initialization fail (setsockopt)\n");
 		close(server_socket);
 		return 1;
 	}
 #ifdef USE_WINSOCK
-#elif !defined(__minix)
+#elif !defined(USE_IPV4)
 	int no = 0;
 	if(setsockopt(server_socket, IPPROTO_IPV6, IPV6_V6ONLY, &no, sizeof(no)) < 0) {
 		fprintf(stderr, "BSD TCP/IP initialization fail (setsockopt)\n");
@@ -147,9 +157,9 @@ int server_init(void) {
 	}
 #endif
 	memset(&server_address, 0, sizeof(server_address));
-#if defined(USE_WINSOCK) || defined(__minix)
+#if defined(USE_WINSOCK) || defined(USE_IPV4)
 	server_address.sin_family = AF_INET;
-#ifdef __minix
+#if defined(__minix) || defined(__NETWARE__)
 	server_address.sin_addr.s_addr = INADDR_ANY;
 #else
 	server_address.sin_addr.S_un.S_addr = INADDR_ANY;

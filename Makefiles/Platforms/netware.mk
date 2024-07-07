@@ -6,8 +6,6 @@ include Makefiles/Platforms/watcom.mk
 EXEC_SUFFIX=.exe
 CFLAGS += -I$$NOVELLNDK/include/nlm
 LDFLAGS +=
-RCLI=
 SERVER=
-SERVER_MODULE = hayes.o
-RCLI_MODULE = hayes.o
+RCLI=
 INSTALLER = ./Installer
