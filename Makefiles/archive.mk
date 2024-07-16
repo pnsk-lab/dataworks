@@ -2,7 +2,7 @@
 
 .PHONY: archive archive-prepare archive-cleanup archive-targz archive-zip
 
-archive-prepare: all
+archive-prepare: no-doc
 	rm -f dataworks.zip dataworks.tar.gz
 	rm -rf dataworks-dist
 	mkdir -p dataworks-dist
@@ -10,7 +10,7 @@ archive-prepare: all
 	mkdir -p dataworks-dist/Server
 	mkdir -p dataworks-dist/Client
 	mkdir -p dataworks-dist/Library
-	mkdir -p dataworks-dist/Document
+	-mkdir -p dataworks-dist/Document
 	-cp Library/*$(LIB_SUFFIX) dataworks-dist/Library/
 	-cp Library/*$(STATICLIB_SUFFIX) dataworks-dist/Library/
 	-cp Library/*.lib dataworks-dist/Library/
@@ -20,7 +20,7 @@ archive-prepare: all
 	-rmdir dataworks-dist/RemoteClient
 	cp Library/*.h dataworks-dist/Library/
 	cp Client/dataworks$(EXEC_SUFFIX) dataworks-dist/Client/
-	cp -rf Document/doc/html dataworks-dist/Document/html
+	-cp -rf Document/doc/html dataworks-dist/Document/html
 
 archive-cleanup:
 	rm -rf dataworks-dist
